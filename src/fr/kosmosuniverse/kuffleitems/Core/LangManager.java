@@ -20,9 +20,9 @@ public class LangManager {
 		
 		try {
 			if (dataFolder.getPath().contains("\\")) {
-				writer = new FileWriter(dataFolder.getPath() + "\\KuffleItemsStartlogs.txt", true);
+				writer = new FileWriter(dataFolder.getPath() + "\\logs.txt", true);
 			} else {
-				writer = new FileWriter(dataFolder.getPath() + "/KuffleItemsStartlogs.txt", true);
+				writer = new FileWriter(dataFolder.getPath() + "/logs.txt", true);
 			}
 			
 			langages = (JSONObject) jsonParser.parse(JSONContent);

@@ -5,18 +5,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import fr.kosmosuniverse.kuffle.Core.GameTask;
-import fr.kosmosuniverse.kuffle.Core.Level;
+import fr.kosmosuniverse.kuffleitems.Core.Game;
+import fr.kosmosuniverse.kuffleitems.Core.Level;
 
 public class Utils {
 	public static String readFileContent(InputStream in) throws IOException {
@@ -96,36 +96,6 @@ public class Utils {
 		return -1;
 	}
 	
-	public static ArrayList<Player> getPlayerList(ArrayList<GameTask> games) {
-		ArrayList<Player> players = new ArrayList<Player>();
-		
-		for (GameTask gt : games) {
-			players.add(gt.getPlayer());
-		}
-		
-		return players;
-	}
-	
-	public static ArrayList<String> getPlayerNames(ArrayList<GameTask> games) {
-		ArrayList<String> players = new ArrayList<String>();
-		
-		for (GameTask gt : games) {
-			players.add(gt.getPlayer().getDisplayName());
-		}
-		
-		return players;
-	}
-	
-	public static ArrayList<Location> getAllPlayerLocation(ArrayList<GameTask> games) {
-		ArrayList<Location> locs = new ArrayList<Location>();
-		
-		for (GameTask gt : games) {
-			locs.add(gt.getSpawnLoc());
-		}
-		
-		return locs;
-	}
-	
 	public static ChatColor findChatColor(String color) {
 		for (ChatColor item : ChatColor.values()) {
 			if (item.name().equals(color)) {
@@ -136,7 +106,37 @@ public class Utils {
 		return null;
 	}
 	
-	public static Player getPlayerInList(ArrayList<GameTask> games, String name) {
+	public static ArrayList<Player> getPlayerList(HashMap<String, Game> games) {
+		ArrayList<Player> players = new ArrayList<Player>();
+		
+		for (String playerName : games.keySet()) {
+			players.add(games.get(playerName).getPlayer());
+		}
+		
+		return players;
+	}
+	
+	public static ArrayList<String> getPlayerNames(HashMap<String, Game> games) {
+		ArrayList<String> players = new ArrayList<String>();
+		
+		for (String playerName : games.keySet()) {
+			players.add(playerName);
+		}
+		
+		return players;
+	}
+	
+	/*public static ArrayList<Location> getAllPlayerLocation(ArrayList<GameTask> games) {
+		ArrayList<Location> locs = new ArrayList<Location>();
+		
+		for (GameTask gt : games) {
+			locs.add(gt.getSpawnLoc());
+		}
+		
+		return locs;
+	}*/
+	
+	/*public static Player getPlayerInList(ArrayList<GameTask> games, String name) {
 		for (GameTask gt : games) {
 			if (gt.getPlayer().getDisplayName().equals(name)) {
 				return gt.getPlayer();
@@ -144,6 +144,6 @@ public class Utils {
 		}
 		
 		return null;
-	}
+	}*/
 }
  

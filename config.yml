@@ -15,7 +15,6 @@ game_settings:
       enable: true # allow player to skip block if they are after 2nd block of current age, Default: true
       age: 2 # First age that allow skipping block, Default: 2
    custom_crafts: true # allow players to use custom crafts, Default: true
-   see_block_count: true # allow players to know others player progress, Default: true
    team:
       enable: false # Define if team are allowed or not, Default: False
       size: 2 # Size of a team, Default: 2

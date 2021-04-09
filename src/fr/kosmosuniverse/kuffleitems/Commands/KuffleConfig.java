@@ -7,7 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import fr.kosmosuniverse.kuffle.KuffleMain;
+import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class KuffleConfig implements CommandExecutor {
 	private KuffleMain km;
@@ -27,9 +27,9 @@ public class KuffleConfig implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <kconfig>");
+		km.logs.logMsg(player, "achieved command <ki-config>");
 		
-		if (!player.hasPermission("kconfig")) {
+		if (!player.hasPermission("ki-config")) {
 			km.logs.writeMsg(player, "You are not allowed to do this command.");
 			return false;
 		}
@@ -45,11 +45,11 @@ public class KuffleConfig implements CommandExecutor {
 						before = "";
 					}
 					
-					before = args[i];
+					before = args[i].toUpperCase();
 				} else {
 					if (km.config.stringElems.containsKey(before)) {
 						try {
-							boolean ret = (boolean) Class.forName("fr.kosmosuniverse.kuffle.Core.Config").getMethod(km.config.stringElems.get(before), String.class).invoke(km.config, args[i]);
+							boolean ret = (boolean) Class.forName("fr.kosmosuniverse.kuffleitems.Core.Config").getMethod(km.config.stringElems.get(before), String.class).invoke(km.config, args[i]);
 							
 							if (ret) {
 								km.logs.writeMsg(player, "Config : parameter [" + before + "] set to [" + args[i] + "].");	
@@ -70,7 +70,7 @@ public class KuffleConfig implements CommandExecutor {
 							
 							boolean boolValue = Boolean.parseBoolean(tmp);
 							
-							boolean ret = (boolean) Class.forName("fr.kosmosuniverse.kuffle.Core.Config").getMethod(km.config.booleanElems.get(before), boolean.class).invoke(km.config, boolValue);
+							boolean ret = (boolean) Class.forName("fr.kosmosuniverse.kuffleitems.Core.Config").getMethod(km.config.booleanElems.get(before), boolean.class).invoke(km.config, boolValue);
 							
 							if (ret) {
 								km.logs.writeMsg(player, "Config : parameter [" + before + "] set to [" + args[i] + "].");	
@@ -85,7 +85,7 @@ public class KuffleConfig implements CommandExecutor {
 						try {
 							int intValue = Integer.parseInt(args[i]);
 							
-							boolean ret = (boolean) Class.forName("fr.kosmosuniverse.kuffle.Core.Config").getMethod(km.config.intElems.get(before), int.class).invoke(km.config, intValue);
+							boolean ret = (boolean) Class.forName("fr.kosmosuniverse.kuffleitems.Core.Config").getMethod(km.config.intElems.get(before), int.class).invoke(km.config, intValue);
 
 							if (ret) {
 								km.logs.writeMsg(player, "Config : parameter [" + before + "] set to [" + args[i] + "].");	

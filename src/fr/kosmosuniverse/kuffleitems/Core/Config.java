@@ -1,10 +1,11 @@
-package fr.kosmosuniverse.kuffleitems.Core;
+ package fr.kosmosuniverse.kuffleitems.Core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import fr.kosmosuniverse.kuffleitems.Core.Level;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class Config {
@@ -14,7 +15,6 @@ public class Config {
 	private boolean rewards;
 	private boolean skip;
 	private boolean crafts;
-	private boolean seeBlockCnt;
 	private boolean team;
 	private boolean same;
 	private boolean duoMode;
@@ -54,7 +54,6 @@ public class Config {
 		booleanElems.put("REWARDS", "setRewards");
 		booleanElems.put("SKIP", "setSkip");
 		booleanElems.put("CUSTOM_CRAFTS", "setCrafts");
-		booleanElems.put("SEE_BLOCK_CNT", "setBlockCnt");
 		booleanElems.put("TEAM", "setTeam");
 		booleanElems.put("SAME_MODE", "setSame");
 		booleanElems.put("DOUBLE_MODE", "setDoubleMode");
@@ -64,7 +63,6 @@ public class Config {
 		booleanRet.put("REWARDS", ret);
 		booleanRet.put("SKIP", ret);
 		booleanRet.put("CUSTOM_CRAFTS", ret);
-		booleanRet.put("SEE_BLOCK_CNT", ret);
 		booleanRet.put("TEAM", ret);
 		booleanRet.put("SAME_MODE", ret);
 		booleanRet.put("DOUBLE_MODE", ret);
@@ -240,7 +238,6 @@ public class Config {
 		rewards = configFile.getBoolean("game_settings.rewards");
 		skip = configFile.getBoolean("game_settings.skip.enable");
 		crafts = configFile.getBoolean("game_settings.custom_crafts");
-		seeBlockCnt = configFile.getBoolean("game_settings.see_block_count");
 		team = configFile.getBoolean("game_settings.team.enable");
 		same = configFile.getBoolean("game_settings.same_mode");
 
@@ -251,13 +248,8 @@ public class Config {
 		maxAges = configFile.getInt("game_settings.max_age");
 		startTime = configFile.getInt("game_settings.start_time");
 		addedTime = configFile.getInt("game_settings.time_added");
+		level = configFile.getInt("game_settings.level");
 		teamSize = configFile.getInt("game_settings.team.size");
-
-		for (int cnt = 0; cnt < Level.values().length; cnt++) {
-			if (Level.valueOf(configFile.getString("game_settings.level")) == Level.values()[cnt]) {
-				level = cnt;
-			}
-		}
 
 		lang = configFile.getString("game_settings.lang");
 
@@ -280,7 +272,6 @@ public class Config {
 		sb.append("Rewards: ").append(rewards).append("\n");
 		sb.append("Skip: ").append(skip).append("\n");
 		sb.append("Crafts: ").append(crafts).append("\n");
-		sb.append("Can see block cnt: ").append(seeBlockCnt).append("\n");
 		sb.append("Nb block per age: ").append(blockPerAge).append("\n");
 		sb.append("First Age for Skipping: ").append(skipAge).append("\n");
 		sb.append("Max age: ").append(maxAges).append("\n");
@@ -314,10 +305,6 @@ public class Config {
 
 	public boolean getCrafts() {
 		return crafts;
-	}
-
-	public boolean getSeeBlockCnt() {
-		return seeBlockCnt;
 	}
 
 	public boolean getTeam() {
@@ -397,15 +384,10 @@ public class Config {
 		return true;
 	}
 
-	public boolean setBlockCnt(boolean _seeBlockCnt) {
-		seeBlockCnt = _seeBlockCnt;
-		return true;
-	}
-
 	public boolean setTeam(boolean _team) {
-		/*if (km.games.size() > 0 && km.games.get(0).getEnable()) {
+		if (km.gameStarted) {
 			return false;
-		}*/
+		}
 
 		team = _team;
 		
@@ -413,9 +395,9 @@ public class Config {
 	}
 	
 	public boolean setSame(boolean _same) {
-		/*if (km.games.size() > 0 && km.games.get(0).getEnable()) {
+		if (km.gameStarted) {
 			return false;
-		}*/
+		}
 		
 		same = _same;
 		

@@ -1,13 +1,14 @@
 package fr.kosmosuniverse.kuffleitems.Core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import fr.kosmosuniverse.kuffle.utils.Utils;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class ManageTeams {
 	private ArrayList<Team> teams = new ArrayList<Team>();
@@ -167,7 +168,7 @@ public class ManageTeams {
 		return global.toString();
 	}
 	
-	public void loadTeams(JSONObject global, ArrayList<GameTask> games) {
+	public void loadTeams(JSONObject global, HashMap<String, Game> games) {
 		for (Object key : global.keySet()) {
 			String name = key.toString();
 			JSONObject tmp = (JSONObject) global.get(key);
@@ -178,7 +179,7 @@ public class ManageTeams {
 			
 			if (players != null) {
 				for (Object obj : players) {
-					Player p = Utils.getPlayerInList(games, (String) obj);
+					Player p = games.get((String) obj).getPlayer();
 					affectPlayer(name, p);
 				}
 			}
