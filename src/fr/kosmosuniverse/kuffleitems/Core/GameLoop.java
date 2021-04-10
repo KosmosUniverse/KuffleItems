@@ -1,6 +1,5 @@
 package fr.kosmosuniverse.kuffleitems.Core;
 
-import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -10,7 +9,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class GameLoop {
 	private KuffleMain km;
-	private String[] ageNames = {"Archaic", "Classic", "Mineric", "Netheric", "Heroic", "Mythic"};
+	
 	private BukkitTask runnable;
 	
 	public GameLoop(KuffleMain _km) {
@@ -26,9 +25,7 @@ public class GameLoop {
 					
 					if (tmpGame.getCurrentItem() == null) {
 						if (tmpGame.getItemCount() >= (km.config.getBlockPerAge() + 1)) {
-							tmpGame.setItemCount(1);
-							tmpGame.setAge(tmpGame.getAge() + 1);
-							tmpGame.getPlayer().playSound(tmpGame.getPlayer().getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1f, 1f);
+							tmpGame.nextAge();
 						}
 						
 						newItem(tmpGame);
@@ -68,7 +65,7 @@ public class GameLoop {
 	}
 	
 	private void newItem(Game tmpGame) {
-		tmpGame.setCurrentItem(ItemManager.newBlock(tmpGame.getAlreadyGot(), km.allItems.get(ageNames[tmpGame.getAge()] + "_Age")));		
+		tmpGame.setCurrentItem(ItemManager.newBlock(tmpGame.getAlreadyGot(), km.allItems.get(km.ageNames[tmpGame.getAge()] + "_Age")));		
 	}
 	
 	public void kill() {

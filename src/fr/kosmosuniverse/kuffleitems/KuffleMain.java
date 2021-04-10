@@ -5,12 +5,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.kosmosuniverse.kuffleitems.Core.Logs;
 import fr.kosmosuniverse.kuffleitems.Core.ManageTeams;
+import fr.kosmosuniverse.kuffleitems.Core.Scores;
 import fr.kosmosuniverse.kuffleitems.Listeners.PlayerInteract;
+import fr.kosmosuniverse.kuffleitems.TabCmd.*;
 import fr.kosmosuniverse.kuffleitems.Core.ItemManager;
 import fr.kosmosuniverse.kuffleitems.Core.LangManager;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
@@ -28,6 +31,8 @@ public class KuffleMain extends JavaPlugin {
 	public Config config;
 	public Logs logs;
 	public ManageTeams teams = new ManageTeams();
+	public Scores scores;
+	public String[] ageNames = {"Archaic", "Classic", "Mineric", "Netheric", "Heroic", "Mythic"};
 	public Inventory playersHeads;
 	public boolean paused;
 	
@@ -70,10 +75,13 @@ public class KuffleMain extends JavaPlugin {
 		config = new Config(this);
 		config.setupConfig(this, getConfig());
 		
+		scores = new Scores(this);
 		logs = new Logs(this.getDataFolder());
 		
+		//Add Listeners
 		getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
 		
+		//Add Commands
 		getCommand("ki-config").setExecutor(new KuffleConfig(this));
 		getCommand("ki-list").setExecutor(new KuffleList(this));
 		getCommand("ki-start").setExecutor(new KuffleStart(this));
@@ -88,11 +96,27 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-reset-players").setExecutor(new KuffleTeamResetPlayers(this));
 		getCommand("ki-team-random-player").setExecutor(new KuffleTeamRandomPlayer(this));
 		
+		//Add Tab Completer
+		getCommand("ki-config").setTabCompleter(new KuffleConfigTab(this));
+		getCommand("ki-list").setTabCompleter(new KuffleListTab(this));
+		
+		getCommand("ki-team-create").setTabCompleter(new KuffleTeamCreateTab(this));
+		getCommand("ki-team-delete").setTabCompleter(new KuffleTeamDeleteTab(this));
+		getCommand("ki-team-color").setTabCompleter(new KuffleTeamColorTab(this));
+		getCommand("ki-team-show").setTabCompleter(new KuffleTeamShowTab(this));
+		getCommand("ki-team-affect-player").setTabCompleter(new KuffleTeamAffectPlayerTab(this));
+		getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab(this));
+		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
+		
 		System.out.println("[Kuffle Items] : Plugin turned ON.");
 	}
 	
 	@Override
 	public void onDisable() {
+		if (gameStarted) {
+			Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "ki-stop");
+		}
+		
 		System.out.println("[Kuffle Items] : Plugin turned OFF.");
 	}
 }

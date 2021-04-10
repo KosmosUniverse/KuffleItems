@@ -160,9 +160,10 @@ public class KuffleStart implements CommandExecutor {
 			public void run() {
 				for (String playerName : km.games.keySet()) {
 					ActionBar.sendRawTitle("{\"text\":\"1\",\"bold\":true,\"color\":\"blue\"}", km.games.get(playerName).getPlayer());
+					km.games.get(playerName).setup();
 				}
 				
-				//km.scores.setupPlayerScores(DisplaySlot.PLAYER_LIST);
+				km.scores.setupPlayerScores();
 			}
 		}, 100 + spread);
 		

@@ -31,22 +31,11 @@ public class PlayerInteract implements Listener {
 			return ;
 		}
 		
-		player.sendMessage("INTERACT !!!");
-		
 		if (action == Action.RIGHT_CLICK_AIR && item != null) {
-			player.sendMessage("Left Click !!!");
-			
 			Game tmpGame = km.games.get(player.getName());
 			
 			if (tmpGame != null && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {
-				player.sendMessage("Found !!!");
 				tmpGame.found();
-			} else {
-				if (tmpGame == null) {
-					player.sendMessage("Player not found !!!");
-				} else {
-					player.sendMessage("playerItem : [" + tmpGame.getCurrentItem() + "], item: [" + item.getType().name() + "]");
-				}
 			}
 		}
 	}

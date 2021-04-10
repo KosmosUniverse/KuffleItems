@@ -6,11 +6,16 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Score;
 
 import fr.kosmosuniverse.kuffleitems.Core.LangManager;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class Game {
@@ -38,18 +43,50 @@ public class Game {
 	
 	private Player player;
 	private Inventory deathInv = null;
+	private Score itemScore;
+	private BossBar ageDisplay;
 	
 	public Game(KuffleMain _km, Player _player) {
 		km = _km;
 		player = _player;
+	}
+	
+	public void setup() {
 		time = km.config.getStartTime();
 		alreadyGot = new ArrayList<String>();
+		ageDisplay = Bukkit.createBossBar("STARTING...", BarColor.PURPLE, BarStyle.SOLID);
+		ageDisplay.addPlayer(player);
+		updateBar();
+	}
+	
+	private void updateBar() {
+		double calc = ((double) itemCount) / km.config.getBlockPerAge();
+		calc = calc > 1.0 ? 1.0 : calc;
+		ageDisplay.setProgress(calc);
+		ageDisplay.setTitle(km.ageNames[age] + " Age: " + itemCount);
+	}
+	
+	public void resetBar() {
+		if (ageDisplay != null && ageDisplay.getPlayers().size() != 0) {
+			ageDisplay.removeAll();
+			ageDisplay = null;
+		}
 	}
 	
 	public void found() {
 		currentItem = null;
 		itemCount++;
 		player.playSound(player.getLocation(), Sound.BLOCK_BELL_USE, 1f, 1f);
+		itemScore.setScore(itemCount);
+		updateBar();
+	}
+	
+	public void nextAge() {
+		itemCount = 1;
+		age++;
+		player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1f, 1f);
+		player.setPlayerListName(Utils.getColor(age) + player.getName());
+		updateBar();
 	}
 	
 	public ArrayList<String> getAlreadyGot() {
@@ -102,6 +139,10 @@ public class Game {
 	
 	public String getTeamName() {
 		return teamName;
+	}
+	
+	public Score getItemScore() {
+		return itemScore;
 	}
 
 	public Location getSpawnLoc() {
@@ -164,6 +205,10 @@ public class Game {
 		if (currentItem != null) {
 			itemDisplay = LangManager.findBlockDisplay(km.allLangs, currentItem, configLang);
 		}
+	}
+	
+	public void setBlockScore(Score score) {
+		itemScore = score;
 	}
 
 	public void setSpawnLoc(Location _spawnLoc) {

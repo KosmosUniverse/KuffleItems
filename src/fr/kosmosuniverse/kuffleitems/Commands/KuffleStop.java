@@ -41,9 +41,11 @@ public class KuffleStop implements CommandExecutor {
 			for (PotionEffect pe : km.games.get(playerName).getPlayer().getActivePotionEffects()) {
 				km.games.get(playerName).getPlayer().removePotionEffect(pe.getType());
 			}
+			
+			km.games.get(playerName).resetBar();
 		}
 		
-		//km.scores.clear();
+		km.scores.clear();
 		
 		km.teams.resetAll();
 		
