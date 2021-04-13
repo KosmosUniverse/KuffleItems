@@ -112,7 +112,7 @@ public class ItemManager {
 		return (new Pair(sameIdx, testBlock));
 	}
 	
-	public static HashMap<String, ArrayList<Inventory>> getitemsInvs(HashMap<String, ArrayList<String>> allItems) {
+	public static HashMap<String, ArrayList<Inventory>> getItemsInvs(HashMap<String, ArrayList<String>> allItems) {
 		HashMap<String, ArrayList<Inventory>> invs = new HashMap<String, ArrayList<Inventory>>();
 
 		for (String age : allItems.keySet()) {
@@ -144,9 +144,9 @@ public class ItemManager {
 		bluePane.setItemMeta(itM);
 		
 		if (ageItems.size() > 45) {
-			inv = Bukkit.createInventory(null, 54, "§8" + age + " blocks Tab 1");
+			inv = Bukkit.createInventory(null, 54, "§8" + age + " Items Tab 1");
 		} else {
-			inv = Bukkit.createInventory(null, 54, "§8" + age + " blocks");
+			inv = Bukkit.createInventory(null, 54, "§8" + age + " Items");
 		}
 		
 		for (; invCnt < 9; invCnt++) {
@@ -168,7 +168,7 @@ public class ItemManager {
 				invCnt = 0;
 				invs.add(inv);
 				nbInv++;
-				inv = Bukkit.createInventory(null, 54, "§8" + age + " blocks Tab " + nbInv);
+				inv = Bukkit.createInventory(null, 54, "§8" + age + " Items Tab " + nbInv);
 				
 				for (; invCnt < 9; invCnt++) {
 					if (invCnt == 0) {

@@ -21,6 +21,10 @@ commands:
       usage: /<command>
       description: command to stop the game when it is running
       permission: inferno.flagrate
+   ki-validate:
+      usage: /<command> <Player name>
+      description: command to validate a block
+      permission: inferno.flagrate
    ki-team-create:
       usage: /<command> <TeamName> [TeamColor]
       description: command to create Team
@@ -53,6 +57,24 @@ commands:
       usage: /<command> <TeamName> <TeamColor>
       description: command to change team color
       permission: inferno.flagrate
+   ki-back:
+      usage: /<command>
+      description: command to teleport back to death position
+   ki-skip:
+      usage: /<command>
+      description: command to skip a block
+   ki-crafts:
+      usage: /<command>
+      description: command to see custom crafts
+   ki-ageitems:
+      usage: /<command>
+      description: command to see current age blocks
+   ki-lang:
+      usage: /<command> [lang]
+      description: command to see or change personnal lang
+   ki-players:
+      usage: /<command>
+      description: command to tp to other players after game end
 
 permissions:
    ki-config:
@@ -66,6 +88,9 @@ permissions:
       default: op
    ki-stop:
       description: command to stop the game when it is running
+      default: op
+   ki-validate:
+      description: command to validate a block
       default: op
    ki-team-create:
       description: command to create Team
@@ -91,3 +116,18 @@ permissions:
    ki-team-color:
       description: command to change team color
       default: op
+   ki-skip:
+      description: command to skip a block
+      default: true
+   ki-crafts:
+      description: command to see custom crafts
+      default: true
+   ki-ageblocks:
+      description: command to see current age blocks
+      default: true
+   ki-lang:
+      description: command to see or change personnal lang
+      default: true
+   ki-players:
+      description: command to tp to other players after game end
+      default: true

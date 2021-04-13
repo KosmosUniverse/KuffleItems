@@ -29,10 +29,7 @@ public class KuffleStop implements CommandExecutor {
 			return false;
 		}
 		
-		if (km.games.size() == 0) {
-			km.logs.writeMsg(player, "No game launched, you can launch a game with ki-start command.");
-			return false;
-		} else if (!km.gameStarted) {
+		if (!km.gameStarted) {
 			km.logs.writeMsg(player, "No game launched, you can launch a game with ki-start command.");
 			return false;
 		}

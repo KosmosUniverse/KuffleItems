@@ -56,10 +56,6 @@ public class KuffleStart implements CommandExecutor {
 			}
 		}
 		
-		for (String p : km.games.keySet()) {
-			km.games.get(p).setFinished(false);
-		}
-		
 		int spread = 0;
 		
 		if (km.config.getTeam() && !checkTeams()) {
@@ -115,7 +111,7 @@ public class KuffleStart implements CommandExecutor {
 		
 		for (String playerName : km.games.keySet()) {
 			km.playersHeads.setItem(invCnt, Utils.getHead(km.games.get(playerName).getPlayer()));
-			km.games.get(playerName).setDeathLoc(null);
+			km.playerRank.put(playerName, 0);
 			
 			invCnt++;
 		}

@@ -11,9 +11,13 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.Core.Game;
 import fr.kosmosuniverse.kuffleitems.Core.Level;
@@ -29,6 +33,46 @@ public class Utils {
         }
  
         return sb.toString();
+	}
+	
+	public static ArrayList<String> getAges(String itemContent, String rewardContent) {
+		ArrayList<String> itemAge = new ArrayList<String>();
+		ArrayList<String> rewardAge = new ArrayList<String>();
+		JSONObject tmpObj = new JSONObject();
+		JSONParser parser = new JSONParser();
+		
+		try {
+			tmpObj = (JSONObject) parser.parse(itemContent);
+			
+			for (Object key : tmpObj.keySet()) {
+				itemAge.add((String) key);
+			}
+			
+			tmpObj = (JSONObject) parser.parse(rewardContent);
+			
+			for (Object key : tmpObj.keySet()) {
+				rewardAge.add((String) key);
+			}
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		if (itemAge.size() != rewardAge.size() || checkAges(itemAge, rewardAge)) {
+			return null;
+		}
+		
+		return itemAge;
+	}
+	
+	private static boolean checkAges(ArrayList<String> itemAge, ArrayList<String> rewardAge) {
+		for (int cnt = 0; cnt < itemAge.size(); cnt++) {
+			if (!itemAge.get(cnt).equals(rewardAge.get(cnt))) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	public static ItemStack getHead(Player player) {
@@ -124,6 +168,16 @@ public class Utils {
 		}
 		
 		return players;
+	}
+	
+	public static World findNormalWorld() {
+		for (World w : Bukkit.getWorlds()) {
+			if (!w.getName().contains("nether") && !w.getName().contains("the_end")) {
+				return w;
+			}
+		}
+		
+		return null;
 	}
 	
 	/*public static ArrayList<Location> getAllPlayerLocation(ArrayList<GameTask> games) {

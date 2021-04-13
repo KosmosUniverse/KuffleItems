@@ -2,6 +2,7 @@ package fr.kosmosuniverse.kuffleitems.Core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,10 +13,15 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Score;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import fr.kosmosuniverse.kuffleitems.Core.LangManager;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
+import fr.kosmosuniverse.kuffleitems.Core.RewardManager;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class Game {
@@ -23,10 +29,12 @@ public class Game {
 	private ArrayList<String> alreadyGot;
 	
 	private boolean finished;
+	private boolean lose;
 	
 	private int time;
 	private int itemCount = 1;
 	private int age = 0;
+	private int gameRank = 0;
 	
 	private long timeShuffle = -1;
 	private long deathTime = 0;
@@ -49,6 +57,8 @@ public class Game {
 	public Game(KuffleMain _km, Player _player) {
 		km = _km;
 		player = _player;
+		finished = false;
+		lose = false;
 	}
 	
 	public void setup() {
@@ -56,14 +66,73 @@ public class Game {
 		alreadyGot = new ArrayList<String>();
 		ageDisplay = Bukkit.createBossBar("STARTING...", BarColor.PURPLE, BarStyle.SOLID);
 		ageDisplay.addPlayer(player);
+		deathLoc = null;
 		updateBar();
+	}
+	
+	public void stop() {
+		for (PotionEffect pe : player.getActivePotionEffects()) {
+			player.removePotionEffect(pe.getType());
+		}
+		
+		resetBar();
+		alreadyGot.clear();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String save() {
+		JSONObject jsonSpawn = new JSONObject();
+		
+		jsonSpawn.put("World", spawnLoc.getWorld().getName());
+		jsonSpawn.put("X", spawnLoc.getX());
+		jsonSpawn.put("Y", spawnLoc.getY());
+		jsonSpawn.put("Z", spawnLoc.getZ());
+		
+		JSONObject jsonDeath = new JSONObject();
+		if (deathLoc == null) {
+			jsonDeath = null;
+		} else {
+			jsonDeath.put("World", deathLoc.getWorld().getName());
+			jsonDeath.put("X", deathLoc.getX());
+			jsonDeath.put("Y", deathLoc.getY());
+			jsonDeath.put("Z", deathLoc.getZ());
+		}
+		
+		JSONObject global = new JSONObject();
+		
+		global.put("age", age);
+		global.put("maxAge", km.config.getMaxAges());
+		global.put("current", currentItem);
+		global.put("interval", System.currentTimeMillis() - timeShuffle);
+		global.put("time", time);
+		global.put("itemCount", itemCount);
+		global.put("spawn", jsonSpawn);
+		global.put("death", jsonDeath);
+		global.put("teamName", teamName);
+		//global.put("sameIdx", sameIdx);
+		
+		JSONArray got = new JSONArray();
+		
+		for (String block : alreadyGot) {
+			got.add(block);
+		}
+		
+		global.put("alreadyGot", got);
+
+		return (global.toString());
+	}
+	
+	public void load() {
+		updateBar();
+		player.setPlayerListName(Utils.getColor(age) + player.getName());
+		itemScore.setScore(itemCount);
 	}
 	
 	private void updateBar() {
 		double calc = ((double) itemCount) / km.config.getBlockPerAge();
 		calc = calc > 1.0 ? 1.0 : calc;
 		ageDisplay.setProgress(calc);
-		ageDisplay.setTitle(km.ageNames[age] + " Age: " + itemCount);
+		ageDisplay.setTitle(km.ageNames.get(age) + " Age: " + itemCount);
 	}
 	
 	public void resetBar() {
@@ -86,7 +155,91 @@ public class Game {
 		age++;
 		player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1f, 1f);
 		player.setPlayerListName(Utils.getColor(age) + player.getName());
+		itemScore.setScore(itemCount);
 		updateBar();
+	}
+	
+	public void finish(int _gameRank) {
+		finished = true;
+		
+		gameRank = _gameRank;
+		ageDisplay.setTitle("Game Done ! Rank : " + gameRank);
+		player.setPlayerListName(Utils.getColor(age) + player.getName());
+		km.playerRank.put(player.getName(), gameRank);
+	}
+	
+	public void randomBarColor() {
+		ageDisplay.setColor(getRandomColor());
+	}
+	
+	public boolean skip() {
+		if ((age + 1) < km.config.getSkipAge()) {
+			km.logs.writeMsg(player, "You can't skip block this age.");
+			
+			return false;
+		}
+		
+		if (itemCount == 1) {
+			km.logs.writeMsg(player, "You can't skip the first block of the age.");
+			
+			return false;
+		}
+		
+		itemCount--;
+		itemScore.setScore(itemCount);
+		updateBar();
+		km.logs.writeMsg(player, "Block [" + currentItem + "] was skipped.");
+		currentItem = null;
+		return true;
+	}
+	
+	public void reloadEffects() {
+		if (km.config.getRewards()) {
+			if (km.config.getSaturation()) {
+				player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false));
+			}
+			
+			int tmp = age - 1;
+			
+			if (tmp < 0) 
+				return;
+
+			RewardManager.givePlayerRewardEffect(km.allRewards.get(km.ageNames.get(tmp) + "_Age"), km.effects, player, km.ageNames.get(tmp));
+		}
+	}
+	
+	public void savePlayerInv() {
+		deathInv = Bukkit.createInventory(null, 54);
+		
+		for (ItemStack item : player.getInventory().getContents()) {
+			if (item != null) {
+				deathInv.addItem(item);
+			}
+		}
+	}
+	
+	public void restorePlayerInv() {
+		if (System.currentTimeMillis() - deathTime > (maxTime * 1000)) {
+			player.sendMessage("You waited too much to return to your death spot, your stuff is now unreachable.");
+			deathInv.clear();
+			deathInv = null;
+			return;
+		}
+		
+		for (ItemStack item : deathInv.getContents()) {
+			if (item != null) {
+				HashMap<Integer, ItemStack> ret = player.getInventory().addItem(item);
+				if (!ret.isEmpty()) {
+					for (Integer cnt : ret.keySet()) {
+						player.getWorld().dropItem(player.getLocation(), ret.get(cnt));
+					}
+				}
+			}
+		}
+		
+		deathInv.clear();
+		deathInv = null;
+		deathLoc = null;
 	}
 	
 	public ArrayList<String> getAlreadyGot() {
@@ -99,6 +252,10 @@ public class Game {
 	
 	public boolean getFinished() {
 		return finished;
+	}
+	
+	public boolean getLose() {
+		return lose;
 	}
 	
 	public int getTime() {
@@ -141,6 +298,10 @@ public class Game {
 		return teamName;
 	}
 	
+	public String getLang() {
+		return configLang;
+	}
+	
 	public Score getItemScore() {
 		return itemScore;
 	}
@@ -153,8 +314,18 @@ public class Game {
 		return deathLoc;
 	}
 
+	public void setAlreadyGot(JSONArray _alreadyGot) {
+		for (int i = 0; i < _alreadyGot.size(); i++) {
+			alreadyGot.add((String) _alreadyGot.get(i));			
+		}
+	}
+	
 	public void setFinished(boolean _finished) {
 		finished = _finished;
+	}
+	
+	public void setLose(boolean _lose) {
+		lose = _lose;
 	}
 	
 	public void setTime(int _time) {
@@ -189,6 +360,7 @@ public class Game {
 		alreadyGot.add(currentItem);
 		timeShuffle = System.currentTimeMillis();
 		itemDisplay = LangManager.findBlockDisplay(km.allLangs, currentItem, configLang);
+		km.updatePlayersHead(player.getName(), itemDisplay);
 	}
 	
 	public void setTeamName(String _teamName) {
@@ -207,7 +379,7 @@ public class Game {
 		}
 	}
 	
-	public void setBlockScore(Score score) {
+	public void setItemScore(Score score) {
 		itemScore = score;
 	}
 
@@ -215,41 +387,32 @@ public class Game {
 		spawnLoc = _spawnLoc;
 	}
 	
+	public void setSpawnLoc(JSONObject _spawnloc) {
+		spawnLoc = new Location(Bukkit.getWorld((String) _spawnloc.get("World")),
+				(double) _spawnloc.get("X"),
+				(double) _spawnloc.get("Y"),
+				(double) _spawnloc.get("Z"));
+	}
+	
 	public void setDeathLoc(Location _deathLoc) {
 		deathLoc = _deathLoc;
 		deathTime = System.currentTimeMillis();
 	}
 	
-	public void savePlayerInv() {
-		deathInv = Bukkit.createInventory(null, 54);
-		
-		for (ItemStack item : player.getInventory().getContents()) {
-			if (item != null) {
-				deathInv.addItem(item);
-			}
+	public void setDeathLoc(JSONObject _deathLoc) {
+		if (_deathLoc == null) {
+			deathLoc = null;
+		} else {
+			deathLoc = new Location(Bukkit.getWorld((String) _deathLoc.get("World")),
+					(double) _deathLoc.get("X"),
+					(double) _deathLoc.get("Y"),
+					(double) _deathLoc.get("Z"));	
 		}
 	}
 	
-	public void restorePlayerInv() {
-		if (System.currentTimeMillis() - deathTime > (maxTime * 1000)) {
-			player.sendMessage("You waited too much to return to your death spot, your stuff is now unreachable.");
-			deathInv.clear();
-			deathInv = null;
-			return;
-		}
+	private BarColor getRandomColor() {
+		Random r = new Random();
 		
-		for (ItemStack item : deathInv.getContents()) {
-			if (item != null) {
-				HashMap<Integer, ItemStack> ret = player.getInventory().addItem(item);
-				if (!ret.isEmpty()) {
-					for (Integer cnt : ret.keySet()) {
-						player.getWorld().dropItem(player.getLocation(), ret.get(cnt));
-					}
-				}
-			}
-		}
-		
-		deathInv.clear();
-		deathInv = null;
+		return (BarColor.values()[r.nextInt(BarColor.values().length)]);
 	}
 }

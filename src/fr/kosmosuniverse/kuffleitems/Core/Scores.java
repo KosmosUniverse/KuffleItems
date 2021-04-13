@@ -45,7 +45,7 @@ public class Scores {
 		age.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).setBlockScore(items.getScore(km.games.get(playerName).getPlayer().getDisplayName()));
+			km.games.get(playerName).setItemScore(items.getScore(km.games.get(playerName).getPlayer().getName()));
 			km.games.get(playerName).getItemScore().setScore(1);
 			km.games.get(playerName).getPlayer().setScoreboard(scoreboard);
 			
@@ -57,6 +57,15 @@ public class Scores {
 			
 			
 		}
+	}
+	
+	public void setupPlayerScores(Game _game) {
+		items.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+		age.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+		_game.setItemScore(items.getScore(_game.getPlayer().getName()));
+		_game.getItemScore().setScore(1);
+		_game.getPlayer().setScoreboard(scoreboard);
 	}
 	
 	public void clear() {
