@@ -155,6 +155,7 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
 		
 		loaded = true;
+		
 		System.out.println("[KuffleItems] : Plugin turned ON.");
 	}
 	
