@@ -1,13 +1,37 @@
-package fr.kosmosuniverse.kuffleitems.Crafts;
+package fr.kosmosuniverse.kuffleitems.Core;
 
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
+import fr.kosmosuniverse.kuffleitems.Crafts.ACrafts;
+import fr.kosmosuniverse.kuffleitems.Crafts.Bell;
+import fr.kosmosuniverse.kuffleitems.Crafts.Coal;
+import fr.kosmosuniverse.kuffleitems.Crafts.CoalOre;
+import fr.kosmosuniverse.kuffleitems.Crafts.Diamond;
+import fr.kosmosuniverse.kuffleitems.Crafts.DiamondHorseArmor;
+import fr.kosmosuniverse.kuffleitems.Crafts.DiamondOre;
+import fr.kosmosuniverse.kuffleitems.Crafts.Emerald;
+import fr.kosmosuniverse.kuffleitems.Crafts.EmeraldOre;
+import fr.kosmosuniverse.kuffleitems.Crafts.EndPortalFrame;
+import fr.kosmosuniverse.kuffleitems.Crafts.EndTeleporter;
+import fr.kosmosuniverse.kuffleitems.Crafts.GoldHorseArmor;
+import fr.kosmosuniverse.kuffleitems.Crafts.IronHorseArmor;
+import fr.kosmosuniverse.kuffleitems.Crafts.Lapis;
+import fr.kosmosuniverse.kuffleitems.Crafts.LapisOre;
+import fr.kosmosuniverse.kuffleitems.Crafts.MossyCobblestone;
+import fr.kosmosuniverse.kuffleitems.Crafts.MossyStoneBrick;
+import fr.kosmosuniverse.kuffleitems.Crafts.OverworldTeleporter;
+import fr.kosmosuniverse.kuffleitems.Crafts.Quartz;
+import fr.kosmosuniverse.kuffleitems.Crafts.QuartzOre;
+import fr.kosmosuniverse.kuffleitems.Crafts.RedNetherBrick;
+import fr.kosmosuniverse.kuffleitems.Crafts.RedSand;
+import fr.kosmosuniverse.kuffleitems.Crafts.Redstone;
+import fr.kosmosuniverse.kuffleitems.Crafts.RedstoneOre;
+import fr.kosmosuniverse.kuffleitems.Crafts.Saddle;
 
 public class CraftsManager {
 	private ArrayList<ACrafts> recipes = new ArrayList<ACrafts>();
@@ -74,9 +98,19 @@ public class CraftsManager {
 		}
 	}
 	
-	public ACrafts findCraftInventoryByItem(Material item) {
+	public ACrafts findCraftInventoryByItem(ItemStack item) {
 		for (ACrafts craft : recipes) {
-			if (craft.getItem().getType() == item) {
+			if (craft.getItem().getType() == item.getType()) {
+				return (craft);
+			}
+		}
+		
+		return null;
+	}
+	
+	public ACrafts findCraftInventoryByName(String name) {
+		for (ACrafts craft : recipes) {
+			if (name.contains(craft.getName())) {
 				return (craft);
 			}
 		}
@@ -96,8 +130,8 @@ public class CraftsManager {
 	
 	public ItemStack findItemByName(String itemName) {
 		for (ACrafts craft : recipes) {
-			if (itemName.equals(craft.name)) {
-				return (craft.item);
+			if (itemName.equals(craft.getName())) {
+				return (craft.getItem());
 			}
 		}
 		

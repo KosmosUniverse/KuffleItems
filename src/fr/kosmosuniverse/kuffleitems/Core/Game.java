@@ -69,6 +69,7 @@ public class Game {
 		ageDisplay = Bukkit.createBossBar("STARTING...", BarColor.PURPLE, BarStyle.SOLID);
 		ageDisplay.addPlayer(player);
 		deathLoc = null;
+		configLang = km.config.getLang();
 		updateBar();
 	}
 	
@@ -153,7 +154,7 @@ public class Game {
 		double calc = ((double) itemCount) / km.config.getBlockPerAge();
 		calc = calc > 1.0 ? 1.0 : calc;
 		ageDisplay.setProgress(calc);
-		ageDisplay.setTitle(km.ageNames.get(age).split("_")[0] + " Age: " + itemCount);
+		ageDisplay.setTitle(km.ageNames.get(age).replace("_", " ") + ": " + itemCount);
 	}
 	
 	public void resetBar() {
@@ -172,6 +173,14 @@ public class Game {
 	}
 	
 	public void nextAge() {
+		if (km.config.getRewards()) {
+			if (age > 0) {
+				RewardManager.managePreviousEffects(km.allRewards.get(km.ageNames.get(age - 1)), km.effects, player, km.ageNames.get(age - 1));
+			}
+			
+			RewardManager.givePlayerReward(km.allRewards.get(km.ageNames.get(age)), km.effects, player, km.ageNames.get(age));
+		}
+		
 		itemCount = 1;
 		age++;
 		player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1f, 1f);

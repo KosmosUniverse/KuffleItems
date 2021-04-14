@@ -15,7 +15,6 @@ import org.bukkit.potion.PotionEffectType;
 import fr.kosmosuniverse.kuffleitems.Core.Logs;
 import fr.kosmosuniverse.kuffleitems.Core.ManageTeams;
 import fr.kosmosuniverse.kuffleitems.Core.Scores;
-import fr.kosmosuniverse.kuffleitems.Crafts.CraftsManager;
 import fr.kosmosuniverse.kuffleitems.Listeners.*;
 import fr.kosmosuniverse.kuffleitems.TabCmd.*;
 import fr.kosmosuniverse.kuffleitems.Core.ItemManager;
@@ -26,6 +25,7 @@ import fr.kosmosuniverse.kuffleitems.Core.RewardElem;
 import fr.kosmosuniverse.kuffleitems.Core.RewardManager;
 import fr.kosmosuniverse.kuffleitems.Commands.*;
 import fr.kosmosuniverse.kuffleitems.Core.Config;
+import fr.kosmosuniverse.kuffleitems.Core.CraftsManager;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
 import fr.kosmosuniverse.kuffleitems.Core.GameLoop;
 

@@ -67,7 +67,7 @@ public class EndTeleporter extends ACrafts {
 				inv.setItem(i, new ItemStack(Material.DIAMOND_BLOCK));
 			} else if (i == 12 || i == 14) {
 				inv.setItem(i, new ItemStack(Material.RED_NETHER_BRICKS));
-			} else if (i == 15) {
+			} else if (i == 13) {
 				inv.setItem(i, new ItemStack(Material.ENDER_PEARL));
 			} else if (i == 21 || i == 23) {
 				inv.setItem(i, new ItemStack(Material.QUARTZ_PILLAR));

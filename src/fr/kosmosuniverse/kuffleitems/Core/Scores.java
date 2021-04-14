@@ -28,7 +28,9 @@ public class Scores {
 		int ageCnt = 0;
 		
 		for (String ageStr : km.ageNames) {
-			S_ages.add(age.getScore(Utils.getColor(ageCnt) + ageStr.replace("_", " ")));
+			if (ageCnt < km.config.getMaxAges()) {
+				S_ages.add(age.getScore(Utils.getColor(ageCnt) + ageStr.replace("_", " ")));
+			}
 			ageCnt++;
 		}
 		

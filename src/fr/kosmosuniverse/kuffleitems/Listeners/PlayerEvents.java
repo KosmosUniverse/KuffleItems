@@ -39,12 +39,12 @@ public class PlayerEvents implements Listener {
 		Player player = event.getPlayer();
 		Game tmpGame;
 
-		if (player.hasPlayedBefore()) {
+		if (!player.hasPlayedBefore()) {
 			for (ACrafts item : km.crafts.getRecipeList()) {
 				player.discoverRecipe(new NamespacedKey(km, item.getName()));
 			}
 		}
-		
+	
 		if (!km.gameStarted) {
 			return;
 		}

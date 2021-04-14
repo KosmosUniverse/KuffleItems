@@ -37,7 +37,11 @@ public class InventoryListeners implements Listener {
 		if (event.getView().getTitle() == "§8AllCustomCrafts") {
 			event.setCancelled(true);
 			
-			if ((craft = km.crafts.findCraftInventoryByItem(item.getType())) != null) {
+			if ((craft = km.crafts.findCraftInventoryByName(item.getItemMeta().getDisplayName())) != null) {
+				if ((inv = craft.getInventoryRecipe()) != null) {
+					player.openInventory(inv);
+				}
+			} else if ((craft = km.crafts.findCraftInventoryByItem(item)) != null) {
 				if ((inv = craft.getInventoryRecipe()) != null) {
 					player.openInventory(inv);
 				}

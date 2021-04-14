@@ -440,6 +440,10 @@ public class Config {
 	}
 
 	public boolean setMaxAge(int _maxAges) {
+		if (_maxAges > km.ageNames.size()) {
+			return false;
+		}
+		
 		maxAges = _maxAges;
 
 		ret = new ArrayList<String>();
