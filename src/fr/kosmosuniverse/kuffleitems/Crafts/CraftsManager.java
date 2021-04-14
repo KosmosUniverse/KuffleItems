@@ -41,6 +41,11 @@ public class CraftsManager {
 		recipes.add(new Bell(_km));
 		recipes.add(new EndTeleporter(_km));
 		recipes.add(new OverworldTeleporter(_km));
+		
+		recipes.add(new Saddle(_km));
+		recipes.add(new IronHorseArmor(_km));
+		recipes.add(new GoldHorseArmor(_km));
+		recipes.add(new DiamondHorseArmor(_km));
 	}
 	
 	public ArrayList<ACrafts> getRecipeList() {

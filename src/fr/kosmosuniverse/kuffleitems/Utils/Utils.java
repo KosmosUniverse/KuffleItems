@@ -1,6 +1,8 @@
 package fr.kosmosuniverse.kuffleitems.Utils;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,10 +17,12 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import fr.kosmosuniverse.kuffleitems.KuffleMain;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
 import fr.kosmosuniverse.kuffleitems.Core.Level;
 
@@ -35,44 +39,90 @@ public class Utils {
         return sb.toString();
 	}
 	
-	public static ArrayList<String> getAges(String itemContent, String rewardContent) {
-		ArrayList<String> itemAge = new ArrayList<String>();
-		ArrayList<String> rewardAge = new ArrayList<String>();
+	public static boolean fileExists(String path, String fileName) {
+		File tmp = null;
+		
+		if (path.contains("\\")) {
+			tmp = new File(path + "\\" + fileName);
+		} else {
+			tmp = new File(path + "/" + fileName);
+		}
+		
+		return tmp.exists();
+	}
+	
+	public static void loadGame(KuffleMain _km, Player player) {
+		FileReader reader = null;
+		JSONParser parser = new JSONParser();
+		Game tmpGame = new Game(_km, player);
+		
+		tmpGame.setup();
+		
+		try {
+			if (_km.getDataFolder().getPath().contains("\\")) {
+				reader = new FileReader(_km.getDataFolder().getPath() + "\\" + player.getName() + ".ki");
+			} else {
+				reader = new FileReader(_km.getDataFolder().getPath() + "/" + player.getName() + ".ki");
+			}
+			
+			JSONObject mainObject = (JSONObject) parser.parse(reader);
+			
+			tmpGame.setAge(Integer.parseInt(((Long) mainObject.get("age")).toString()));
+			tmpGame.setCurrentItem((String) mainObject.get("current"));
+			tmpGame.setTimeShuffle(System.currentTimeMillis() - (Long) mainObject.get("interval"));
+			tmpGame.setTime(Integer.parseInt(((Long) mainObject.get("time")).toString()));
+			tmpGame.setItemCount(Integer.parseInt(((Long) mainObject.get("itemCount")).toString()));
+			//tmpGame.setSameIdx(Integer.parseInt(mainObject.get("sameIdx").toString()));
+			tmpGame.setTeamName((String) mainObject.get("teamName"));
+			tmpGame.setAlreadyGot((JSONArray) mainObject.get("alreadyGot"));
+			tmpGame.setSpawnLoc((JSONObject) mainObject.get("spawn"));
+			tmpGame.setDeathLoc((JSONObject) mainObject.get("death"));
+
+			
+			_km.games.put(player.getName(), tmpGame);
+		} catch (ParseException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		return ;
+	}
+	
+	public static ArrayList<String> getAges(String itemContent) {
+		HashMap<Integer, String> itemAge = new HashMap<Integer, String>();
+		ArrayList<String> finalList = new ArrayList<String>();
 		JSONObject tmpObj = new JSONObject();
 		JSONParser parser = new JSONParser();
 		
 		try {
 			tmpObj = (JSONObject) parser.parse(itemContent);
+			tmpObj = (JSONObject) tmpObj.get("Order");
 			
 			for (Object key : tmpObj.keySet()) {
-				itemAge.add((String) key);
+				itemAge.put(Integer.parseInt(key.toString()), (String) tmpObj.get(key));
 			}
-			
-			tmpObj = (JSONObject) parser.parse(rewardContent);
-			
-			for (Object key : tmpObj.keySet()) {
-				rewardAge.add((String) key);
-			}
-			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		
-		if (itemAge.size() != rewardAge.size() || checkAges(itemAge, rewardAge)) {
-			return null;
+		int max = getMaxValue(itemAge);
+		
+		for (int i = 1; i <= max; i++) {
+			finalList.add(itemAge.get(i));
 		}
 		
-		return itemAge;
+		return finalList;
 	}
 	
-	private static boolean checkAges(ArrayList<String> itemAge, ArrayList<String> rewardAge) {
-		for (int cnt = 0; cnt < itemAge.size(); cnt++) {
-			if (!itemAge.get(cnt).equals(rewardAge.get(cnt))) {
-				return false;
+	private static int getMaxValue(HashMap<Integer, String> itemAge) {
+		int max = 0;
+		
+		for (int age : itemAge.keySet()) {
+			if (age > max) {
+				max = age;
 			}
 		}
 		
-		return true;
+		return max;
 	}
 	
 	public static ItemStack getHead(Player player) {

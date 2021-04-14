@@ -1,4 +1,14 @@
 {
+	"Order": {
+		"1": "Archaic_Age",
+		"2": "Classic_Age",
+		"3": "Mineric_Age",
+		"4": "Netheric_Age",
+		"5": "Heroic_Age",
+		"6": "Mythic_Age",
+		"7": "Oceanic_Age"
+	},
+
 	"Archaic_Age" : {
 		"rock" : [
 			"andesite",

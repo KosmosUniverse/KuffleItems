@@ -32,11 +32,14 @@ import fr.kosmosuniverse.kuffleitems.Core.GameLoop;
 public class KuffleMain extends JavaPlugin {
 	public HashMap<String, HashMap<String, RewardElem>> allRewards;
 	public HashMap<String, HashMap<String, String>> allLangs;
+	
 	public HashMap<String, ArrayList<String>> allItems = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<Inventory>> itemsInvs;
+	
 	public HashMap<String, PotionEffectType> effects;
 	public HashMap<String, Game> games = new HashMap<String, Game>();
 	public HashMap<String, Integer> playerRank = new HashMap<String, Integer>();
+	
 	public ArrayList<String> langs;
 	public ArrayList<String> ageNames;
 	public GameLoop loop;
@@ -46,7 +49,8 @@ public class KuffleMain extends JavaPlugin {
 	public CraftsManager crafts;
 	public Scores scores;
 	public Inventory playersHeads;
-	public boolean paused;
+	
+	public boolean paused = false;
 	public boolean loaded = false;
 	
 	public boolean gameStarted = false;
@@ -58,26 +62,23 @@ public class KuffleMain extends JavaPlugin {
 		
 		try {
 			InputStream in = getResource("items_" + Utils.getVersion() + ".json");
-			String checkItemAges = Utils.readFileContent(in);
+			String checkAges = Utils.readFileContent(in);
 			in.close();
 			
-			in = getResource("rewards_" + Utils.getVersion() + ".json");
-			String checkRewardAges = Utils.readFileContent(in);
-			in.close();
-			
-			if ((ageNames = Utils.getAges(checkItemAges, checkRewardAges)) == null) {
+			if ((ageNames = Utils.getAges(checkAges)) == null) {
 				this.getPluginLoader().disablePlugin(this);
+				return ;
 			}
 			
 			in = getResource("items_" + Utils.getVersion() + ".json");
 			String result = Utils.readFileContent(in);
-			allItems = ItemManager.getAllItems(result, this.getDataFolder());
+			allItems = ItemManager.getAllItems(ageNames, result, this.getDataFolder());
 			
 			in.close();
 			
 			in = getResource("rewards_" + Utils.getVersion() + ".json");
 			result = Utils.readFileContent(in);
-			allRewards = RewardManager.getAllRewards(result, this.getDataFolder());
+			allRewards = RewardManager.getAllRewards(ageNames, result, this.getDataFolder());
 			
 			in.close();
 			
@@ -116,8 +117,12 @@ public class KuffleMain extends JavaPlugin {
 		System.out.println("[KuffleItems] Add Plugin Commands.");
 		getCommand("ki-config").setExecutor(new KuffleConfig(this));
 		getCommand("ki-list").setExecutor(new KuffleList(this));
+		getCommand("ki-adminsave").setExecutor(new KuffleAdminSave(this, this.getDataFolder()));
+		getCommand("ki-adminload").setExecutor(new KuffleAdminLoad(this, this.getDataFolder()));
 		getCommand("ki-start").setExecutor(new KuffleStart(this));
 		getCommand("ki-stop").setExecutor(new KuffleStop(this));
+		getCommand("ki-pause").setExecutor(new KufflePause(this));
+		getCommand("ki-resume").setExecutor(new KuffleResume(this));
 		getCommand("ki-ageitems").setExecutor(new KuffleAgeItems(this));
 		getCommand("ki-back").setExecutor(new KuffleBack(this));
 		getCommand("ki-crafts").setExecutor(new KuffleCrafts(this));
@@ -149,8 +154,8 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab(this));
 		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
 		
-		System.out.println("[KuffleItems] : Plugin turned ON.");
 		loaded = true;
+		System.out.println("[KuffleItems] : Plugin turned ON.");
 	}
 	
 	@Override
@@ -167,13 +172,36 @@ public class KuffleMain extends JavaPlugin {
 	}
 	
 	private void killAll() {
+		for (String key : allRewards.keySet()) {
+			allRewards.get(key).clear();
+		}
+		
 		allRewards.clear();
+		
+		for (String key : allItems.keySet()) {
+			allItems.get(key).clear();
+		}
+		
 		allItems.clear();
+
+		for (String key : allLangs.keySet()) {
+			allLangs.get(key).clear();
+		}
+		
 		allLangs.clear();
+		
+		for (String key : itemsInvs.keySet()) {
+			itemsInvs.get(key).clear();
+		}
+		
 		itemsInvs.clear();
+		
+		
 		effects.clear();
 		playerRank.clear();
+		games.clear();
 		langs.clear();
+		ageNames.clear();
 	}
 	
 	public void updatePlayersHead(String player, String currentItem) {

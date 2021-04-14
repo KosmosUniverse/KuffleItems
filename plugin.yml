@@ -13,6 +13,14 @@ commands:
       usage: /<command> [reset | remove <Player name> | add <@a | Player name>]
       description: command to add/remove players to the list and view/reset the list
       permission: inferno.flagrate
+   ki-adminsave:
+      usage: /<command>
+      description: command to save and end the game of all players
+      permission: inferno.flagrate
+   ki-adminload:
+      usage: /<command>
+      description: command to load and start the game of all registered players
+      permission: inferno.flagrate
    ki-start:
       usage: /<command>
       description: command to start the game
@@ -20,6 +28,14 @@ commands:
    ki-stop:
       usage: /<command>
       description: command to stop the game when it is running
+      permission: inferno.flagrate
+   ki-pause:
+      usage: /<command>
+      description: command to pause the game when it is running
+      permission: inferno.flagrate
+   ki-resume:
+      usage: /<command>
+      description: command to resume the game when it is paused
       permission: inferno.flagrate
    ki-validate:
       usage: /<command> <Player name>
@@ -83,11 +99,23 @@ permissions:
    ki-list:
       description: command to add players to the list and view the list
       default: op
+   ki-adminsave:
+      description: command to save and end the game of all players
+      default: op
+   ki-adminload:
+      description: command to load and start the game of all registered players
+      default: op
    ki-start:
       description: command to start the game
       default: op
    ki-stop:
       description: command to stop the game when it is running
+      default: op
+   ki-pause:
+      description: command to pause the game when it is runnin
+      default: op
+   ki-resume:
+      description: command to resume the game when it is paused
       default: op
    ki-validate:
       description: command to validate a block

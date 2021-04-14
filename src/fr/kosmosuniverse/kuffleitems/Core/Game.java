@@ -37,9 +37,11 @@ public class Game {
 	private int gameRank = 0;
 	
 	private long timeShuffle = -1;
-	private long deathTime = 0;
+	private long deathTime = -1;
 	private long minTime;
 	private long maxTime;
+	private long interval = -1;
+	private long deathInterval = -1;
 	
 	private String currentItem;
 	private String itemDisplay;
@@ -124,15 +126,34 @@ public class Game {
 	
 	public void load() {
 		updateBar();
+		reloadEffects();
 		player.setPlayerListName(Utils.getColor(age) + player.getName());
 		itemScore.setScore(itemCount);
+	}
+	
+	public void pause() {
+		interval = System.currentTimeMillis() - timeShuffle;
+		
+		if (deathTime != -1) {
+			deathInterval = System.currentTimeMillis() - deathTime;
+		}
+	}
+	
+	public void resume() {
+		timeShuffle = System.currentTimeMillis() - interval;
+		interval = -1;
+		
+		if (deathInterval != -1) {
+			deathTime = System.currentTimeMillis() - deathInterval;
+			deathInterval = -1;
+		}
 	}
 	
 	private void updateBar() {
 		double calc = ((double) itemCount) / km.config.getBlockPerAge();
 		calc = calc > 1.0 ? 1.0 : calc;
 		ageDisplay.setProgress(calc);
-		ageDisplay.setTitle(km.ageNames.get(age) + " Age: " + itemCount);
+		ageDisplay.setTitle(km.ageNames.get(age).split("_")[0] + " Age: " + itemCount);
 	}
 	
 	public void resetBar() {
@@ -172,7 +193,7 @@ public class Game {
 		ageDisplay.setColor(getRandomColor());
 	}
 	
-	public boolean skip() {
+	public boolean skip(boolean malus) {
 		if ((age + 1) < km.config.getSkipAge()) {
 			km.logs.writeMsg(player, "You can't skip block this age.");
 			
@@ -185,11 +206,15 @@ public class Game {
 			return false;
 		}
 		
-		itemCount--;
+		if (malus) {
+			itemCount--;
+			km.logs.writeMsg(player, "Block [" + currentItem + "] was skipped.");
+		}
+		
 		itemScore.setScore(itemCount);
 		updateBar();
-		km.logs.writeMsg(player, "Block [" + currentItem + "] was skipped.");
 		currentItem = null;
+		
 		return true;
 	}
 	
@@ -204,7 +229,7 @@ public class Game {
 			if (tmp < 0) 
 				return;
 
-			RewardManager.givePlayerRewardEffect(km.allRewards.get(km.ageNames.get(tmp) + "_Age"), km.effects, player, km.ageNames.get(tmp));
+			RewardManager.givePlayerRewardEffect(km.allRewards.get(km.ageNames.get(tmp)), km.effects, player, km.ageNames.get(tmp));
 		}
 	}
 	
@@ -223,6 +248,7 @@ public class Game {
 			player.sendMessage("You waited too much to return to your death spot, your stuff is now unreachable.");
 			deathInv.clear();
 			deathInv = null;
+			deathTime = -1;
 			return;
 		}
 		
@@ -240,6 +266,7 @@ public class Game {
 		deathInv.clear();
 		deathInv = null;
 		deathLoc = null;
+		deathTime = -1;
 	}
 	
 	public ArrayList<String> getAlreadyGot() {

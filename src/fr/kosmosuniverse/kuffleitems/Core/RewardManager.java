@@ -22,15 +22,12 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class RewardManager {
-	public static synchronized HashMap<String, HashMap<String, RewardElem>> getAllRewards(String rewardsContent, File dataFolder) {
+	public static synchronized HashMap<String, HashMap<String, RewardElem>> getAllRewards(ArrayList<String> ageNames, String rewardsContent, File dataFolder) {
 		HashMap<String, HashMap<String, RewardElem>> finalMap = new HashMap<String, HashMap<String, RewardElem>>();
 		
-		finalMap.put("Archaic_Age", getAgeRewards("Archaic_Age", rewardsContent, dataFolder));
-		finalMap.put("Classic_Age", getAgeRewards("Classic_Age", rewardsContent, dataFolder));
-		finalMap.put("Mineric_Age", getAgeRewards("Mineric_Age", rewardsContent, dataFolder));
-		finalMap.put("Netheric_Age", getAgeRewards("Netheric_Age", rewardsContent, dataFolder));
-		finalMap.put("Heroic_Age", getAgeRewards("Heroic_Age", rewardsContent, dataFolder));
-		finalMap.put("Mythic_Age", getAgeRewards("Mythic_Age", rewardsContent, dataFolder));
+		for (String age : ageNames) {
+			finalMap.put(age, getAgeRewards(age, rewardsContent, dataFolder));
+		}
 		
 		return finalMap;
 	}
@@ -114,26 +111,26 @@ public class RewardManager {
 		ItemStack container;
 		
 		switch (age) {
-		case "Archaic":
+		case "Archaic_Age":
 			container = new ItemStack(Material.RED_SHULKER_BOX);
 			break;
-		case "Classic":
+		case "Classic_Age":
 			container = new ItemStack(Material.ORANGE_SHULKER_BOX);
 			break;
-		case "Mineric":
+		case "Mineric_Age":
 			container = new ItemStack(Material.YELLOW_SHULKER_BOX);
 			break;
-		case "Netheric":
+		case "Netheric_Age":
 			container = new ItemStack(Material.LIME_SHULKER_BOX);
 			break;
-		case "Heroic":
+		case "Heroic_Age":
 			container = new ItemStack(Material.GREEN_SHULKER_BOX);
 			break;
-		case "Mythic":
+		case "Mythic_Age":
 			container = new ItemStack(Material.BLUE_SHULKER_BOX);
 			break;
 		default:
-			container = new ItemStack(Material.BLACK_SHULKER_BOX);
+			container = new ItemStack(Material.WHITE_SHULKER_BOX);
 			break;
 		}
 		
@@ -179,7 +176,7 @@ public class RewardManager {
 		container.setItemMeta(containerMeta);
 		
 		ItemMeta itM = container.getItemMeta();
-		itM.setDisplayName(age + "_Age");
+		itM.setDisplayName(age.replace("_", " "));
 		container.setItemMeta(itM);
 		
 		HashMap<Integer, ItemStack> ret = p.getInventory().addItem(container);

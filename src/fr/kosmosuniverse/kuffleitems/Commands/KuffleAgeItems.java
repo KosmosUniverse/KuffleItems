@@ -37,7 +37,7 @@ public class KuffleAgeItems implements CommandExecutor  {
 				return true;
 			}
 			
-			String age = km.ageNames.get(km.games.get(player.getName()).getAge()) + "_Age";
+			String age = km.ageNames.get(km.games.get(player.getName()).getAge());
 			ArrayList<Inventory> ageItems = km.itemsInvs.get(age);
 			
 			player.openInventory(ageItems.get(0));

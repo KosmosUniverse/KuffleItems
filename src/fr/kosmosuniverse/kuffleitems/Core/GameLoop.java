@@ -20,6 +20,10 @@ public class GameLoop {
 		runnable = new BukkitRunnable() {
 			@Override
 			public void run() {
+				if (km.paused) {
+					return ;
+				}
+				
 				int bestRank = getBestRank();
 				int worseRank = getWorseRank();
 				
@@ -102,7 +106,7 @@ public class GameLoop {
 	}
 	
 	private void newItem(Game tmpGame) {
-		tmpGame.setCurrentItem(ItemManager.newBlock(tmpGame.getAlreadyGot(), km.allItems.get(km.ageNames.get(tmpGame.getAge()) + "_Age")));		
+		tmpGame.setCurrentItem(ItemManager.newBlock(tmpGame.getAlreadyGot(), km.allItems.get(km.ageNames.get(tmpGame.getAge()))));		
 	}
 	
 	public void kill() {

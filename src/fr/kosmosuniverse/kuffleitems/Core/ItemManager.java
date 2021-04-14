@@ -20,15 +20,12 @@ import org.json.simple.parser.ParseException;
 import fr.kosmosuniverse.kuffleitems.Utils.Pair;
 
 public class ItemManager {
-	public static HashMap<String, ArrayList<String>> getAllItems(String itemsContent, File dataFolder) {
+	public static HashMap<String, ArrayList<String>> getAllItems(ArrayList<String> ageNames, String itemsContent, File dataFolder) {
 		HashMap<String, ArrayList<String>> finalMap = new HashMap<String, ArrayList<String>>();
 		
-		finalMap.put("Archaic_Age", getAgeBlocks("Archaic_Age", itemsContent, dataFolder));
-		finalMap.put("Classic_Age", getAgeBlocks("Classic_Age", itemsContent, dataFolder));
-		finalMap.put("Mineric_Age", getAgeBlocks("Mineric_Age", itemsContent, dataFolder));
-		finalMap.put("Netheric_Age", getAgeBlocks("Netheric_Age", itemsContent, dataFolder));
-		finalMap.put("Heroic_Age", getAgeBlocks("Heroic_Age", itemsContent, dataFolder));
-		finalMap.put("Mythic_Age", getAgeBlocks("Mythic_Age", itemsContent, dataFolder));
+		for (String age : ageNames) {
+			finalMap.put(age, getAgeBlocks(age, itemsContent, dataFolder));
+		}
 		
 		return finalMap;
 	}

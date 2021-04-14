@@ -50,6 +50,7 @@ public class KuffleStop implements CommandExecutor {
 		km.loop.kill();
 		
 		km.gameStarted = false;
+		km.paused = false;
 		km.logs.writeMsg(player, "Game Stopped.");
 		
 		return true;

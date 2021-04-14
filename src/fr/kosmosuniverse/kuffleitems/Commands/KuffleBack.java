@@ -24,6 +24,11 @@ public class KuffleBack implements CommandExecutor {
 		
 		km.logs.logMsg(player, "achieved command <ki-back>");
 		
+		if (km.paused) {
+			km.logs.writeMsg(player, "You cannot use this command when game is paused.");
+			return true;
+		}
+		
 		if (km.gameStarted) {
 			for (String playerName : km.games.keySet()) {
 				if (playerName.equals(player.getName())) {

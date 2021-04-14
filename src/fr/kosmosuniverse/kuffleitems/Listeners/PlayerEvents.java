@@ -1,29 +1,27 @@
 package fr.kosmosuniverse.kuffleitems.Listeners;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.Core.Game;
 import fr.kosmosuniverse.kuffleitems.Core.Level;
+import fr.kosmosuniverse.kuffleitems.Crafts.ACrafts;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
@@ -39,71 +37,43 @@ public class PlayerEvents implements Listener {
 	@EventHandler
 	public void onPlayerConnectEvent(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		JSONParser parser = new JSONParser();
 		Game tmpGame;
 
+		if (player.hasPlayedBefore()) {
+			for (ACrafts item : km.crafts.getRecipeList()) {
+				player.discoverRecipe(new NamespacedKey(km, item.getName()));
+			}
+		}
+		
 		if (!km.gameStarted) {
 			return;
 		}
 		
-		File tmp = null;
-		
-		if (dataFolder.getPath().contains("\\")) {
-			tmp = new File(dataFolder.getPath() + "\\" + player.getName() + ".ki");
-		} else {
-			tmp = new File(dataFolder.getPath() + "/" + player.getName() + ".ki");
-		}
-		
-		if (tmp.exists()) {
-			tmpGame = new Game(km, player);
-			tmpGame.setup();
+		if (Utils.fileExists(dataFolder.getPath(), player.getName() + ".ki")) {
+			Utils.loadGame(km, player);
 		} else {
 			return;
 		}
 		
-		FileReader reader = null;
-		
-		try {
-			if (dataFolder.getPath().contains("\\")) {
-				reader = new FileReader(dataFolder.getPath() + "\\" + player.getName() + ".ki");
-			} else {
-				reader = new FileReader(dataFolder.getPath() + "/" + player.getName() + ".ki");
-			}
-			
-			JSONObject mainObject = (JSONObject) parser.parse(reader);
-			
-			tmpGame.setAge(Integer.parseInt(((Long) mainObject.get("age")).toString()));
-			tmpGame.setCurrentItem((String) mainObject.get("current"));
-			tmpGame.setTimeShuffle(System.currentTimeMillis() - (Long) mainObject.get("interval"));
-			tmpGame.setTime(Integer.parseInt(((Long) mainObject.get("time")).toString()));
-			tmpGame.setItemCount(Integer.parseInt(((Long) mainObject.get("itemCount")).toString()));
-			//tmpGame.setSameIdx(Integer.parseInt(mainObject.get("sameIdx").toString()));
-			tmpGame.setTeamName((String) mainObject.get("teamName"));
-			tmpGame.setAlreadyGot((JSONArray) mainObject.get("alreadyGot"));
-			tmpGame.setSpawnLoc((JSONObject) mainObject.get("spawn"));
-			tmpGame.setDeathLoc((JSONObject) mainObject.get("death"));
+		tmpGame = km.games.get(player.getName());
 
-			Inventory newInv = Bukkit.createInventory(null, 54, "§8Players");
-			
-			for (ItemStack item : km.playersHeads) {
-				if (item != null) {
-					newInv.addItem(item);
-				}
+		Inventory newInv = Bukkit.createInventory(null, 54, "§8Players");
+		
+		for (ItemStack item : km.playersHeads) {
+			if (item != null) {
+				newInv.addItem(item);
 			}
-			
-			newInv.addItem(Utils.getHead(tmpGame.getPlayer()));
-			
-			km.playersHeads = newInv;
-			km.scores.setupPlayerScores(tmpGame);
-			tmpGame.load();
-			km.games.put(player.getName(), tmpGame);
-			
-			player.sendMessage("[KuffleItems] : Your game is reloaded !");
-			
-			return;
-		} catch (ParseException | IOException e) {
-			e.printStackTrace();
 		}
+		
+		newInv.addItem(Utils.getHead(tmpGame.getPlayer()));
+		
+		km.playersHeads = newInv;
+		km.scores.setupPlayerScores(tmpGame);
+		tmpGame.load();
+		
+		player.sendMessage("[KuffleItems] : Your game is reloaded !");
+		
+		return;
 	}
 	
 	@EventHandler
@@ -199,5 +169,13 @@ public class PlayerEvents implements Listener {
 				}
 			}
 		}, 20);
+	}
+	
+	@EventHandler
+	public void onPauseEvent(PlayerMoveEvent event) {
+		if (km.paused) {
+			event.setCancelled(true);
+			return ;
+		}
 	}
 }
