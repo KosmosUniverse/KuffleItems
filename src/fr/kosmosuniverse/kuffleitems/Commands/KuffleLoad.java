@@ -22,11 +22,11 @@ import fr.kosmosuniverse.kuffleitems.Core.ActionBar;
 import fr.kosmosuniverse.kuffleitems.Core.GameLoop;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
-public class KuffleAdminLoad implements CommandExecutor {
+public class KuffleLoad implements CommandExecutor {
 	private KuffleMain km;
 	private File dataFolder;
 	
-	public KuffleAdminLoad(KuffleMain _km, File _dataFolder) {
+	public KuffleLoad(KuffleMain _km, File _dataFolder) {
 		km = _km;
 		dataFolder = _dataFolder;
 	}
@@ -38,9 +38,9 @@ public class KuffleAdminLoad implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, " achieved command <ki-adminload>");
+		km.logs.logMsg(player, " achieved command <ki-load>");
 		
-		if (!player.hasPermission("ki-adminload")) {
+		if (!player.hasPermission("ki-load")) {
 			km.logs.writeMsg(player, "You are not allowed to do this command.");
 			return false;
 		}
@@ -55,14 +55,6 @@ public class KuffleAdminLoad implements CommandExecutor {
 			return false;
 		}
 		
-		List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-		
-		for (Player p : players) {
-			if (Utils.fileExists(dataFolder.getPath(), player.getName() + ".ki")) {
-				Utils.loadGame(km, p);
-			}
-		}
-		
 		int invCnt = 0;
 		
 		km.playersHeads = Bukkit.createInventory(null, 54, "§8Players");
@@ -72,6 +64,14 @@ public class KuffleAdminLoad implements CommandExecutor {
 			km.playerRank.put(playerName, 0);
 			
 			invCnt++;
+		}
+		
+		List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+		
+		for (Player p : players) {
+			if (Utils.fileExists(dataFolder.getPath(), player.getName() + ".ki")) {
+				Utils.loadGame(km, p);
+			}
 		}
 		
 		if (km.config.getSaturation()) {

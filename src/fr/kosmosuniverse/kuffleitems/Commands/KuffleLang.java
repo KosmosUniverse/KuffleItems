@@ -27,6 +27,11 @@ public class KuffleLang implements CommandExecutor {
 		
 		km.logs.logMsg(player, "achieved command <ki-lang>");
 		
+		if (!player.hasPermission("ki-lang")) {
+			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			return false;
+		}
+		
 		if (km.gameStarted) {
 			for (String playerName : km.games.keySet()) {
 				if (km.games.get(playerName).getPlayer().equals(player)) {

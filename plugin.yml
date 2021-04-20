@@ -13,11 +13,11 @@ commands:
       usage: /<command> [reset | remove <Player name> | add <@a | Player name>]
       description: command to add/remove players to the list and view/reset the list
       permission: inferno.flagrate
-   ki-adminsave:
+   ki-save:
       usage: /<command>
       description: command to save and end the game of all players
       permission: inferno.flagrate
-   ki-adminload:
+   ki-load:
       usage: /<command>
       description: command to load and start the game of all registered players
       permission: inferno.flagrate
@@ -37,9 +37,17 @@ commands:
       usage: /<command>
       description: command to resume the game when it is paused
       permission: inferno.flagrate
+   ki-adminskip:
+      usage: /<command>
+      description: command to skip a block for any player
+      permission: inferno.flagrate
    ki-validate:
       usage: /<command> <Player name>
       description: command to validate a block
+      permission: inferno.flagrate
+   ki-validate-age:
+      usage: /<command> <Player name>
+      description: command to validate an age
       permission: inferno.flagrate
    ki-team-create:
       usage: /<command> <TeamName> [TeamColor]
@@ -99,10 +107,10 @@ permissions:
    ki-list:
       description: command to add players to the list and view the list
       default: op
-   ki-adminsave:
+   ki-save:
       description: command to save and end the game of all players
       default: op
-   ki-adminload:
+   ki-load:
       description: command to load and start the game of all registered players
       default: op
    ki-start:
@@ -119,6 +127,12 @@ permissions:
       default: op
    ki-validate:
       description: command to validate a block
+      default: op
+   ki-validate-age:
+      description: command to validate a block
+      default: op
+   ki-adminskip:
+      description: command to skip a block for any player
       default: op
    ki-team-create:
       description: command to create Team
@@ -144,6 +158,9 @@ permissions:
    ki-team-color:
       description: command to change team color
       default: op
+   ki-back:
+      description: command to teleport back to death position
+      default: true
    ki-skip:
       description: command to skip a block
       default: true

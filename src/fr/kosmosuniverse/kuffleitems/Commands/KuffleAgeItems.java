@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleAgeItems implements CommandExecutor  {
 	private KuffleMain km;
@@ -37,7 +38,7 @@ public class KuffleAgeItems implements CommandExecutor  {
 				return true;
 			}
 			
-			String age = km.ageNames.get(km.games.get(player.getName()).getAge());
+			String age = Utils.getAgeByNumber(km.ages, km.games.get(player.getName()).getAge()).name;
 			ArrayList<Inventory> ageItems = km.itemsInvs.get(age);
 			
 			player.openInventory(ageItems.get(0));

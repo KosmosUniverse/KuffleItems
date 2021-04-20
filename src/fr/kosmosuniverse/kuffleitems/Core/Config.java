@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import fr.kosmosuniverse.kuffleitems.Core.Level;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class Config {
@@ -115,7 +116,7 @@ public class Config {
 
 		ret = new ArrayList<String>();
 
-		for (int i = 1; i < 7; i++) {
+		for (int i = 1; i <= Utils.getAgeMaxNumber(km.ages) + 1; i++) {
 			ret.add("" + i);
 		}
 
@@ -123,10 +124,10 @@ public class Config {
 
 		ret = new ArrayList<String>();
 
-		for (int i = 1; i < km.ageNames.size(); i++) {
+		for (int i = 1; i < 7; i++) {
 			ret.add("" + i);
 		}
-
+		
 		intRet.put("START_DURATION", ret);
 
 		ret = new ArrayList<String>();
@@ -180,9 +181,9 @@ public class Config {
 			configFile.set("game_settings.time_added", 2);
 		}
 
-		if (!configFile.contains("game_settings.max_age") || configFile.getInt("game_settings.max_age") < 1 || configFile.getInt("game_settings.max_age") > km.ageNames.size()) {
+		if (!configFile.contains("game_settings.max_age") || configFile.getInt("game_settings.max_age") < 1 || configFile.getInt("game_settings.max_age") > (Utils.getAgeMaxNumber(km.ages) + 1)) {
 			System.out.println("Config for max age is not correct, use of default value.");
-			configFile.set("game_settings.max_age", km.ageNames.size());
+			configFile.set("game_settings.max_age", Utils.getAgeMaxNumber(km.ages) + 1);
 		}
 
 		if (!configFile.contains("game_settings.lang")
@@ -440,7 +441,7 @@ public class Config {
 	}
 
 	public boolean setMaxAge(int _maxAges) {
-		if (_maxAges > km.ageNames.size()) {
+		if (_maxAges > (Utils.getAgeMaxNumber(km.ages) + 1)) {
 			return false;
 		}
 		
@@ -452,7 +453,7 @@ public class Config {
 			ret.add("" + i);
 		}
 
-		intRet.put("FIRST_AGE_SKIP", ret);
+		intRet.put("NB_AGE", ret);
 		return true;
 	}
 

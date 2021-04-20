@@ -1,5 +1,5 @@
 {
-	"Order": {
+	"Order" : {
 		"1": "Archaic_Age",
 		"2": "Classic_Age",
 		"3": "Mineric_Age",
@@ -8,7 +8,7 @@
 		"6": "Mythic_Age",
 		"7": "Oceanic_Age"
 	},
-	
+
 	"Archaic_Age" : {
 		"rock" : [
 			"andesite",
@@ -267,7 +267,6 @@
 			"beetroot_seeds",
 			"beetroots",
 			"brown_mushroom",
-			"brown_mushroom_block",
 			"cactus",
 			"carrots",
 			"carved_pumpkin",
@@ -281,12 +280,10 @@
 			"melon",
 			"melon_seeds",
 			"melon_slice",
-			"mushroom_stem",
 			"potatoes",
 			"pumpkin",
 			"pumpkin_seeds",
 			"red_mushroom",
-			"red_mushroom_block",
 			"seagrass",
 			"tall_grass",
 			"tall_seagrass",
@@ -1013,7 +1010,6 @@
 			"magenta_concrete_powder",
 			"magenta_dye",
 			"magenta_glazed_terracotta",
-			"magenta_shulker_box",
 			"magenta_stained_glass",
 			"magenta_stained_glass_pane",
 			"magenta_terracotta",

@@ -23,6 +23,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
+import fr.kosmosuniverse.kuffleitems.Core.Age;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
 import fr.kosmosuniverse.kuffleitems.Core.Level;
 
@@ -87,39 +88,56 @@ public class Utils {
 		return ;
 	}
 	
-	public static ArrayList<String> getAges(String itemContent) {
-		HashMap<Integer, String> itemAge = new HashMap<Integer, String>();
-		ArrayList<String> finalList = new ArrayList<String>();
-		JSONObject tmpObj = new JSONObject();
+	public static ArrayList<Age> getAges(String ageContent) {
+		ArrayList<Age> finalList = new ArrayList<Age>();
+		
+		JSONObject jsonObj = new JSONObject();
 		JSONParser parser = new JSONParser();
 		
 		try {
-			tmpObj = (JSONObject) parser.parse(itemContent);
-			tmpObj = (JSONObject) tmpObj.get("Order");
+			jsonObj = (JSONObject) parser.parse(ageContent);
 			
-			for (Object key : tmpObj.keySet()) {
-				itemAge.put(Integer.parseInt(key.toString()), (String) tmpObj.get(key));
+			for (Object key : jsonObj.keySet()) {
+				JSONObject ageObj = (JSONObject) jsonObj.get(key);
+				
+				finalList.add(new Age((String) key,
+						(Integer) Integer.parseInt(ageObj.get("Number").toString()),
+						(String) ageObj.get("TextColor"),
+						((String) ageObj.get("BoxColor") + "_SHULKER_BOX")));
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}
-		
-		int max = getMaxValue(itemAge);
-		
-		for (int i = 1; i <= max; i++) {
-			finalList.add(itemAge.get(i));
+			return null;
 		}
 		
 		return finalList;
 	}
 	
-	private static int getMaxValue(HashMap<Integer, String> itemAge) {
+	public static Age getAgeByNumber(ArrayList<Age> ages, int ageNumber) {
+		for (Age age : ages) {
+			if (age.number == ageNumber) {
+				return age;
+			}
+		}
+		
+		return getDefaultAge(ages);
+	}
+	
+	public static Age getDefaultAge(ArrayList<Age> ages) {
+		for (Age age : ages) {
+			if (age.number == -1) {
+				return age;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static int getAgeMaxNumber(ArrayList<Age> ages) {
 		int max = 0;
 		
-		for (int age : itemAge.keySet()) {
-			if (age > max) {
-				max = age;
-			}
+		for (Age age : ages) {
+			max = max < age.number ? age.number : max;
 		}
 		
 		return max;
@@ -135,25 +153,6 @@ public class Utils {
         
         return item;
     }
-	
-	public static ChatColor getColor(int age) {
-		switch (age) {
-		case 0:
-			return (ChatColor.RED);
-		case 1:
-			return (ChatColor.GOLD);
-		case 2:
-			return (ChatColor.YELLOW);
-		case 3:
-			return (ChatColor.GREEN);
-		case 4:
-			return (ChatColor.DARK_GREEN);
-		case 5:
-			return (ChatColor.DARK_BLUE);
-		default:
-			return (ChatColor.DARK_PURPLE);
-		}
-	}
 	
 	public static String getVersion() {
 		String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
@@ -229,25 +228,5 @@ public class Utils {
 		
 		return null;
 	}
-	
-	/*public static ArrayList<Location> getAllPlayerLocation(ArrayList<GameTask> games) {
-		ArrayList<Location> locs = new ArrayList<Location>();
-		
-		for (GameTask gt : games) {
-			locs.add(gt.getSpawnLoc());
-		}
-		
-		return locs;
-	}*/
-	
-	/*public static Player getPlayerInList(ArrayList<GameTask> games, String name) {
-		for (GameTask gt : games) {
-			if (gt.getPlayer().getDisplayName().equals(name)) {
-				return gt.getPlayer();
-			}
-		}
-		
-		return null;
-	}*/
 }
  

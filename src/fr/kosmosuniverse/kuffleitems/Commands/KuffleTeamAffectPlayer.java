@@ -44,12 +44,12 @@ public class KuffleTeamAffectPlayer implements CommandExecutor {
 		}
 		
 		if (km.teams.getTeam(args[0]).players.size() == km.config.getTeamSize()) {
-			km.logs.writeMsg(player, "This team is already full, please add him in another team or change team size with kconfig command.");
+			km.logs.writeMsg(player, "This team is already full, please add him in another team or change team size with ki-config command.");
 			return true;
 		}
 		
 		if (!Utils.getPlayerNames(km.games).contains(args[1])) {
-			km.logs.writeMsg(player, "This player is not in the game, please add him in the game list with klist command.");
+			km.logs.writeMsg(player, "This player is not in the game, please add him in the game list with ki-list command.");
 			return true;
 		}
 		

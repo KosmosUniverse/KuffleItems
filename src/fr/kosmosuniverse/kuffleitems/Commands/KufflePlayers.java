@@ -22,9 +22,9 @@ public class KufflePlayers implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <kplayers>");
+		km.logs.logMsg(player, "achieved command <ki-players>");
 		
-		if (!player.hasPermission("kplayers")) {
+		if (!player.hasPermission("ki-players")) {
 			km.logs.writeMsg(player, "You are not allowed to do this command.");
 			
 			return false;

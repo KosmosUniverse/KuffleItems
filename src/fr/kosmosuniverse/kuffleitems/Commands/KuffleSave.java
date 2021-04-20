@@ -11,11 +11,11 @@ import org.bukkit.entity.Player;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
-public class KuffleAdminSave implements CommandExecutor {
+public class KuffleSave implements CommandExecutor {
 	private KuffleMain km;
 	private File dataFolder;
 	
-	public KuffleAdminSave(KuffleMain _km, File _dataFolder) {
+	public KuffleSave(KuffleMain _km, File _dataFolder) {
 		km = _km;
 		dataFolder = _dataFolder;
 	}
@@ -27,9 +27,9 @@ public class KuffleAdminSave implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-adminsave>");
+		km.logs.logMsg(player, "achieved command <ki-save>");
 		
-		if (!player.hasPermission("ki-adminsave")) {
+		if (!player.hasPermission("ki-save")) {
 			km.logs.writeMsg(player, "You are not allowed to do this command.");
 			
 			return false;

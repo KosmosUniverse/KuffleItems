@@ -21,12 +21,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
+
 public class RewardManager {
-	public static synchronized HashMap<String, HashMap<String, RewardElem>> getAllRewards(ArrayList<String> ageNames, String rewardsContent, File dataFolder) {
+	public static synchronized HashMap<String, HashMap<String, RewardElem>> getAllRewards(ArrayList<Age> ages, String rewardsContent, File dataFolder) {
 		HashMap<String, HashMap<String, RewardElem>> finalMap = new HashMap<String, HashMap<String, RewardElem>>();
 		
-		for (String age : ageNames) {
-			finalMap.put(age, getAgeRewards(age, rewardsContent, dataFolder));
+		int max = Utils.getAgeMaxNumber(ages);
+		
+		for (int ageCnt = 0; ageCnt <= max; ageCnt++) {
+			finalMap.put(Utils.getAgeByNumber(ages, ageCnt).name, getAgeRewards(Utils.getAgeByNumber(ages, ageCnt).name, rewardsContent, dataFolder));
 		}
 		
 		return finalMap;
@@ -106,33 +110,10 @@ public class RewardManager {
 		}
 	}
 	
-	public static synchronized void givePlayerReward(HashMap<String, RewardElem> ageReward, HashMap<String, PotionEffectType> effects, Player p, String age) {
+	public static synchronized void givePlayerReward(HashMap<String, RewardElem> ageReward, HashMap<String, PotionEffectType> effects, Player p, ArrayList<Age> ages, int age) {
 		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-		ItemStack container;
 		
-		switch (age) {
-		case "Archaic_Age":
-			container = new ItemStack(Material.RED_SHULKER_BOX);
-			break;
-		case "Classic_Age":
-			container = new ItemStack(Material.ORANGE_SHULKER_BOX);
-			break;
-		case "Mineric_Age":
-			container = new ItemStack(Material.YELLOW_SHULKER_BOX);
-			break;
-		case "Netheric_Age":
-			container = new ItemStack(Material.LIME_SHULKER_BOX);
-			break;
-		case "Heroic_Age":
-			container = new ItemStack(Material.GREEN_SHULKER_BOX);
-			break;
-		case "Mythic_Age":
-			container = new ItemStack(Material.BLUE_SHULKER_BOX);
-			break;
-		default:
-			container = new ItemStack(Material.WHITE_SHULKER_BOX);
-			break;
-		}
+		ItemStack container = new ItemStack(Utils.getAgeByNumber(ages, age).box);
 		
 		BlockStateMeta containerMeta = (BlockStateMeta) container.getItemMeta();
 		ShulkerBox box = (ShulkerBox) containerMeta.getBlockState();
@@ -176,7 +157,7 @@ public class RewardManager {
 		container.setItemMeta(containerMeta);
 		
 		ItemMeta itM = container.getItemMeta();
-		itM.setDisplayName(age.replace("_", " "));
+		itM.setDisplayName(Utils.getAgeByNumber(ages, age).name.replace("_", " "));
 		container.setItemMeta(itM);
 		
 		HashMap<Integer, ItemStack> ret = p.getInventory().addItem(container);

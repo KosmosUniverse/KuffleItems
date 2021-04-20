@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,6 +23,7 @@ import fr.kosmosuniverse.kuffleitems.Crafts.ACrafts;
 import fr.kosmosuniverse.kuffleitems.Core.RewardElem;
 import fr.kosmosuniverse.kuffleitems.Core.RewardManager;
 import fr.kosmosuniverse.kuffleitems.Commands.*;
+import fr.kosmosuniverse.kuffleitems.Core.Age;
 import fr.kosmosuniverse.kuffleitems.Core.Config;
 import fr.kosmosuniverse.kuffleitems.Core.CraftsManager;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
@@ -41,7 +41,7 @@ public class KuffleMain extends JavaPlugin {
 	public HashMap<String, Integer> playerRank = new HashMap<String, Integer>();
 	
 	public ArrayList<String> langs;
-	public ArrayList<String> ageNames;
+	public ArrayList<Age> ages;
 	public GameLoop loop;
 	public Config config;
 	public Logs logs;
@@ -61,24 +61,24 @@ public class KuffleMain extends JavaPlugin {
 		reloadConfig();
 		
 		try {
-			InputStream in = getResource("items_" + Utils.getVersion() + ".json");
+			InputStream in = getResource("ages.json");
 			String checkAges = Utils.readFileContent(in);
 			in.close();
 			
-			if ((ageNames = Utils.getAges(checkAges)) == null) {
+			if ((ages = Utils.getAges(checkAges)) == null) {
 				this.getPluginLoader().disablePlugin(this);
 				return ;
 			}
 			
 			in = getResource("items_" + Utils.getVersion() + ".json");
 			String result = Utils.readFileContent(in);
-			allItems = ItemManager.getAllItems(ageNames, result, this.getDataFolder());
+			allItems = ItemManager.getAllItems(ages, result, this.getDataFolder());
 			
 			in.close();
 			
 			in = getResource("rewards_" + Utils.getVersion() + ".json");
 			result = Utils.readFileContent(in);
-			allRewards = RewardManager.getAllRewards(ageNames, result, this.getDataFolder());
+			allRewards = RewardManager.getAllRewards(ages, result, this.getDataFolder());
 			
 			in.close();
 			
@@ -104,21 +104,25 @@ public class KuffleMain extends JavaPlugin {
 		scores = new Scores(this);
 		logs = new Logs(this.getDataFolder());
 		
-		System.out.println("[KuffleItems] Add Custom Crafts.");
+		int cnt = 0;
+		
 		for (ACrafts item : crafts.getRecipeList()) {
 			getServer().addRecipe(item.getRecipe());
+			cnt++;
 		}
 		
-		System.out.println("[KuffleItems] Add Game Listeners.");
+		System.out.println("[KuffleItems] Add " + cnt + " Custom Crafts.");
+		
+
 		getServer().getPluginManager().registerEvents(new PlayerEvents(this, this.getDataFolder()), this);
 		getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
+		System.out.println("[KuffleItems] Add 3 Game Listeners.");
 		
-		System.out.println("[KuffleItems] Add Plugin Commands.");
 		getCommand("ki-config").setExecutor(new KuffleConfig(this));
 		getCommand("ki-list").setExecutor(new KuffleList(this));
-		getCommand("ki-adminsave").setExecutor(new KuffleAdminSave(this, this.getDataFolder()));
-		getCommand("ki-adminload").setExecutor(new KuffleAdminLoad(this, this.getDataFolder()));
+		getCommand("ki-save").setExecutor(new KuffleSave(this, this.getDataFolder()));
+		getCommand("ki-load").setExecutor(new KuffleLoad(this, this.getDataFolder()));
 		getCommand("ki-start").setExecutor(new KuffleStart(this));
 		getCommand("ki-stop").setExecutor(new KuffleStop(this));
 		getCommand("ki-pause").setExecutor(new KufflePause(this));
@@ -128,7 +132,9 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-crafts").setExecutor(new KuffleCrafts(this));
 		getCommand("ki-lang").setExecutor(new KuffleLang(this));
 		getCommand("ki-skip").setExecutor(new KuffleSkip(this));
+		getCommand("ki-adminskip").setExecutor(new KuffleSkip(this));
 		getCommand("ki-validate").setExecutor(new KuffleValidate(this));
+		getCommand("ki-validate-age").setExecutor(new KuffleValidate(this));
 		getCommand("ki-players").setExecutor(new KufflePlayers(this));
 		
 		getCommand("ki-team-create").setExecutor(new KuffleTeamCreate(this));
@@ -139,12 +145,13 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-remove-player").setExecutor(new KuffleTeamRemovePlayer(this));
 		getCommand("ki-team-reset-players").setExecutor(new KuffleTeamResetPlayers(this));
 		getCommand("ki-team-random-player").setExecutor(new KuffleTeamRandomPlayer(this));
-		
-		System.out.println("[KuffleItems] Add Plugin Tab Completer.");
+		System.out.println("[KuffleItems] Add 24 Plugin Commands.");
+
 		getCommand("ki-config").setTabCompleter(new KuffleConfigTab(this));
 		getCommand("ki-list").setTabCompleter(new KuffleListTab(this));
 		getCommand("ki-lang").setTabCompleter(new KuffleLangTab(this));
 		getCommand("ki-validate").setTabCompleter(new KuffleValidateTab(this));
+		getCommand("ki-validate-age").setTabCompleter(new KuffleValidateTab(this));
 		
 		getCommand("ki-team-create").setTabCompleter(new KuffleTeamCreateTab(this));
 		getCommand("ki-team-delete").setTabCompleter(new KuffleTeamDeleteTab(this));
@@ -153,23 +160,24 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-affect-player").setTabCompleter(new KuffleTeamAffectPlayerTab(this));
 		getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab(this));
 		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
+		System.out.println("[KuffleItems] Add 11 Plugin Tab Completer.");
 		
 		loaded = true;
 		
-		System.out.println("[KuffleItems] : Plugin turned ON.");
+		System.out.println("[KuffleItems] Plugin turned ON.");
 	}
 	
 	@Override
 	public void onDisable() {
 		if (loaded) {
-			if (gameStarted) {
+			/*if (gameStarted) {
 				Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "ki-stop");
-			}
+			}*/
 			
 			killAll();
 		}
 		
-		System.out.println("[KuffleItems] : Plugin turned OFF.");
+		System.out.println("[KuffleItems] Plugin turned OFF.");
 	}
 	
 	private void killAll() {
@@ -202,7 +210,7 @@ public class KuffleMain extends JavaPlugin {
 		playerRank.clear();
 		games.clear();
 		langs.clear();
-		ageNames.clear();
+		ages.clear();
 	}
 	
 	public void updatePlayersHead(String player, String currentItem) {

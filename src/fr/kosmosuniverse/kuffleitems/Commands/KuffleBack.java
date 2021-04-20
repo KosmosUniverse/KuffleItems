@@ -1,5 +1,7 @@
 package fr.kosmosuniverse.kuffleitems.Commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -10,9 +12,18 @@ import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class KuffleBack implements CommandExecutor {
 	private KuffleMain km;
+	private ArrayList<Material> exceptions;
 	
 	public KuffleBack(KuffleMain _km) {
 		km = _km;
+		
+		exceptions = new ArrayList<Material>();
+		
+		for (Material m : Material.values()) {
+			if (m.name().contains("SHULKER_BOX")) {
+				exceptions.add(m);
+			}
+		}
 	}
 	
 	@Override
@@ -23,6 +34,11 @@ public class KuffleBack implements CommandExecutor {
 		Player player = (Player) sender;
 		
 		km.logs.logMsg(player, "achieved command <ki-back>");
+		
+		if (!player.hasPermission("ki-back")) {
+			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			return false;
+		}
 		
 		if (km.paused) {
 			km.logs.writeMsg(player, "You cannot use this command when game is paused.");
@@ -40,6 +56,7 @@ public class KuffleBack implements CommandExecutor {
 							
 							if (loc.getWorld().getName().contains("the_end") && loc.getY() < 0) {
 								int tmp = loc.getWorld().getHighestBlockYAt(loc);
+								
 								if (tmp == -1) {
 									loc.setY(59);
 									
@@ -56,6 +73,23 @@ public class KuffleBack implements CommandExecutor {
 									loc.setY(61);
 								} else {
 									loc.setY(loc.getWorld().getHighestBlockYAt(loc) + 1);
+								}
+							} else {
+								Location wall;
+								
+								for (double x = -2; x <= 2; x++) {
+									for (double y = -2; y <= 2; y++) {
+										for (double z = -2; z <= 2; z++) {
+											wall = loc.clone();
+											wall.add(x, y, z);
+											
+											if (x <= 1 && x >= -1 && y <= 1 && y >= -1 && z <= 1 && z >= -1) {
+												replaceExeption(wall, Material.AIR);
+											} else {
+												replaceExeption(wall, Material.DIRT);
+											}
+										}
+									}
 								}
 							}
 							
@@ -85,5 +119,11 @@ public class KuffleBack implements CommandExecutor {
 	
 	private boolean compareLoc(Location player, Location spawn) {
 		return player.getBlockX() == spawn.getBlockX() && player.getBlockY() == spawn.getBlockY() && player.getBlockZ() == spawn.getBlockZ();
+	}
+	
+	private void replaceExeption(Location loc, Material m) {
+		if (!exceptions.contains(loc.getBlock().getType())) {
+			loc.getBlock().setType(m);
+		}
 	}
 }

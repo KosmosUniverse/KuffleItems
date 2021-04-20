@@ -33,7 +33,7 @@ public class KuffleTeamCreate implements CommandExecutor {
 		}
 		
 		if (!km.config.getTeam()) {
-			km.logs.writeMsg(player, "Please enable Teams with /kconfig command.");
+			km.logs.writeMsg(player, "Please enable Teams with ki-config command.");
 			return true;
 		}
 		

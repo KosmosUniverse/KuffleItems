@@ -37,7 +37,7 @@ public class KuffleResume implements CommandExecutor {
 		}
 		
 		if (!km.paused) {
-			km.logs.writeMsg(player, "Your game is already running, you can pause it with kpause command.");
+			km.logs.writeMsg(player, "Your game is already running, you can pause it with ki-pause command.");
 			return false;
 		}
 		

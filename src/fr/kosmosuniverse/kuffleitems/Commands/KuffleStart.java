@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -168,6 +169,7 @@ public class KuffleStart implements CommandExecutor {
 			public void run() {
 				for (String playerName : km.games.keySet()) {
 					ActionBar.sendRawTitle("{\"text\":\"GO!\",\"bold\":true,\"color\":\"dark_purple\"}", km.games.get(playerName).getPlayer());
+					km.games.get(playerName).getPlayer().getInventory().addItem(new ItemStack(Material.WHITE_SHULKER_BOX));
 				}
 				
 				km.loop = new GameLoop(km);

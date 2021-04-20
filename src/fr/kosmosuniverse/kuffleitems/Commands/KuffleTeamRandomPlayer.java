@@ -43,12 +43,12 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 		}
 		
 		if (calcMAxPlayers() < Utils.getPlayerList(km.games).size()) {
-			km.logs.writeMsg(player, "There are too many players for that number of team, please create more teams or change team size with kconfig command.");
+			km.logs.writeMsg(player, "There are too many players for that number of team, please create more teams or change team size with ki-config command.");
 			return true;
 		}
 		
 		if (!checkEmptyTeams()) {
-			km.logs.writeMsg(player, "There already are players in some teams, please reset all teams using '/kteam-reset-players <Team>' command.");
+			km.logs.writeMsg(player, "There already are players in some teams, please reset all teams using ki-team-reset-players command.");
 			return true;
 		}
 		
