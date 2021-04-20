@@ -213,11 +213,6 @@ public class Config {
 			configFile.set("game_settings.custom_crafts", true);
 		}
 
-		if (!configFile.contains("game_settings.see_block_count")) {
-			System.out.println("Config for enabling block count display is not correct, use of default value.");
-			configFile.set("game_settings.see_block_count", true);
-		}
-
 		if (!configFile.contains("game_settings.team.enable")) {
 			System.out.println("Config for enabling team is not correct, use of default value.");
 			configFile.set("game_settings.team.enable", false);

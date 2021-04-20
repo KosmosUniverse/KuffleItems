@@ -135,8 +135,6 @@
 		"dirt" : [
 			"clay",
 			"dirt",
-			"grass_block",
-			"grass_path",
 			"gravel"
 		],
 		"ore" : [
@@ -151,12 +149,6 @@
 			"egg",
 			"feather",
 			"ink_sac"
-		],
-		"plant" : [
-			"grass",
-			"sugar_cane",
-			"wheat",
-			"wheat_seeds"
 		],
 		"iron" : [
 			"iron_ore"
@@ -193,6 +185,11 @@
 		],
 		"redstone" : [
 			"stone_button"
+		],
+		"plant" : [
+			"sugar_cane",
+			"wheat",
+			"wheat_seeds"
 		],
 		"white" : [
 			"white_wool"
@@ -261,10 +258,10 @@
 			"carved_pumpkin",
 			"dead_bush",
 			"fern",
+			"grass",
 			"hay_block",
 			"jack_o_lantern",
 			"kelp",
-			"large_fern",
 			"lily_pad",
 			"melon",
 			"melon_seeds",
@@ -274,8 +271,6 @@
 			"pumpkin_seeds",
 			"red_mushroom",
 			"seagrass",
-			"tall_grass",
-			"tall_seagrass",
 			"vine"
 		],
 		"banner" : [
@@ -519,12 +514,6 @@
 			"bow",
 			"crossbow"
 		],
-		"armor" : [
-			"chainmail_boots",
-			"chainmail_leggings",
-			"chainmail_chestplate",
-			"chainmail_helmet"
-		],
 		"transport" : [
 			"chest_minecart",
 			"hopper_minecart",
@@ -597,18 +586,12 @@
 		]
 	},
 	"Netheric_Age" : {
-		"black" : [
-			"black_shulker_box"
-		],
 		"diversity" : [
 			"blaze_powder",
 			"blaze_rod",
 			"brewing_stand",
 			"fermented_spider_eye",
 			"fire_charge"
-		],
-		"blue" : [
-			"blue_shulker_box"
 		],
 		"quartz" : [
 			"chiseled_quartz_block",
@@ -663,6 +646,12 @@
 		]
 	},
 	"Heroic_Age" : {
+		"black" : [
+			"black_shulker_box"
+		],
+		"blue" : [
+			"blue_shulker_box"
+		],
 		"end" : [
 			"chorus_flower",
 			"chorus_fruit",

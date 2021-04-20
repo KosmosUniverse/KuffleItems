@@ -7,31 +7,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
-import fr.kosmosuniverse.kuffleitems.Crafts.ACrafts;
-import fr.kosmosuniverse.kuffleitems.Crafts.Bell;
-import fr.kosmosuniverse.kuffleitems.Crafts.Coal;
-import fr.kosmosuniverse.kuffleitems.Crafts.CoalOre;
-import fr.kosmosuniverse.kuffleitems.Crafts.Diamond;
-import fr.kosmosuniverse.kuffleitems.Crafts.DiamondHorseArmor;
-import fr.kosmosuniverse.kuffleitems.Crafts.DiamondOre;
-import fr.kosmosuniverse.kuffleitems.Crafts.Emerald;
-import fr.kosmosuniverse.kuffleitems.Crafts.EmeraldOre;
-import fr.kosmosuniverse.kuffleitems.Crafts.EndPortalFrame;
-import fr.kosmosuniverse.kuffleitems.Crafts.EndTeleporter;
-import fr.kosmosuniverse.kuffleitems.Crafts.GoldHorseArmor;
-import fr.kosmosuniverse.kuffleitems.Crafts.IronHorseArmor;
-import fr.kosmosuniverse.kuffleitems.Crafts.Lapis;
-import fr.kosmosuniverse.kuffleitems.Crafts.LapisOre;
-import fr.kosmosuniverse.kuffleitems.Crafts.MossyCobblestone;
-import fr.kosmosuniverse.kuffleitems.Crafts.MossyStoneBrick;
-import fr.kosmosuniverse.kuffleitems.Crafts.OverworldTeleporter;
-import fr.kosmosuniverse.kuffleitems.Crafts.Quartz;
-import fr.kosmosuniverse.kuffleitems.Crafts.QuartzOre;
-import fr.kosmosuniverse.kuffleitems.Crafts.RedNetherBrick;
-import fr.kosmosuniverse.kuffleitems.Crafts.RedSand;
-import fr.kosmosuniverse.kuffleitems.Crafts.Redstone;
-import fr.kosmosuniverse.kuffleitems.Crafts.RedstoneOre;
-import fr.kosmosuniverse.kuffleitems.Crafts.Saddle;
+import fr.kosmosuniverse.kuffleitems.Crafts.*;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class CraftsManager {
 	private ArrayList<ACrafts> recipes = new ArrayList<ACrafts>();
@@ -70,6 +47,13 @@ public class CraftsManager {
 		recipes.add(new IronHorseArmor(_km));
 		recipes.add(new GoldHorseArmor(_km));
 		recipes.add(new DiamondHorseArmor(_km));
+		
+		if ("1.16".equalsIgnoreCase(Utils.getVersion())) {
+			recipes.add(new ChainmailHelmet(_km));
+			recipes.add(new ChainmailChestplate(_km));
+			recipes.add(new ChainmailLeggings(_km));
+			recipes.add(new ChainmailBoots(_km));
+		}
 	}
 	
 	public ArrayList<ACrafts> getRecipeList() {

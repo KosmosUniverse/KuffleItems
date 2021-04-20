@@ -170,10 +170,6 @@ public class KuffleMain extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		if (loaded) {
-			/*if (gameStarted) {
-				Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "ki-stop");
-			}*/
-			
 			killAll();
 		}
 		
