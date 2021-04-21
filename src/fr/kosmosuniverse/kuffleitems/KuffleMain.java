@@ -62,16 +62,16 @@ public class KuffleMain extends JavaPlugin {
 		
 		try {
 			InputStream in = getResource("ages.json");
-			String checkAges = Utils.readFileContent(in);
+			String result = Utils.readFileContent(in);
 			in.close();
 			
-			if ((ages = Utils.getAges(checkAges)) == null) {
+			if ((ages = Utils.getAges(result)) == null) {
 				this.getPluginLoader().disablePlugin(this);
 				return ;
 			}
 			
 			in = getResource("items_" + Utils.getVersion() + ".json");
-			String result = Utils.readFileContent(in);
+			result = Utils.readFileContent(in);
 			allItems = ItemManager.getAllItems(ages, result, this.getDataFolder());
 			
 			in.close();

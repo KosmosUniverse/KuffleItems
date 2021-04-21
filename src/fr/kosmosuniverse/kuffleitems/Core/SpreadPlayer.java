@@ -92,10 +92,7 @@ public class SpreadPlayer {
         }
     	
     	if (teams != null) {
-    		System.out.println("Top !");
     		for (int cnt = 0; cnt < teams.size(); cnt++) {
-        		System.out.println("Team: <" + teams.get(cnt) + ">.");
-        		
     			 for (Player player : teams.get(cnt).players) {
     				 Location location = locations.get(cnt);
     	        		
