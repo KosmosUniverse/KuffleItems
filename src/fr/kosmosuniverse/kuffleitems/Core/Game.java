@@ -1,6 +1,9 @@
 package fr.kosmosuniverse.kuffleitems.Core;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -10,6 +13,8 @@ import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -104,11 +109,22 @@ public class Game {
 		
 		JSONObject global = new JSONObject();
 		
+		if (deathInv != null) {
+			try {
+				saveInventory();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		global.put("age", age);
 		global.put("maxAge", km.config.getMaxAges());
 		global.put("current", currentItem);
 		global.put("interval", System.currentTimeMillis() - timeShuffle);
 		global.put("time", time);
+		global.put("deathTime", deathTime);
+		global.put("minTime", minTime);
+		global.put("maxTime", maxTime);
 		global.put("itemCount", itemCount);
 		global.put("spawn", jsonSpawn);
 		global.put("death", jsonDeath);
@@ -125,6 +141,24 @@ public class Game {
 
 		return (global.toString());
 	}
+	
+	public void saveInventory() throws IOException {
+        File f = new File(km.getDataFolder().getPath(), player.getName() + ".yml");
+        FileConfiguration c = YamlConfiguration.loadConfiguration(f);
+        c.set("inventory.content", deathInv.getContents());
+        c.save(f);
+    }
+	
+	@SuppressWarnings("unchecked")
+	public void loadInventory() throws IOException {
+        File f = new File(km.getDataFolder().getPath(), player.getName() + ".yml");
+        FileConfiguration c = YamlConfiguration.loadConfiguration(f);
+        
+        deathInv = Bukkit.createInventory(null, 54);
+        
+        ItemStack[] content = ((List<ItemStack>) c.get("inventory.content")).toArray(new ItemStack[0]);
+        deathInv.setContents(content);
+    }
 	
 	public void load() {
 		updateBar();
@@ -446,6 +480,10 @@ public class Game {
 	
 	public void setItemScore(Score score) {
 		itemScore = score;
+	}
+	
+	public void setDeathInv(Inventory _deathInv) {
+		deathInv = _deathInv;
 	}
 
 	public void setSpawnLoc(Location _spawnLoc) {

@@ -52,6 +52,18 @@ public class Utils {
 		return tmp.exists();
 	}
 	
+	public static boolean fileDelete(String path, String fileName) {
+		File tmp = null;
+		
+		if (path.contains("\\")) {
+			tmp = new File(path + "\\" + fileName);
+		} else {
+			tmp = new File(path + "/" + fileName);
+		}
+		
+		return tmp.delete();
+	}
+	
 	public static void loadGame(KuffleMain _km, Player player) {
 		FileReader reader = null;
 		JSONParser parser = new JSONParser();
@@ -72,12 +84,18 @@ public class Utils {
 			tmpGame.setCurrentItem((String) mainObject.get("current"));
 			tmpGame.setTimeShuffle(System.currentTimeMillis() - (Long) mainObject.get("interval"));
 			tmpGame.setTime(Integer.parseInt(((Long) mainObject.get("time")).toString()));
+			tmpGame.setDeathTime((Long) mainObject.get("deathTime"), (Long) mainObject.get("minTime"), (Long) mainObject.get("maxTime"));
 			tmpGame.setItemCount(Integer.parseInt(((Long) mainObject.get("itemCount")).toString()));
 			//tmpGame.setSameIdx(Integer.parseInt(mainObject.get("sameIdx").toString()));
 			tmpGame.setTeamName((String) mainObject.get("teamName"));
 			tmpGame.setAlreadyGot((JSONArray) mainObject.get("alreadyGot"));
 			tmpGame.setSpawnLoc((JSONObject) mainObject.get("spawn"));
 			tmpGame.setDeathLoc((JSONObject) mainObject.get("death"));
+			
+			if (fileExists(_km.getDataFolder().getPath(), player.getName() + ".yml")) {
+				tmpGame.loadInventory();
+				fileDelete(_km.getDataFolder().getPath(), player.getName() + ".yml");
+			}
 
 			
 			_km.games.put(player.getName(), tmpGame);

@@ -45,8 +45,6 @@ public class KuffleSave implements CommandExecutor {
 		km.paused = true;
 		
 		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).stop();
-			
 			try {
 				if (dataFolder.getPath().contains("\\")) {
 					writer = new FileWriter(dataFolder.getPath() + "\\" + playerName + ".ki");
@@ -60,6 +58,8 @@ public class KuffleSave implements CommandExecutor {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			km.games.get(playerName).stop();
 		}
 		
 		if (km.config.getTeam()) {

@@ -71,7 +71,7 @@ public class PlayerEvents implements Listener {
 		km.scores.setupPlayerScores(tmpGame);
 		tmpGame.load();
 		
-		player.sendMessage("[KuffleItems] : Your game is reloaded !");
+		player.sendMessage("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
 		
 		return;
 	}
@@ -112,7 +112,7 @@ public class PlayerEvents implements Listener {
 			
 			tmpGame.stop();
 			
-			event.setQuitMessage("[KuffleItems] : Your game is saved !");
+			event.setQuitMessage("[KuffleItems] : <" + player.getName() + "> game is saved.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

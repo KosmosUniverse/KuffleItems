@@ -55,6 +55,14 @@ public class KuffleLoad implements CommandExecutor {
 			return false;
 		}
 		
+		List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+		
+		for (Player p : players) {
+			if (Utils.fileExists(dataFolder.getPath(), player.getName() + ".ki")) {
+				Utils.loadGame(km, p);
+			}
+		}
+		
 		int invCnt = 0;
 		
 		km.playersHeads = Bukkit.createInventory(null, 54, "§8Players");
@@ -64,14 +72,6 @@ public class KuffleLoad implements CommandExecutor {
 			km.playerRank.put(playerName, 0);
 			
 			invCnt++;
-		}
-		
-		List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-		
-		for (Player p : players) {
-			if (Utils.fileExists(dataFolder.getPath(), player.getName() + ".ki")) {
-				Utils.loadGame(km, p);
-			}
 		}
 		
 		if (km.config.getSaturation()) {
