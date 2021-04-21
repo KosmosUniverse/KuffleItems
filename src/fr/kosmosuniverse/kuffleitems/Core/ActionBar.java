@@ -23,10 +23,10 @@ public class ActionBar {
 			Object enumTitle = getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0].getField("TITLE").get(null);
 
 			Object chat = getNMSClass("IChatBaseComponent").getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, msg);
-			
+
 			Constructor<?> titleConstructor = getNMSClass("PacketPlayOutTitle").getConstructor(getNMSClass("PacketPlayOutTitle").getDeclaredClasses()[0], getNMSClass("IChatBaseComponent"));
 			Object packet = titleConstructor.newInstance(enumTitle, chat);
-			
+
 			sendPacket(player, packet);
 		} catch (NoSuchMethodException | SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException | InvocationTargetException | InstantiationException e) {
 			e.printStackTrace();

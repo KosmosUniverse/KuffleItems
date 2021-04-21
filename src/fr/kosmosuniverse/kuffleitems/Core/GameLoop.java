@@ -1,5 +1,7 @@
 package fr.kosmosuniverse.kuffleitems.Core;
 
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -59,6 +61,17 @@ public class GameLoop {
 							if (System.currentTimeMillis() - tmpGame.getTimeShuffle() > (tmpGame.getTime() * 60000)) {
 								tmpGame.getPlayer().sendMessage("§4You didn't find your block. Let's give you another one.§r");
 								newItem(tmpGame);
+							} else if (km.config.getDouble() && !tmpGame.getCurrentItem().contains("/")) {
+								String currentTmp = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name));
+								
+								tmpGame.addToAlreadyGot(currentTmp);
+								tmpGame.setCurrentItem(tmpGame.getCurrentItem() + "/" + currentTmp);
+							} else if (!km.config.getDouble() && tmpGame.getCurrentItem().contains("/")) {
+								Random r = new Random();
+								String[] array = tmpGame.getCurrentItem().split("/");
+								
+								tmpGame.setCurrentItem(array[r.nextInt(2)]);
+								tmpGame.removeFromList(array);
 							}
 						}
 						
@@ -84,7 +97,11 @@ public class GameLoop {
 		if (tmpGame.getCurrentItem() == null) {
 			dispCuritem = "Something New...";
 		} else {
-			dispCuritem = tmpGame.getItemDisplay();
+			if (tmpGame.getItemDisplay().contains("/")) {
+				dispCuritem = tmpGame.getItemDisplay().split("/")[0] + " or " + tmpGame.getItemDisplay().split("/")[1];
+			} else {
+				dispCuritem = tmpGame.getItemDisplay();	
+			}
 		}
 		
 		ChatColor color = null;
@@ -138,6 +155,14 @@ public class GameLoop {
 
 			tmpGame.setSameIdx(tmpPair.key);
 			tmpGame.setCurrentItem(tmpPair.value);
+		} else if (km.config.getDouble()) {
+			String currentItem = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name));
+			tmpGame.addToAlreadyGot(currentItem);
+			
+			String currentItem2 = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name));			
+			tmpGame.addToAlreadyGot(currentItem2);
+			
+			tmpGame.setCurrentItem(currentItem + "/" + currentItem2);
 		} else {
 			tmpGame.setCurrentItem(ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name)));			
 		}

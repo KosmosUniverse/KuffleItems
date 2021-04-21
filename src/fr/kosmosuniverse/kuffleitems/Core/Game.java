@@ -466,8 +466,20 @@ public class Game {
 	public void setCurrentItem(String _currentItem) {
 		currentItem = _currentItem;
 		
-		if (currentItem != null) {
-			alreadyGot.add(currentItem);
+		if (currentItem == null) {
+			return ;
+		}
+
+		if (km.config.getDouble()) {
+			timeShuffle = System.currentTimeMillis();
+			
+			itemDisplay = LangManager.findBlockDisplay(km.allLangs, currentItem.split("/")[0], configLang) + "/" + LangManager.findBlockDisplay(km.allLangs, currentItem.split("/")[1], configLang);
+			km.updatePlayersHead(player.getName(), itemDisplay);
+		} else {
+			if (!alreadyGot.contains(currentItem)) {
+				alreadyGot.add(currentItem);
+			}
+			
 			timeShuffle = System.currentTimeMillis();
 			itemDisplay = LangManager.findBlockDisplay(km.allLangs, currentItem, configLang);
 			km.updatePlayersHead(player.getName(), itemDisplay);
@@ -523,6 +535,14 @@ public class Game {
 					(double) _deathLoc.get("Y"),
 					(double) _deathLoc.get("Z"));	
 		}
+	}
+	
+	public void addToAlreadyGot(String item) {
+		alreadyGot.add(item);
+	}
+	
+	public void removeFromList(String[] array) {
+		alreadyGot.remove(currentItem.equals(array[0]) ? array[1] : array[0]);
 	}
 	
 	private BarColor getRandomColor() {

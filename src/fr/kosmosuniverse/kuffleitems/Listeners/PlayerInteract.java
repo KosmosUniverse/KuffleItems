@@ -69,8 +69,14 @@ public class PlayerInteract implements Listener {
 			
 			Game tmpGame = km.games.get(player.getName());
 			
-			if (tmpGame != null && tmpGame.getCurrentItem() != null && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {
-				tmpGame.found();
+			if (tmpGame != null && tmpGame.getCurrentItem() != null) {
+				if (!km.config.getDouble() && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {
+					tmpGame.found();	
+				} else if (km.config.getDouble() &&
+						(tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ||
+						tmpGame.getCurrentItem().split("/")[1].equals(item.getType().name().toLowerCase()))) {
+					tmpGame.found();
+				}
 			}
 		}
 	}
