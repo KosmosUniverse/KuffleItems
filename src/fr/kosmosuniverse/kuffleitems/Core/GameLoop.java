@@ -6,12 +6,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import fr.kosmosuniverse.kuffleitems.Core.ActionBar;
+import fr.kosmosuniverse.kuffleitems.Utils.Pair;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class GameLoop {
 	private KuffleMain km;
-	
 	private BukkitTask runnable;
 	
 	public GameLoop(KuffleMain _km) {
@@ -102,13 +102,10 @@ public class GameLoop {
 	}
 	
 	private boolean checkTeamMates(Game tmpGame) {
-		Team team = km.teams.getTeam(tmpGame.getTeamName());
-		
 		for (String playerName : km.games.keySet()) {
-			if (team.hasPlayer(km.games.get(playerName).getPlayer().getName())) {
-				if (km.games.get(playerName).getItemCount() < (km.config.getBlockPerAge() + 1) && km.games.get(playerName).getAge() <= tmpGame.getAge()) {
-					return false;
-				}
+			if (km.games.get(playerName).getTeamName().equals(tmpGame.getTeamName()) &&
+					km.games.get(playerName).getItemCount() < (km.config.getBlockPerAge() + 1) && km.games.get(playerName).getAge() <= tmpGame.getAge()) {
+				return false;
 			}
 		}
 		
@@ -136,7 +133,14 @@ public class GameLoop {
 	}
 	
 	private void newItem(Game tmpGame) {
-		tmpGame.setCurrentItem(ItemManager.newBlock(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name)));		
+		if (km.config.getSame()) {
+			Pair tmpPair = ItemManager.nextItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name), tmpGame.getSameIdx());					
+
+			tmpGame.setSameIdx(tmpPair.key);
+			tmpGame.setCurrentItem(tmpPair.value);
+		} else {
+			tmpGame.setCurrentItem(ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name)));			
+		}
 	}
 	
 	public void kill() {

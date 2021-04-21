@@ -79,8 +79,12 @@ public class ItemManager {
 		return finalList;
 	}
 
-	public static synchronized String newBlock(ArrayList<String> done, ArrayList<String> allAgeItems) {	
+	public static synchronized String newItem(ArrayList<String> done, ArrayList<String> allAgeItems) {	
 		ArrayList<String> finalList = new ArrayList<String>();
+		
+		if (allAgeItems == null) {
+			return null;
+		}
 		
 		if (done.size() == allAgeItems.size()) {
 			done.clear();
@@ -101,7 +105,7 @@ public class ItemManager {
 		return finalList.get(r.nextInt(finalList.size()));
 	}
 	
-	public static synchronized Pair nextBlock(ArrayList<String> done, ArrayList<String> allAgeBlocks, int sameIdx) {	
+	public static synchronized Pair nextItem(ArrayList<String> done, ArrayList<String> allAgeBlocks, int sameIdx) {	
 		String testBlock = allAgeBlocks.get(sameIdx);
 		
 		while (done.contains(testBlock)) {

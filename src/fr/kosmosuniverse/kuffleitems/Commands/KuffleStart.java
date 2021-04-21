@@ -10,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -79,7 +80,7 @@ public class KuffleStart implements CommandExecutor {
 			
 			for (String playerName : km.games.keySet()) {
 				if (km.config.getTeam()) {
-					km.games.get(playerName).setTeamName(km.teams.findTeamByPlayer(km.games.get(playerName).getPlayer().getDisplayName()));
+					km.games.get(playerName).setTeamName(km.teams.findTeamByPlayer(playerName));
 				}
 				
 				km.games.get(playerName).getPlayer().setBedSpawnLocation(km.games.get(playerName).getPlayer().getLocation(), true);
@@ -93,7 +94,7 @@ public class KuffleStart implements CommandExecutor {
 
 			for (String playerName : km.games.keySet()) {
 				if (km.config.getTeam()) {
-					km.games.get(playerName).setTeamName(km.teams.findTeamByPlayer(km.games.get(playerName).getPlayer().getDisplayName()));
+					km.games.get(playerName).setTeamName(km.teams.findTeamByPlayer(playerName));
 				}
 				
 				if (spawn == null) {
@@ -167,9 +168,11 @@ public class KuffleStart implements CommandExecutor {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
 			@Override
 			public void run() {
+				ItemStack box = getStartBox();
+				
 				for (String playerName : km.games.keySet()) {
 					ActionBar.sendRawTitle("{\"text\":\"GO!\",\"bold\":true,\"color\":\"dark_purple\"}", km.games.get(playerName).getPlayer());
-					km.games.get(playerName).getPlayer().getInventory().addItem(new ItemStack(Material.WHITE_SHULKER_BOX));
+					km.games.get(playerName).getPlayer().getInventory().addItem(box);
 				}
 				
 				km.loop = new GameLoop(km);
@@ -181,10 +184,20 @@ public class KuffleStart implements CommandExecutor {
 		
 		return true;
 	}
+	
+	private ItemStack getStartBox() {
+		ItemStack item = new ItemStack(Material.WHITE_SHULKER_BOX);
+		ItemMeta itM = item.getItemMeta();
+		
+		itM.setDisplayName("Start Box");
+		item.setItemMeta(itM);
+		
+		return item;
+	}
 
 	public boolean checkTeams() {
 		for (String playerName : km.games.keySet()) {
-			if (!km.teams.isInTeam(km.games.get(playerName).getPlayer().getDisplayName())) {
+			if (!km.teams.isInTeam(playerName)) {
 				return false;
 			}
 		}

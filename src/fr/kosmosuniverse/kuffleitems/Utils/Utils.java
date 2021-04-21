@@ -91,6 +91,7 @@ public class Utils {
 			tmpGame.setAlreadyGot((JSONArray) mainObject.get("alreadyGot"));
 			tmpGame.setSpawnLoc((JSONObject) mainObject.get("spawn"));
 			tmpGame.setDeathLoc((JSONObject) mainObject.get("death"));
+			tmpGame.setSameIdx(Integer.parseInt(((Long) mainObject.get("sameIdx")).toString()));
 			
 			if (fileExists(_km.getDataFolder().getPath(), player.getName() + ".yml")) {
 				tmpGame.loadInventory();

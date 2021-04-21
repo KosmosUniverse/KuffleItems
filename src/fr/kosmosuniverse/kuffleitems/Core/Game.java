@@ -41,6 +41,7 @@ public class Game {
 	private int itemCount = 1;
 	private int age = 0;
 	private int gameRank = 0;
+	private int sameIdx = 0;
 	
 	private long timeShuffle = -1;
 	private long deathTime = -1;
@@ -129,7 +130,7 @@ public class Game {
 		global.put("spawn", jsonSpawn);
 		global.put("death", jsonDeath);
 		global.put("teamName", teamName);
-		//global.put("sameIdx", sameIdx);
+		global.put("sameIdx", sameIdx);
 		
 		JSONArray got = new JSONArray();
 		
@@ -237,6 +238,9 @@ public class Game {
 		} else {
 			ageDisplay.setProgress(1.0f);	
 		}
+		
+		age = -1;
+		
 		
 		updatePlayerListName();
 		km.playerRank.put(player.getName(), gameRank);
@@ -366,6 +370,10 @@ public class Game {
 		return age;
 	}
 	
+	public int getSameIdx() {
+		return sameIdx;
+	}
+	
 	public long getTimeShuffle() {
 		return timeShuffle;
 	}
@@ -439,6 +447,10 @@ public class Game {
 		
 		age = _age;
 		alreadyGot.clear();
+	}
+	
+	public void setSameIdx(int _sameIdx) {
+		sameIdx = _sameIdx;
 	}
 	
 	public void setTimeShuffle(long _timeShuffle) {
