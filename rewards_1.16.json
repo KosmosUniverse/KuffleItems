@@ -13,7 +13,7 @@
 			"Effect" : ""
 		},
 		"potion" : {
-			"Amount" : 3,
+			"Amount" : 1,
 			"Enchant" : "",
 			"Level" : 0,
 			"Effect" : "speed"
@@ -77,7 +77,7 @@
 			"Effect" : ""
 		},
 		"potion" : {
-			"Amount" : 3,
+			"Amount" : 2,
 			"Enchant" : "",
 			"Level" : 0,
 			"Effect" : "fire_resistance"
@@ -135,7 +135,7 @@
 	},
 	"Heroic_Age" : {
 		"potion" : {
-			"Amount" : 3,
+			"Amount" : 2,
 			"Enchant" : "",
 			"Level" : 0,
 			"Effect" : "speed"
@@ -179,7 +179,7 @@
 			"Effect" : ""
 		},
 		"potion" : {
-			"Amount" : 3,
+			"Amount" : 2,
 			"Enchant" : "",
 			"Level" : 0,
 			"Effect" : "water_breathing"

@@ -21,16 +21,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import fr.kosmosuniverse.kuffleitems.Utils.Utils;
-
 public class RewardManager {
 	public static synchronized HashMap<String, HashMap<String, RewardElem>> getAllRewards(ArrayList<Age> ages, String rewardsContent, File dataFolder) {
 		HashMap<String, HashMap<String, RewardElem>> finalMap = new HashMap<String, HashMap<String, RewardElem>>();
 		
-		int max = Utils.getAgeMaxNumber(ages);
+		int max = AgeManager.getAgeMaxNumber(ages);
 		
 		for (int ageCnt = 0; ageCnt <= max; ageCnt++) {
-			finalMap.put(Utils.getAgeByNumber(ages, ageCnt).name, getAgeRewards(Utils.getAgeByNumber(ages, ageCnt).name, rewardsContent, dataFolder));
+			finalMap.put(AgeManager.getAgeByNumber(ages, ageCnt).name, getAgeRewards(AgeManager.getAgeByNumber(ages, ageCnt).name, rewardsContent, dataFolder));
 		}
 		
 		return finalMap;
@@ -81,39 +79,18 @@ public class RewardManager {
 		return ageRewards;
 	}
 	
-	public static HashMap<String, PotionEffectType> getAllEffects() {
-		HashMap<String, PotionEffectType> effectMap = new HashMap<String, PotionEffectType>();
-		
-		effectMap.put("absorption", PotionEffectType.ABSORPTION);
-		effectMap.put("damage_resistance", PotionEffectType.DAMAGE_RESISTANCE);
-		effectMap.put("dolphins_grace", PotionEffectType.DOLPHINS_GRACE);
-		effectMap.put("fast_digging", PotionEffectType.FAST_DIGGING);
-		effectMap.put("fire_resistance", PotionEffectType.FIRE_RESISTANCE);
-		effectMap.put("heal", PotionEffectType.HEAL);
-		effectMap.put("health_boost", PotionEffectType.HEALTH_BOOST);
-		effectMap.put("invisibility", PotionEffectType.INVISIBILITY);
-		effectMap.put("jump", PotionEffectType.JUMP);
-		effectMap.put("luck", PotionEffectType.LUCK);
-		effectMap.put("night_vision", PotionEffectType.NIGHT_VISION);
-		effectMap.put("regeneration", PotionEffectType.REGENERATION);
-		effectMap.put("speed", PotionEffectType.SPEED);
-		effectMap.put("water_breathing", PotionEffectType.WATER_BREATHING);
-		
-		return effectMap;
-	}
-	
-	public static synchronized void givePlayerRewardEffect(HashMap<String, RewardElem> ageReward, HashMap<String, PotionEffectType> effects, Player p, String age) {
+	public static synchronized void givePlayerRewardEffect(HashMap<String, RewardElem> ageReward, Player p, String age) {
 		for (String k : ageReward.keySet()) {
 			if (k.contains("potion")) {				
-				p.addPotionEffect(new PotionEffect(findEffect(effects, ageReward.get(k).getEffect()), 999999, 1));
+				p.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
 			}
 		}
 	}
 	
-	public static synchronized void givePlayerReward(HashMap<String, RewardElem> ageReward, HashMap<String, PotionEffectType> effects, Player p, ArrayList<Age> ages, int age) {
+	public static synchronized void givePlayerReward(HashMap<String, RewardElem> ageReward, Player p, ArrayList<Age> ages, int age) {
 		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 		
-		ItemStack container = new ItemStack(Utils.getAgeByNumber(ages, age).box);
+		ItemStack container = new ItemStack(AgeManager.getAgeByNumber(ages, age).box);
 		
 		BlockStateMeta containerMeta = (BlockStateMeta) container.getItemMeta();
 		ShulkerBox box = (ShulkerBox) containerMeta.getBlockState();
@@ -141,7 +118,7 @@ public class RewardManager {
 				
 				items.add(new ItemStack(it));
 			} else if (k.contains("potion")) {				
-				p.addPotionEffect(new PotionEffect(findEffect(effects, ageReward.get(k).getEffect()), 999999, 1));
+				p.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
 			} else {
 				it = new ItemStack(Material.matchMaterial(k), ageReward.get(k).getAmount());
 				items.add(new ItemStack(it));
@@ -157,7 +134,7 @@ public class RewardManager {
 		container.setItemMeta(containerMeta);
 		
 		ItemMeta itM = container.getItemMeta();
-		itM.setDisplayName(Utils.getAgeByNumber(ages, age).name.replace("_", " "));
+		itM.setDisplayName(AgeManager.getAgeByNumber(ages, age).name.replace("_", " "));
 		container.setItemMeta(itM);
 		
 		HashMap<Integer, ItemStack> ret = p.getInventory().addItem(container);
@@ -169,15 +146,15 @@ public class RewardManager {
 		}
 	}
 	
-	public static void managePreviousEffects(HashMap<String, RewardElem> ageReward, HashMap<String, PotionEffectType> effects, Player p, String age) {
+	public static void managePreviousEffects(HashMap<String, RewardElem> ageReward, Player p, String age) {
 		for (String key : ageReward.keySet()) {
 			if (key.contains("potion")) {
-				p.removePotionEffect(findEffect(effects, ageReward.get(key).getEffect()));
+				p.removePotionEffect(findEffect(ageReward.get(key).getEffect()));
 			}
 		}
 	}
 	
-	private static Enchantment getEnchantment(String enchant) {
+	public static Enchantment getEnchantment(String enchant) {
 		for (Enchantment e : Enchantment.values()) {
 			if (e.getKey().toString().split(":")[1].equals(enchant)) {
 				return e;
@@ -186,10 +163,10 @@ public class RewardManager {
 		return null;
 	}
 
-	private static PotionEffectType findEffect(HashMap<String, PotionEffectType> effects, String effect) {
-		for (String key : effects.keySet()) {
-			if (key.contains(effect)){
-				return (effects.get(key));
+	private static PotionEffectType findEffect(String effect) {
+		for (PotionEffectType potion : PotionEffectType.values()) {
+			if (potion.getName().equalsIgnoreCase(effect)) {
+				return potion;
 			}
 		}
 		

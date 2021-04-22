@@ -25,7 +25,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import fr.kosmosuniverse.kuffleitems.Core.LangManager;
-import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 import fr.kosmosuniverse.kuffleitems.Core.RewardManager;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
@@ -190,7 +189,7 @@ public class Game {
 		double calc = ((double) itemCount) / km.config.getBlockPerAge();
 		calc = calc > 1.0 ? 1.0 : calc;
 		ageDisplay.setProgress(calc);
-		ageDisplay.setTitle(Utils.getAgeByNumber(km.ages, age).name.replace("_", " ") + ": " + itemCount);
+		ageDisplay.setTitle(AgeManager.getAgeByNumber(km.ages, age).name.replace("_", " ") + ": " + itemCount);
 	}
 	
 	public void resetBar() {
@@ -211,10 +210,10 @@ public class Game {
 	public void nextAge() {
 		if (km.config.getRewards()) {
 			if (age > 0) {
-				RewardManager.managePreviousEffects(km.allRewards.get(Utils.getAgeByNumber(km.ages, age - 1).name), km.effects, player, Utils.getAgeByNumber(km.ages, age - 1).name);
+				RewardManager.managePreviousEffects(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age - 1).name), player, AgeManager.getAgeByNumber(km.ages, age - 1).name);
 			}
 			
-			RewardManager.givePlayerReward(km.allRewards.get(Utils.getAgeByNumber(km.ages, age).name), km.effects, player, km.ages,  Utils.getAgeByNumber(km.ages, age).number);
+			RewardManager.givePlayerReward(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age).name), player, km.ages,  AgeManager.getAgeByNumber(km.ages, age).number);
 		}
 		
 		currentItem = null;
@@ -224,7 +223,7 @@ public class Game {
 		updatePlayerListName();
 		itemScore.setScore(itemCount);
 		updateBar();
-		Bukkit.broadcastMessage("§1" + player.getName() + " has moved to the §6§l" + Utils.getAgeByNumber(km.ages, age).name.replace("_", " ") + "§1.");
+		Bukkit.broadcastMessage("§1" + player.getName() + " has moved to the §6§l" + AgeManager.getAgeByNumber(km.ages, age).name.replace("_", " ") + "§1.");
 	}
 	
 	public void finish(int _gameRank) {
@@ -294,7 +293,7 @@ public class Game {
 			if (tmp < 0) 
 				return;
 
-			RewardManager.givePlayerRewardEffect(km.allRewards.get(Utils.getAgeByNumber(km.ages, tmp).name), km.effects, player, Utils.getAgeByNumber(km.ages, tmp).name);
+			RewardManager.givePlayerRewardEffect(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, tmp).name), player, AgeManager.getAgeByNumber(km.ages, tmp).name);
 		}
 	}
 	
@@ -336,9 +335,9 @@ public class Game {
 	
 	private void updatePlayerListName() {
 		if (km.config.getTeam()) {
-			player.setPlayerListName("[" + km.teams.getTeam(teamName).color + teamName + ChatColor.RESET + "] - " + Utils.getAgeByNumber(km.ages, age).color + player.getName());
+			player.setPlayerListName("[" + km.teams.getTeam(teamName).color + teamName + ChatColor.RESET + "] - " + AgeManager.getAgeByNumber(km.ages, age).color + player.getName());
 		} else {
-			player.setPlayerListName(Utils.getAgeByNumber(km.ages, age).color + player.getName());	
+			player.setPlayerListName(AgeManager.getAgeByNumber(km.ages, age).color + player.getName());	
 		}
 	}
 	

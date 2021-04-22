@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
-import fr.kosmosuniverse.kuffleitems.Utils.Utils;
+import fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 
 public class KuffleValidate implements CommandExecutor {
 	private KuffleMain km;
@@ -66,7 +66,7 @@ public class KuffleValidate implements CommandExecutor {
 			
 			for (String playerName : km.games.keySet()) {
 				if (playerName.equals(args[0])) {
-					String tmp = Utils.getAgeByNumber(km.ages, km.games.get(playerName).getAge()).name;
+					String tmp = AgeManager.getAgeByNumber(km.ages, km.games.get(playerName).getAge()).name;
 					
 					km.games.get(playerName).setItemCount(km.config.getBlockPerAge() + 1);
 					km.games.get(playerName).setCurrentItem(null);

@@ -17,13 +17,13 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffectType;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
-import fr.kosmosuniverse.kuffleitems.Core.Age;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
 import fr.kosmosuniverse.kuffleitems.Core.Level;
 
@@ -48,6 +48,14 @@ public class Utils {
 		} else {
 			tmp = new File(path + "/" + fileName);
 		}
+		
+		return tmp.exists();
+	}
+	
+	public static boolean fileExists(String fileName) {
+		File tmp = null;
+		
+		tmp = new File(fileName);
 		
 		return tmp.exists();
 	}
@@ -105,61 +113,6 @@ public class Utils {
 		}
 		
 		return ;
-	}
-	
-	public static ArrayList<Age> getAges(String ageContent) {
-		ArrayList<Age> finalList = new ArrayList<Age>();
-		
-		JSONObject jsonObj = new JSONObject();
-		JSONParser parser = new JSONParser();
-		
-		try {
-			jsonObj = (JSONObject) parser.parse(ageContent);
-			
-			for (Object key : jsonObj.keySet()) {
-				JSONObject ageObj = (JSONObject) jsonObj.get(key);
-				
-				finalList.add(new Age((String) key,
-						(Integer) Integer.parseInt(ageObj.get("Number").toString()),
-						(String) ageObj.get("TextColor"),
-						((String) ageObj.get("BoxColor") + "_SHULKER_BOX")));
-			}
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-		return finalList;
-	}
-	
-	public static Age getAgeByNumber(ArrayList<Age> ages, int ageNumber) {
-		for (Age age : ages) {
-			if (age.number == ageNumber) {
-				return age;
-			}
-		}
-		
-		return getDefaultAge(ages);
-	}
-	
-	public static Age getDefaultAge(ArrayList<Age> ages) {
-		for (Age age : ages) {
-			if (age.number == -1) {
-				return age;
-			}
-		}
-		
-		return null;
-	}
-	
-	public static int getAgeMaxNumber(ArrayList<Age> ages) {
-		int max = 0;
-		
-		for (Age age : ages) {
-			max = max < age.number ? age.number : max;
-		}
-		
-		return max;
 	}
 	
 	public static ItemStack getHead(Player player) {
@@ -246,6 +199,16 @@ public class Utils {
 		}
 		
 		return null;
+	}
+	
+	public static boolean checkEffect(String effect) {
+		for (PotionEffectType potion : PotionEffectType.values()) {
+			if (potion.getName().equalsIgnoreCase(effect)) {
+				return true;
+			}
+		}
+			
+		return false;
 	}
 }
  

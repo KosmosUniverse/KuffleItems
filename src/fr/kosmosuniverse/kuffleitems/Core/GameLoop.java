@@ -9,7 +9,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import fr.kosmosuniverse.kuffleitems.Core.ActionBar;
 import fr.kosmosuniverse.kuffleitems.Utils.Pair;
-import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class GameLoop {
@@ -62,7 +61,7 @@ public class GameLoop {
 								tmpGame.getPlayer().sendMessage("§4You didn't find your block. Let's give you another one.§r");
 								newItem(tmpGame);
 							} else if (km.config.getDouble() && !tmpGame.getCurrentItem().contains("/")) {
-								String currentTmp = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name));
+								String currentTmp = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));
 								
 								tmpGame.addToAlreadyGot(currentTmp);
 								tmpGame.setCurrentItem(tmpGame.getCurrentItem() + "/" + currentTmp);
@@ -151,20 +150,20 @@ public class GameLoop {
 	
 	private void newItem(Game tmpGame) {
 		if (km.config.getSame()) {
-			Pair tmpPair = ItemManager.nextItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name), tmpGame.getSameIdx());					
+			Pair tmpPair = ItemManager.nextItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name), tmpGame.getSameIdx());					
 
 			tmpGame.setSameIdx(tmpPair.key);
 			tmpGame.setCurrentItem(tmpPair.value);
 		} else if (km.config.getDouble()) {
-			String currentItem = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name));
+			String currentItem = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));
 			tmpGame.addToAlreadyGot(currentItem);
 			
-			String currentItem2 = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name));			
+			String currentItem2 = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));			
 			tmpGame.addToAlreadyGot(currentItem2);
 			
 			tmpGame.setCurrentItem(currentItem + "/" + currentItem2);
 		} else {
-			tmpGame.setCurrentItem(ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(Utils.getAgeByNumber(km.ages, tmpGame.getAge()).name)));			
+			tmpGame.setCurrentItem(ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name)));			
 		}
 	}
 	

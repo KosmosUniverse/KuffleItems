@@ -6,7 +6,6 @@ import java.util.HashMap;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import fr.kosmosuniverse.kuffleitems.Core.Level;
-import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class Config {
@@ -116,7 +115,7 @@ public class Config {
 
 		ret = new ArrayList<String>();
 
-		for (int i = 1; i <= Utils.getAgeMaxNumber(km.ages) + 1; i++) {
+		for (int i = 1; i <= AgeManager.getAgeMaxNumber(km.ages) + 1; i++) {
 			ret.add("" + i);
 		}
 
@@ -181,9 +180,9 @@ public class Config {
 			configFile.set("game_settings.time_added", 2);
 		}
 
-		if (!configFile.contains("game_settings.max_age") || configFile.getInt("game_settings.max_age") < 1 || configFile.getInt("game_settings.max_age") > (Utils.getAgeMaxNumber(km.ages) + 1)) {
+		if (!configFile.contains("game_settings.max_age") || configFile.getInt("game_settings.max_age") < 1 || configFile.getInt("game_settings.max_age") > (AgeManager.getAgeMaxNumber(km.ages) + 1)) {
 			System.out.println("Config for max age is not correct, use of default value.");
-			configFile.set("game_settings.max_age", Utils.getAgeMaxNumber(km.ages) + 1);
+			configFile.set("game_settings.max_age", AgeManager.getAgeMaxNumber(km.ages) + 1);
 		}
 
 		if (!configFile.contains("game_settings.lang")
@@ -436,7 +435,7 @@ public class Config {
 	}
 
 	public boolean setMaxAge(int _maxAges) {
-		if (_maxAges > (Utils.getAgeMaxNumber(km.ages) + 1)) {
+		if (_maxAges > (AgeManager.getAgeMaxNumber(km.ages) + 1)) {
 			return false;
 		}
 		

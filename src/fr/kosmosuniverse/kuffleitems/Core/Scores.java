@@ -9,7 +9,6 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
-import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
 public class Scores {
@@ -37,7 +36,7 @@ public class Scores {
 		int ageCnt = 0;
 				
 		for (; ageCnt < km.config.getMaxAges(); ageCnt++) {
-			S_ages.add(age.getScore(Utils.getAgeByNumber(km.ages, ageCnt).color + Utils.getAgeByNumber(km.ages, ageCnt).name.replace("_", " ")));
+			S_ages.add(age.getScore(AgeManager.getAgeByNumber(km.ages, ageCnt).color + AgeManager.getAgeByNumber(km.ages, ageCnt).name.replace("_", " ")));
 		}
 		
 		ageCnt = 1;

@@ -1,7 +1,5 @@
 package fr.kosmosuniverse.kuffleitems;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,7 +7,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffectType;
 
 import fr.kosmosuniverse.kuffleitems.Core.Logs;
 import fr.kosmosuniverse.kuffleitems.Core.ManageTeams;
@@ -18,12 +15,14 @@ import fr.kosmosuniverse.kuffleitems.Listeners.*;
 import fr.kosmosuniverse.kuffleitems.TabCmd.*;
 import fr.kosmosuniverse.kuffleitems.Core.ItemManager;
 import fr.kosmosuniverse.kuffleitems.Core.LangManager;
+import fr.kosmosuniverse.kuffleitems.Utils.FilesConformity;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.Crafts.ACrafts;
 import fr.kosmosuniverse.kuffleitems.Core.RewardElem;
 import fr.kosmosuniverse.kuffleitems.Core.RewardManager;
 import fr.kosmosuniverse.kuffleitems.Commands.*;
 import fr.kosmosuniverse.kuffleitems.Core.Age;
+import fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 import fr.kosmosuniverse.kuffleitems.Core.Config;
 import fr.kosmosuniverse.kuffleitems.Core.CraftsManager;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
@@ -36,7 +35,6 @@ public class KuffleMain extends JavaPlugin {
 	public HashMap<String, ArrayList<String>> allItems = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<Inventory>> itemsInvs;
 	
-	public HashMap<String, PotionEffectType> effects;
 	public HashMap<String, Game> games = new HashMap<String, Game>();
 	public HashMap<String, Integer> playerRank = new HashMap<String, Integer>();
 	
@@ -59,42 +57,29 @@ public class KuffleMain extends JavaPlugin {
 	public void onEnable() {
 		saveDefaultConfig();
 		reloadConfig();
-		
-		try {
-			InputStream in = getResource("ages.json");
-			String result = Utils.readFileContent(in);
-			in.close();
-			
-			if ((ages = Utils.getAges(result)) == null) {
-				this.getPluginLoader().disablePlugin(this);
-				return ;
-			}
-			
-			in = getResource("items_" + Utils.getVersion() + ".json");
-			result = Utils.readFileContent(in);
-			allItems = ItemManager.getAllItems(ages, result, this.getDataFolder());
-			
-			in.close();
-			
-			in = getResource("rewards_" + Utils.getVersion() + ".json");
-			result = Utils.readFileContent(in);
-			allRewards = RewardManager.getAllRewards(ages, result, this.getDataFolder());
-			
-			in.close();
-			
-			in = getResource("items_lang.json");
-			result = Utils.readFileContent(in);
-			allLangs = LangManager.getAllBlocksLang(result, this.getDataFolder());
-			
-			in.close();
-			
-			logs = new Logs(this.getDataFolder());
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		if ((ages = AgeManager.getAges(FilesConformity.getContent(this, "ages.json"))) == null) {
+			this.getPluginLoader().disablePlugin(this);
+			return ;
 		}
 		
+		if ((allItems = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "items_" + Utils.getVersion() + ".json"), this.getDataFolder())) == null) {
+			this.getPluginLoader().disablePlugin(this);
+			return ;
+		}
+		
+		if ((allRewards = RewardManager.getAllRewards(ages, FilesConformity.getContent(this, "rewards_" + Utils.getVersion() + ".json"), this.getDataFolder())) == null) {
+			this.getPluginLoader().disablePlugin(this);
+			return ;
+		}
+		
+		if ((allLangs = LangManager.getAllBlocksLang(FilesConformity.getContent(this, "items_lang.json"), this.getDataFolder())) == null) {
+			this.getPluginLoader().disablePlugin(this);
+			return ;
+		}
+		
+		logs = new Logs(this.getDataFolder());
 		langs = LangManager.findAllLangs(allLangs);
-		effects = RewardManager.getAllEffects();
 		
 		config = new Config(this);
 		config.setupConfig(this, getConfig());
@@ -177,36 +162,54 @@ public class KuffleMain extends JavaPlugin {
 	}
 	
 	private void killAll() {
-		for (String key : allRewards.keySet()) {
-			allRewards.get(key).clear();
+		if (allRewards != null) {
+			for (String key : allRewards.keySet()) {
+				allRewards.get(key).clear();
+			}
+			
+			allRewards.clear();
 		}
 		
-		allRewards.clear();
-		
-		for (String key : allItems.keySet()) {
-			allItems.get(key).clear();
+		if (allItems != null) {
+			for (String key : allItems.keySet()) {
+				allItems.get(key).clear();
+			}
+			
+			allItems.clear();
 		}
-		
-		allItems.clear();
 
-		for (String key : allLangs.keySet()) {
-			allLangs.get(key).clear();
+		
+		if (allLangs != null) {
+			for (String key : allLangs.keySet()) {
+				allLangs.get(key).clear();
+			}
+			
+			allLangs.clear();
 		}
 		
-		allLangs.clear();
-		
-		for (String key : itemsInvs.keySet()) {
-			itemsInvs.get(key).clear();
+		if (itemsInvs != null) {
+			for (String key : itemsInvs.keySet()) {
+				itemsInvs.get(key).clear();
+			}
+			
+			itemsInvs.clear();
 		}
 		
-		itemsInvs.clear();
+		if (playerRank != null) {
+			playerRank.clear();
+		}
 		
+		if (games != null) {
+			games.clear();	
+		}
 		
-		effects.clear();
-		playerRank.clear();
-		games.clear();
-		langs.clear();
-		ages.clear();
+		if (langs != null) { 
+			langs.clear();
+		}
+		
+		if (ages != null) {
+			ages.clear();	
+		}
 	}
 	
 	public void updatePlayersHead(String player, String currentItem) {

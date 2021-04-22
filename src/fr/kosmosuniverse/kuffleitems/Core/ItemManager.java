@@ -18,16 +18,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.Utils.Pair;
-import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class ItemManager {
 	public static HashMap<String, ArrayList<String>> getAllItems(ArrayList<Age> ages, String itemsContent, File dataFolder) {
 		HashMap<String, ArrayList<String>> finalMap = new HashMap<String, ArrayList<String>>();
 		
-		int max = Utils.getAgeMaxNumber(ages);
+		int max = AgeManager.getAgeMaxNumber(ages);
 		
 		for (int ageCnt = 0; ageCnt <= max; ageCnt++) {
-			finalMap.put(Utils.getAgeByNumber(ages, ageCnt).name, getAgeBlocks(Utils.getAgeByNumber(ages, ageCnt).name, itemsContent, dataFolder));
+			finalMap.put(AgeManager.getAgeByNumber(ages, ageCnt).name, getAgeBlocks(AgeManager.getAgeByNumber(ages, ageCnt).name, itemsContent, dataFolder));
 		}
 		
 		return finalMap;
