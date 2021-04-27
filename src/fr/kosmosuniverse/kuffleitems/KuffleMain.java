@@ -47,6 +47,7 @@ public class KuffleMain extends JavaPlugin {
 	public CraftsManager crafts;
 	public Scores scores;
 	public Inventory playersHeads;
+	public PlayerInteract interact;
 	
 	public boolean paused = false;
 	public boolean loaded = false;
@@ -98,9 +99,9 @@ public class KuffleMain extends JavaPlugin {
 		
 		System.out.println("[KuffleItems] Add " + cnt + " Custom Crafts.");
 		
-
+		interact = new PlayerInteract(this);
 		getServer().getPluginManager().registerEvents(new PlayerEvents(this, this.getDataFolder()), this);
-		getServer().getPluginManager().registerEvents(new PlayerInteract(this), this);
+		getServer().getPluginManager().registerEvents(interact, this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
 		System.out.println("[KuffleItems] Add 3 Game Listeners.");
 		
@@ -222,7 +223,9 @@ public class KuffleMain extends JavaPlugin {
 				if (itM.getDisplayName().equals(player)) {
 					ArrayList<String> lore = new ArrayList<String>();
 					
-					lore.add(currentItem);
+					if (currentItem != null) {
+						lore.add(currentItem);
+					}
 					
 					itM.setLore(lore);
 					item.setItemMeta(itM);

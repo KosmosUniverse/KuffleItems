@@ -23,9 +23,14 @@ import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class PlayerInteract implements Listener {
 	private KuffleMain km;
+	private int xpSub;
 	
 	public PlayerInteract(KuffleMain _km) {
 		km = _km;
+	}
+	
+	public void setXpSub(int _xpSub) {
+		xpSub = _xpSub;
 	}
 	
 	@EventHandler
@@ -94,11 +99,11 @@ public class PlayerInteract implements Listener {
 				player.setLevel(player.getLevel() - 5);
 			}
 		} else if (compareItems(item, km.crafts.findItemByName("OverworldTeleporter"))) {
-			if (player.getLevel() < 5) {
+			if (player.getLevel() < (10 - xpSub)) {
 				event.setCancelled(true);
-				player.sendMessage("You need 5 xp levels to craft this item.");
+				player.sendMessage("You need " + (10 - xpSub) + " xp levels to craft this item.");
 			} else {
-				player.setLevel(player.getLevel() - 5);
+				player.setLevel(player.getLevel() - (10 - xpSub));
 			}
 		}
 	}
@@ -137,7 +142,6 @@ public class PlayerInteract implements Listener {
 	}
 	
 	private void endTeleporter(Player player) {
-		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
 		Location tmp = new Location(Bukkit.getWorld(Utils.findNormalWorld().getName() + "_the_end"), player.getLocation().getX() + 1000, 60.0, player.getLocation().getZ() + 1000);
 		
 		while (tmp.getBlock().getType() != Material.END_STONE) {
@@ -146,17 +150,46 @@ public class PlayerInteract implements Listener {
 		
 		
 		tmp.setY((double) tmp.getWorld().getHighestBlockAt(tmp).getY());
-		player.teleport(tmp);
-		player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);	
+
+		if (km.config.getTeam()) {
+			String teamName = km.games.get(player.getName()).getTeamName();
+			
+			for (String playerName : km.games.keySet()) {
+				if (km.games.get(playerName).getTeamName().equals(teamName)) {
+					km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
+					km.games.get(playerName).getPlayer().teleport(tmp);
+					km.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+				}
+			}
+		} else {
+			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
+			player.teleport(tmp);
+			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+		}
 	}
 	
 	private void overworldTeleporter(Player player) {
-		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
 		Location tmp = new Location(Bukkit.getWorld(Utils.findNormalWorld().getName()), player.getLocation().getX() - 1000, 80.0, player.getLocation().getZ() - 1000);
 		
 		tmp.setY((double) tmp.getWorld().getHighestBlockAt(tmp).getY());
-		player.teleport(tmp);
-		player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+		
+		if (km.config.getTeam()) {
+			String teamName = km.games.get(player.getName()).getTeamName();
+			
+			for (String playerName : km.games.keySet()) {
+				if (km.games.get(playerName).getTeamName().equals(teamName)) {
+					km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
+					km.games.get(playerName).getPlayer().teleport(tmp);
+					km.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+				}
+			}
+		} else {
+			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
+			player.teleport(tmp);
+			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+		}
+		
+		xpSub = (xpSub - 2) < 2 ? 2 : (xpSub - 2);
 	}
 	
 	private boolean compareItems(ItemStack first, ItemStack second) {

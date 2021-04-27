@@ -175,6 +175,7 @@ public class KuffleStart implements CommandExecutor {
 					km.games.get(playerName).getPlayer().getInventory().addItem(box);
 				}
 				
+				km.interact.setXpSub(10);
 				km.loop = new GameLoop(km);
 				km.loop.startRunnable();
 				km.gameStarted = true;

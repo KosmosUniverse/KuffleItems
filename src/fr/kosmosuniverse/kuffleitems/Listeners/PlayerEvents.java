@@ -70,6 +70,7 @@ public class PlayerEvents implements Listener {
 		km.playersHeads = newInv;
 		km.scores.setupPlayerScores(tmpGame);
 		tmpGame.load();
+		km.updatePlayersHead(player.getName(), tmpGame.getItemDisplay());
 		
 		player.sendMessage("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
 		

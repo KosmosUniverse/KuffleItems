@@ -252,10 +252,8 @@
 		],
 		"plant" : [
 			"beetroot_seeds",
-			"beetroots",
 			"brown_mushroom",
 			"cactus",
-			"carrots",
 			"carved_pumpkin",
 			"dead_bush",
 			"fern",
@@ -267,7 +265,6 @@
 			"melon",
 			"melon_seeds",
 			"melon_slice",
-			"potatoes",
 			"pumpkin",
 			"pumpkin_seeds",
 			"red_mushroom",
@@ -519,9 +516,9 @@
 		],
 		"armor" : [
 			"chainmail_boots",
-			"chainmail_leggings",
 			"chainmail_chestplate",
-			"chainmail_helmet"
+			"chainmail_helmet",
+			"chainmail_leggings"
 		],
 		"transport" : [
 			"chest_minecart",
@@ -552,7 +549,6 @@
 			"redstone_block",
 			"redstone_ore",
 			"redstone_torch",
-			"redstone_wire",
 			"repeater",
 			"stone_pressure_plate",
 			"tnt"
@@ -705,9 +701,7 @@
 		"plant" : [
 			"nether_sprouts",
 			"twisting_vines",
-			"twisting_vines_plant",
-			"weeping_vines",
-			"weeping_vines_plant"
+			"weeping_vines"
 		],
 		"netherite" : [
 			"netherite_ingot",
@@ -748,7 +742,6 @@
 		"end" : [
 			"chorus_flower",
 			"chorus_fruit",
-			"chorus_plant",
 			"end_portal_frame",
 			"end_rod",
 			"end_stone",

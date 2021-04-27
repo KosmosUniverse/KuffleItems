@@ -337,6 +337,12 @@ public class FilesConformity {
 								return false;
 							}
 						}
+					} else if (RewardManager.getEnchantment(enchants) == null) {
+						System.out.println("Reward [" + (String) reward + "] contains unknown enchant : [" + enchants + "].");
+						itemObj.clear();
+						rewards.clear();
+						jsonObj.clear();
+						return false;
 					}
 					
 					if (effects.contains(",")) {
@@ -350,6 +356,12 @@ public class FilesConformity {
 								return false;
 							}
 						}
+					} else if (!Utils.checkEffect(effects)) {
+						System.out.println("Reward [" + (String) reward + "] contains unknown enchant : [" + effects + "].");
+						itemObj.clear();
+						rewards.clear();
+						jsonObj.clear();
+						return false;
 					}
 					
 					itemObj.clear();

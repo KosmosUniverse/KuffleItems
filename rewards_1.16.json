@@ -64,7 +64,7 @@
 		}
 	},
 	"Mineric_Age" : {
-		"cauldron" : {
+		"strider_spawn_egg" : {
 			"Amount" : 1,
 			"Enchant" : "",
 			"Level" : 0,

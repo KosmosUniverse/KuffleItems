@@ -155,6 +155,10 @@
 		"en" : "Beetroot Soup",
 		"fr" : "Soupe de Betteraves"
 	},
+	"beetroots" : {
+		"en" : "Beetroots",
+		"fr" : "Betterave"
+	},
 	"bell" : {
 		"en" : "Bell",
 		"fr" : "Cloche"
@@ -510,6 +514,10 @@
 	"carrot_on_a_stick" : {
 		"en" : "Carrot on a Stick",
 		"fr" : "Carrote sur un Baton"
+	},
+	"carrots" : {
+		"en" : "Carrots",
+		"fr" : "Carottes"
 	},
 	"cartography_table" : {
 		"en" : "Cartography Table",
@@ -1247,6 +1255,10 @@
 		"en" : "Flower Pot",
 		"fr" : "Pot de Fleur"
 	},
+	"frosted_ice" : {
+		"en" : "Frosted Ice",
+		"fr" : "Glace Givrée"
+	},
 	"furnace" : {
 		"en" : "Furnace",
 		"fr" : "Fourneau"
@@ -1915,6 +1927,10 @@
 		"en" : "Lime Wool",
 		"fr" : "Laine Vert Clair"
 	},
+	"lingering_potion" : {
+		"en" : "Lingering Potion",
+		"fr" : "Potion Persistante"
+	},
 	"lodestone" : {
 		"en" : "Lodestone",
 		"fr" : "Magnétite"
@@ -2530,6 +2546,10 @@
 	"potato" : {
 		"en" : "potato",
 		"fr" : "Patate"
+	},
+	"potatoes" : {
+		"en" : "Potatoes",
+		"fr" : "Patates"
 	},
 	"powered_rail" : {
 		"en" : "Powered Rail",
@@ -3230,6 +3250,14 @@
 	"sweet_berries" : {
 		"en" : "Sweet Berries",
 		"fr" : "Baies Sucrées"
+	},
+	"tall_grass" : {
+		"en" : "Tall Grass",
+		"fr" : "Herbes Hautes"
+	},
+	"tall_seagrass" : {
+		"en" : "Tall Seagrass",
+		"fr" : "Herbes Hautes Aquatiques"
 	},
 	"target" : {
 		"en" : "Target",

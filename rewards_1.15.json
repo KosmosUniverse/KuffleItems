@@ -64,12 +64,6 @@
 		}
 	},
 	"Mineric_Age" : {
-		"cauldron" : {
-			"Amount" : 1,
-			"Enchant" : "",
-			"Level" : 0,
-			"Effect" : ""
-		},
 		"water_bucket" : {
 			"Amount" : 1,
 			"Enchant" : "",

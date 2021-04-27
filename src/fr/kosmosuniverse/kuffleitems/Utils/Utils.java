@@ -94,7 +94,6 @@ public class Utils {
 			tmpGame.setTime(Integer.parseInt(((Long) mainObject.get("time")).toString()));
 			tmpGame.setDeathTime((Long) mainObject.get("deathTime"), (Long) mainObject.get("minTime"), (Long) mainObject.get("maxTime"));
 			tmpGame.setItemCount(Integer.parseInt(((Long) mainObject.get("itemCount")).toString()));
-			//tmpGame.setSameIdx(Integer.parseInt(mainObject.get("sameIdx").toString()));
 			tmpGame.setTeamName((String) mainObject.get("teamName"));
 			tmpGame.setAlreadyGot((JSONArray) mainObject.get("alreadyGot"));
 			tmpGame.setSpawnLoc((JSONObject) mainObject.get("spawn"));

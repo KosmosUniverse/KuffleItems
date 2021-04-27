@@ -243,6 +243,7 @@ public class Game {
 		
 		updatePlayerListName();
 		km.playerRank.put(player.getName(), gameRank);
+		km.updatePlayersHead(player.getName(), null);
 		
 		for (PotionEffect pe : player.getActivePotionEffects()) {
 			player.removePotionEffect(pe.getType());
@@ -542,6 +543,10 @@ public class Game {
 	
 	public void removeFromList(String[] array) {
 		alreadyGot.remove(currentItem.equals(array[0]) ? array[1] : array[0]);
+	}
+	
+	public void resetList() {
+		alreadyGot.clear();
 	}
 	
 	private BarColor getRandomColor() {

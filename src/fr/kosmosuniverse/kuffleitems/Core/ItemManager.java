@@ -85,10 +85,6 @@ public class ItemManager {
 			return null;
 		}
 		
-		if (done.size() == allAgeItems.size()) {
-			done.clear();
-		}
-		
 		for (String s : allAgeItems) {
 			if (!done.contains(s)) {
 				finalList.add(s);

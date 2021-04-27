@@ -52,10 +52,12 @@ public class GameLoop {
 									if (!km.config.getTeam() || checkTeamMates(tmpGame)) {
 										tmpGame.nextAge();
 									}
+									
+									newItem(tmpGame);
 								}
+							} else {
+								newItem(tmpGame);
 							}
-							
-							newItem(tmpGame);	
 						} else {
 							if (System.currentTimeMillis() - tmpGame.getTimeShuffle() > (tmpGame.getTime() * 60000)) {
 								tmpGame.getPlayer().sendMessage("§4You didn't find your block. Let's give you another one.§r");
@@ -149,6 +151,10 @@ public class GameLoop {
 	}
 	
 	private void newItem(Game tmpGame) {
+		if (tmpGame.getAlreadyGot().size() >= km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name).size()) {
+			tmpGame.resetList();
+		}
+		
 		if (km.config.getSame()) {
 			Pair tmpPair = ItemManager.nextItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name), tmpGame.getSameIdx());					
 
@@ -157,6 +163,10 @@ public class GameLoop {
 		} else if (km.config.getDouble()) {
 			String currentItem = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));
 			tmpGame.addToAlreadyGot(currentItem);
+			
+			if (tmpGame.getAlreadyGot().size() >= km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name).size()) {
+				tmpGame.resetList();
+			}
 			
 			String currentItem2 = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));			
 			tmpGame.addToAlreadyGot(currentItem2);

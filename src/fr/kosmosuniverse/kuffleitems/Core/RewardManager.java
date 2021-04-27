@@ -117,8 +117,18 @@ public class RewardManager {
 				}
 				
 				items.add(new ItemStack(it));
-			} else if (k.contains("potion")) {				
-				p.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
+			} else if (k.contains("potion")) {
+				if (ageReward.get(k).getEffect().contains(",")) {
+					String[] tmp = ageReward.get(k).getEffect().split(",");
+					
+					for (String effect : tmp) {
+						if (getEnchantment(effect) != null) {
+							p.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
+						}
+					}
+				} else {
+					p.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
+				}
 			} else {
 				it = new ItemStack(Material.matchMaterial(k), ageReward.get(k).getAmount());
 				items.add(new ItemStack(it));

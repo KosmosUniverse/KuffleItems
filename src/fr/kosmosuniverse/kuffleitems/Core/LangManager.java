@@ -26,11 +26,7 @@ public class LangManager {
 			}
 			
 			langages = (JSONObject) jsonParser.parse(JSONContent);
-		} catch (IOException | ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
+
 			for (Iterator<?> itBlock = langages.keySet().iterator(); itBlock.hasNext();) {
 				String keyBlock = (String) itBlock.next();
 				JSONObject block = (JSONObject) langages.get(keyBlock);
@@ -45,7 +41,7 @@ public class LangManager {
 					String keyLang = (String) itLang.next();
 					String value = (String) block.get(keyLang);
 					
-					writer.append("\t" + keyLang + " : " + value + "\n");
+					writer.append("\t" + keyLang + " :\n" + value + "\n");
 					blockLangs.put(keyLang, value);
 				}
 				
@@ -53,7 +49,7 @@ public class LangManager {
 			}
 			
 			writer.close();
-		} catch (IOException e) {
+		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
 		
@@ -71,6 +67,8 @@ public class LangManager {
 			} else {
 				return block;
 			}
+		} else {
+			res = block;
 		}
 			
 		return res;
