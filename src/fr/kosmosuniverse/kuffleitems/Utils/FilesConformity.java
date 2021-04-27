@@ -115,6 +115,8 @@ public class FilesConformity {
 			return itemsConformity(km, content);
 		} else if (file.equals("rewards_" + Utils.getVersion() + ".json")) {
 			return rewardsConformity(km, content);
+		} else if (file.equals("levels.json")) {
+			return levelsConformity(content);
 		}
 		
 		return false;
@@ -374,6 +376,52 @@ public class FilesConformity {
 			
 			return true;
 		} catch (ParseException | IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	private static boolean levelsConformity(String content) {
+		try {
+			JSONParser parser = new JSONParser();
+			JSONObject jsonObj = new JSONObject();
+			
+			parser.parse(content);
+			
+			for (Object key : jsonObj.keySet()) {
+				JSONObject levelObj = (JSONObject) jsonObj.get(key);
+				
+				if (!levelObj.containsKey("Number")) {
+					System.out.println("Level [" + (String) key + "] does not contain 'Number' Object.");
+					levelObj.clear();
+					jsonObj.clear();
+					return false;
+				} else if (!levelObj.containsKey("Seconds")) {
+					System.out.println("Level [" + (String) key + "] does not contain 'Seconds' Object.");
+					levelObj.clear();
+					jsonObj.clear();
+					return false;
+				} else if (!levelObj.containsKey("Lose")) {
+					System.out.println("Level [" + (String) key + "] does not contain 'Lose' Object.");
+					levelObj.clear();
+					jsonObj.clear();
+					return false;
+				}
+				
+				@SuppressWarnings("unused")
+				int number = Integer.parseInt(levelObj.get("Number").toString());
+				number = Integer.parseInt(levelObj.get("Seconds").toString());
+
+				String lose = levelObj.get("Lose").toString();
+
+				if (!lose.equalsIgnoreCase("true") && !lose.equalsIgnoreCase("false")) {
+					return false;
+				}
+				
+				return true;
+			}
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		

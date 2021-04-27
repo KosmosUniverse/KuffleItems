@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,7 +24,6 @@ import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
-import fr.kosmosuniverse.kuffleitems.Core.Level;
 
 public class Utils {
 	public static String readFileContent(InputStream in) throws IOException {
@@ -92,7 +90,7 @@ public class Utils {
 			tmpGame.setCurrentItem((String) mainObject.get("current"));
 			tmpGame.setTimeShuffle(System.currentTimeMillis() - (Long) mainObject.get("interval"));
 			tmpGame.setTime(Integer.parseInt(((Long) mainObject.get("time")).toString()));
-			tmpGame.setDeathTime((Long) mainObject.get("deathTime"), (Long) mainObject.get("minTime"), (Long) mainObject.get("maxTime"));
+			tmpGame.setDead((boolean) mainObject.get("isDead"));
 			tmpGame.setItemCount(Integer.parseInt(((Long) mainObject.get("itemCount")).toString()));
 			tmpGame.setTeamName((String) mainObject.get("teamName"));
 			tmpGame.setAlreadyGot((JSONArray) mainObject.get("alreadyGot"));
@@ -105,6 +103,9 @@ public class Utils {
 				fileDelete(_km.getDataFolder().getPath(), player.getName() + ".yml");
 			}
 
+			if (tmpGame.getDead()) {
+				_km.playerEvents.teleportAutoBack(tmpGame);
+			}
 			
 			_km.games.put(player.getName(), tmpGame);
 		} catch (ParseException | IOException e) {
@@ -132,32 +133,6 @@ public class Utils {
 		version = version.split("_")[0] + "." + version.split("_")[1];
 		
 		return version;
-	}
-	
-	public static long minSecondsWithLevel(Level level) {
-		Random r = new Random();
-		
-		if (level == Level.EASY) {
-			return 3;
-		} else if (level == Level.NORMAL) {
-			return 6;
-		} else if (level == Level.EXPERT) {
-			return (6 + (r.nextInt(9) + 1));
-		}
-		
-		return -1;
-	}
-	
-	public static long maxSecondsWithLevel(Level level) {
-		if (level == Level.EASY) {
-			return 40;
-		} else if (level == Level.NORMAL) {
-			return 30;
-		} else if (level == Level.EXPERT) {
-			return 20;
-		}
-		
-		return -1;
 	}
 	
 	public static ChatColor findChatColor(String color) {

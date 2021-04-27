@@ -35,6 +35,7 @@ public class Game {
 	
 	private boolean finished;
 	private boolean lose;
+	private boolean dead;
 	
 	private int time;
 	private int itemCount = 1;
@@ -43,11 +44,7 @@ public class Game {
 	private int sameIdx = 0;
 	
 	private long timeShuffle = -1;
-	private long deathTime = -1;
-	private long minTime;
-	private long maxTime;
 	private long interval = -1;
-	private long deathInterval = -1;
 	
 	private String currentItem;
 	private String itemDisplay;
@@ -67,6 +64,7 @@ public class Game {
 		player = _player;
 		finished = false;
 		lose = false;
+		dead = false;
 	}
 	
 	public void setup() {
@@ -122,9 +120,7 @@ public class Game {
 		global.put("current", currentItem);
 		global.put("interval", System.currentTimeMillis() - timeShuffle);
 		global.put("time", time);
-		global.put("deathTime", deathTime);
-		global.put("minTime", minTime);
-		global.put("maxTime", maxTime);
+		global.put("isDead", dead);
 		global.put("itemCount", itemCount);
 		global.put("spawn", jsonSpawn);
 		global.put("death", jsonDeath);
@@ -169,20 +165,11 @@ public class Game {
 	
 	public void pause() {
 		interval = System.currentTimeMillis() - timeShuffle;
-		
-		if (deathTime != -1) {
-			deathInterval = System.currentTimeMillis() - deathTime;
-		}
 	}
 	
 	public void resume() {
 		timeShuffle = System.currentTimeMillis() - interval;
 		interval = -1;
-		
-		if (deathInterval != -1) {
-			deathTime = System.currentTimeMillis() - deathInterval;
-			deathInterval = -1;
-		}
 	}
 	
 	private void updateBar() {
@@ -309,14 +296,6 @@ public class Game {
 	}
 	
 	public void restorePlayerInv() {
-		if (System.currentTimeMillis() - deathTime > (maxTime * 1000)) {
-			player.sendMessage("You waited too much to return to your death spot, your stuff is now unreachable.");
-			deathInv.clear();
-			deathInv = null;
-			deathTime = -1;
-			return;
-		}
-		
 		for (ItemStack item : deathInv.getContents()) {
 			if (item != null) {
 				HashMap<Integer, ItemStack> ret = player.getInventory().addItem(item);
@@ -331,7 +310,7 @@ public class Game {
 		deathInv.clear();
 		deathInv = null;
 		deathLoc = null;
-		deathTime = -1;
+		dead = false;
 	}
 	
 	private void updatePlayerListName() {
@@ -358,6 +337,10 @@ public class Game {
 		return lose;
 	}
 	
+	public boolean getDead() {
+		return dead;
+	}
+	
 	public int getTime() {
 		return time;
 	}
@@ -376,18 +359,6 @@ public class Game {
 	
 	public long getTimeShuffle() {
 		return timeShuffle;
-	}
-	
-	public long getDeathTime() {
-		return deathTime;
-	}
-	
-	public long getMinTime() {
-		return minTime;
-	}
-	
-	public long getMaxTime() {
-		return maxTime;
 	}
 	
 	public String getCurrentItem() {
@@ -432,6 +403,10 @@ public class Game {
 		lose = _lose;
 	}
 	
+	public void setDead(boolean _dead) {
+		dead = _dead;
+	}
+	
 	public void setTime(int _time) {
 		time = _time;
 	}
@@ -455,12 +430,6 @@ public class Game {
 	
 	public void setTimeShuffle(long _timeShuffle) {
 		timeShuffle = _timeShuffle;
-	}
-	
-	public void setDeathTime(long time, long _minTime, long _maxTime) {
-		deathTime = time;
-		minTime = _minTime;
-		maxTime = _maxTime;
 	}
 
 	public void setCurrentItem(String _currentItem) {
@@ -523,7 +492,6 @@ public class Game {
 	
 	public void setDeathLoc(Location _deathLoc) {
 		deathLoc = _deathLoc;
-		deathTime = System.currentTimeMillis();
 	}
 	
 	public void setDeathLoc(JSONObject _deathLoc) {

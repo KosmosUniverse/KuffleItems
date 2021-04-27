@@ -15,6 +15,8 @@ import fr.kosmosuniverse.kuffleitems.Listeners.*;
 import fr.kosmosuniverse.kuffleitems.TabCmd.*;
 import fr.kosmosuniverse.kuffleitems.Core.ItemManager;
 import fr.kosmosuniverse.kuffleitems.Core.LangManager;
+import fr.kosmosuniverse.kuffleitems.Core.Level;
+import fr.kosmosuniverse.kuffleitems.Core.LevelManager;
 import fr.kosmosuniverse.kuffleitems.Utils.FilesConformity;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.Crafts.ACrafts;
@@ -40,6 +42,8 @@ public class KuffleMain extends JavaPlugin {
 	
 	public ArrayList<String> langs;
 	public ArrayList<Age> ages;
+	public ArrayList<Level> levels;
+	
 	public GameLoop loop;
 	public Config config;
 	public Logs logs;
@@ -47,7 +51,8 @@ public class KuffleMain extends JavaPlugin {
 	public CraftsManager crafts;
 	public Scores scores;
 	public Inventory playersHeads;
-	public PlayerInteract interact;
+	public PlayerInteract playerInteract;
+	public PlayerEvents playerEvents;
 	
 	public boolean paused = false;
 	public boolean loaded = false;
@@ -79,6 +84,11 @@ public class KuffleMain extends JavaPlugin {
 			return ;
 		}
 		
+		if ((levels = LevelManager.getLevels(FilesConformity.getContent(this, "levels.json"))) == null) {
+			this.getPluginLoader().disablePlugin(this);
+			return ;
+		}
+		
 		logs = new Logs(this.getDataFolder());
 		langs = LangManager.findAllLangs(allLangs);
 		
@@ -99,9 +109,11 @@ public class KuffleMain extends JavaPlugin {
 		
 		System.out.println("[KuffleItems] Add " + cnt + " Custom Crafts.");
 		
-		interact = new PlayerInteract(this);
-		getServer().getPluginManager().registerEvents(new PlayerEvents(this, this.getDataFolder()), this);
-		getServer().getPluginManager().registerEvents(interact, this);
+		playerInteract = new PlayerInteract(this);
+		playerEvents = new PlayerEvents(this, this.getDataFolder());
+		
+		getServer().getPluginManager().registerEvents(playerEvents, this);
+		getServer().getPluginManager().registerEvents(playerInteract, this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
 		System.out.println("[KuffleItems] Add 3 Game Listeners.");
 		
@@ -114,7 +126,6 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-pause").setExecutor(new KufflePause(this));
 		getCommand("ki-resume").setExecutor(new KuffleResume(this));
 		getCommand("ki-ageitems").setExecutor(new KuffleAgeItems(this));
-		getCommand("ki-back").setExecutor(new KuffleBack(this));
 		getCommand("ki-crafts").setExecutor(new KuffleCrafts(this));
 		getCommand("ki-lang").setExecutor(new KuffleLang(this));
 		getCommand("ki-skip").setExecutor(new KuffleSkip(this));

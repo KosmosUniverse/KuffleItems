@@ -1,0 +1,22 @@
+{
+	"EASY" : {
+		"Number" : 0,
+		"Seconds" : 10,
+		"Lose" : false
+	},
+	"NORMAL" : {
+		"Number" : 1,
+		"Seconds" : 20,
+		"Lose" : false
+	},
+	"EXPERT" : {
+		"Number" : 2,
+		"Seconds" : 30,
+		"Lose" : false
+	},
+	"ULTRA" : {
+		"Number" : 3,
+		"Seconds" : -1,
+		"Lose" : true
+	}
+}

@@ -139,8 +139,8 @@ public class Config {
 
 		ret = new ArrayList<String>();
 
-		for (Level l : Level.values()) {
-			ret.add(l.toString());
+		for (Level l : km.levels) {
+			ret.add(l.name);
 		}
 
 		stringElems.put("LANG", "setLang");
@@ -273,7 +273,7 @@ public class Config {
 		sb.append("Start duration: ").append(startTime).append("\n");
 		sb.append("Added duration: ").append(addedTime).append("\n");
 		sb.append("Lang: ").append(lang).append("\n");
-		sb.append("Level: ").append(Level.values()[level]).append("\n");
+		sb.append("Level: ").append(LevelManager.getLevelByNumber(km.levels, level).name).append("\n");
 		sb.append("Team: ").append(team).append("\n");
 		sb.append("Team Size: ").append(teamSize).append("\n");
 		sb.append("Same mode: ").append(same).append("\n");
@@ -347,7 +347,7 @@ public class Config {
 	}
 
 	public Level getLevel() {
-		return Level.values()[level];
+		return LevelManager.getLevelByNumber(km.levels, level);
 	}
 
 	public String getLang() {
@@ -462,12 +462,14 @@ public class Config {
 	}
 
 	public boolean setLevel(String _level) {
-		for (int cnt = 0; cnt < Level.values().length; cnt++) {
-			if (_level.equals(Level.values()[cnt].toString().toUpperCase())) {
-				level = cnt;
-				return true;
-			}
+		Level l;
+		
+		if ((l = LevelManager.getLevelByName(km.levels, _level)) == null) {
+			return false;
 		}
+		
+		level = l.number;
+		
 		return true;
 	}
 
