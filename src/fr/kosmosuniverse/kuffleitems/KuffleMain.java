@@ -3,8 +3,10 @@ package fr.kosmosuniverse.kuffleitems;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,7 +50,7 @@ public class KuffleMain extends JavaPlugin {
 	public Config config;
 	public Logs logs;
 	public ManageTeams teams = new ManageTeams();
-	public CraftsManager crafts;
+	public CraftsManager crafts = null;
 	public Scores scores;
 	public Inventory playersHeads;
 	public PlayerInteract playerInteract;
@@ -173,6 +175,14 @@ public class KuffleMain extends JavaPlugin {
 		System.out.println("[KuffleItems] Plugin turned OFF.");
 	}
 	
+	public void addRecipe(Recipe recipe) {
+		getServer().addRecipe(recipe);
+	}
+	
+	public void removeRecipe(String name) {
+		getServer().removeRecipe(new NamespacedKey(this, name));
+	}
+	
 	private void killAll() {
 		if (allRewards != null) {
 			for (String key : allRewards.keySet()) {
@@ -221,6 +231,14 @@ public class KuffleMain extends JavaPlugin {
 		
 		if (ages != null) {
 			ages.clear();	
+		}
+		
+		if (crafts != null) {
+			for (ACrafts craft : crafts.getRecipeList()) {
+				removeRecipe(craft.getName());
+			}
+			
+			crafts.clear();
 		}
 	}
 	

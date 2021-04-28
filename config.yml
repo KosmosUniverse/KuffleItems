@@ -20,3 +20,4 @@ game_settings:
       size: 2 # Size of a team, Default: 2
    same_mode: false # If true, players will have same blocks, Default: false
    double_mode: false # If true, players will have two block instead of one, Default: false
+   sbtt_mode: false # If true, players will be able to craft an item that will allow them to validate one item

@@ -23,7 +23,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
+import fr.kosmosuniverse.kuffleitems.Core.Age;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
+import fr.kosmosuniverse.kuffleitems.Core.ItemManager;
+import fr.kosmosuniverse.kuffleitems.Crafts.Template;
 
 public class Utils {
 	public static String readFileContent(InputStream in) throws IOException {
@@ -183,6 +186,63 @@ public class Utils {
 		}
 			
 		return false;
+	}
+	
+	public static void setupTemplates(KuffleMain km) {
+		ArrayList<Template> templates = new ArrayList<Template>();
+		
+		for (Age age : km.ages) {
+			if (age.number != -1) {
+				String name = age.name;
+				
+				name = name.replace("_Age", "");
+				templates.add(new Template(km, name, getNineMaterials(age.name, km)));
+			}
+		}
+		
+		for (Template t : templates) {
+			km.crafts.addCraft(t);
+			km.addRecipe(t.getRecipe());
+		}
+	}
+	
+	public static void removeTemplates(KuffleMain km) {
+		for (Age age : km.ages) {
+			if (age.number != -1) {
+				String name = age.name;
+				name = name.replace("_Age", "");
+				name = name + "Template";
+				
+				km.removeRecipe(name);
+				km.crafts.removeCraft(name);
+			}
+		}
+	}
+	
+	public static ArrayList<Material> getNineMaterials(String age, KuffleMain km) {
+		ArrayList<Material> compose = new ArrayList<Material>();
+		ArrayList<String> done = new ArrayList<String>();
+		
+		for (int cnt = 0; cnt < 9; cnt++) {
+			done.add(ItemManager.newItem(done, km.allItems.get(age)));
+		}
+		
+		for (String item : done) {
+			compose.add(Material.matchMaterial(item));
+		}
+		
+		done.clear();
+		return compose;
+	}
+	
+	public static void reloadTemplate(KuffleMain km, String name, String age) {
+		km.crafts.removeCraft(name);
+		km.removeRecipe(name);
+		
+		Template t = new Template(km, age, getNineMaterials(age, km));
+		
+		km.crafts.addCraft(t);
+		km.addRecipe(t.getRecipe());
 	}
 }
  

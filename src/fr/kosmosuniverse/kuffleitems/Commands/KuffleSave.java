@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleSave implements CommandExecutor {
 	private KuffleMain km;
@@ -78,6 +79,7 @@ public class KuffleSave implements CommandExecutor {
 			}
 		}
 		
+		Utils.removeTemplates(km);
 		km.scores.clear();
 		km.games.clear();
 		km.paused = false;

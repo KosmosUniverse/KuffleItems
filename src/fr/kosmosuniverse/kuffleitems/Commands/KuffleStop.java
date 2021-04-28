@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleStop implements CommandExecutor {
 	private KuffleMain km;
@@ -42,6 +43,7 @@ public class KuffleStop implements CommandExecutor {
 			km.games.get(playerName).resetBar();
 		}
 		
+		Utils.removeTemplates(km);
 		km.scores.clear();
 		
 		km.teams.resetAll();

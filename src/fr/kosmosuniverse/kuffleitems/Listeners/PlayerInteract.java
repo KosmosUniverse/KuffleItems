@@ -18,8 +18,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
+import fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
+import net.md_5.bungee.api.ChatColor;
 
 public class PlayerInteract implements Listener {
 	private KuffleMain km;
@@ -73,6 +75,26 @@ public class PlayerInteract implements Listener {
 			}
 			
 			Game tmpGame = km.games.get(player.getName());
+
+			if (item.getItemMeta().getDisplayName().contains("Template")) {
+				String name = AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name;
+				name = name.replace("_Age", "");
+				name = name + "Template";
+
+				if (compareItems(item, km.crafts.findItemByName(name))) {
+					tmpGame.found();
+					
+					if (event.getHand() == EquipmentSlot.HAND) {
+						player.getInventory().setItemInMainHand(null);	
+					} else if (event.getHand() == EquipmentSlot.OFF_HAND) {
+						player.getInventory().setItemInOffHand(null);
+					}
+					Utils.reloadTemplate(km, name, AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name);
+					Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + ChatColor.DARK_BLUE + " just used Template !");
+					
+					return ;
+				}
+			}
 			
 			if (tmpGame != null && tmpGame.getCurrentItem() != null) {
 				if (!km.config.getDouble() && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {

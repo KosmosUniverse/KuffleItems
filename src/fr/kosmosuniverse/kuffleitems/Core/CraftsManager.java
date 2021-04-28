@@ -14,6 +14,17 @@ public class CraftsManager {
 	private ArrayList<ACrafts> recipes = new ArrayList<ACrafts>();
 	
 	public CraftsManager(KuffleMain _km) {
+		recipes.add(new EndPortalFrame(_km));
+		recipes.add(new EndTeleporter(_km));
+		recipes.add(new OverworldTeleporter(_km));
+		
+		if ("1.16".equalsIgnoreCase(Utils.getVersion())) {
+			recipes.add(new ChainmailHelmet(_km));
+			recipes.add(new ChainmailChestplate(_km));
+			recipes.add(new ChainmailLeggings(_km));
+			recipes.add(new ChainmailBoots(_km));
+		}
+		
 		if (!_km.config.getCrafts()) {
 			return;
 		}
@@ -38,21 +49,35 @@ public class CraftsManager {
 		
 		recipes.add(new RedNetherBrick(_km));
 		
-		recipes.add(new EndPortalFrame(_km));
 		recipes.add(new Bell(_km));
-		recipes.add(new EndTeleporter(_km));
-		recipes.add(new OverworldTeleporter(_km));
 		
 		recipes.add(new Saddle(_km));
 		recipes.add(new IronHorseArmor(_km));
 		recipes.add(new GoldHorseArmor(_km));
 		recipes.add(new DiamondHorseArmor(_km));
+	}
+	
+	public void clear() {
+		if (recipes != null) {
+			recipes.clear();
+		}
+	}
+	
+	public void addCraft(ACrafts craft) {
+		recipes.add(craft);
+	}
+	
+	public void removeCraft(String name) {
+		ACrafts craft = null;
 		
-		if ("1.16".equalsIgnoreCase(Utils.getVersion())) {
-			recipes.add(new ChainmailHelmet(_km));
-			recipes.add(new ChainmailChestplate(_km));
-			recipes.add(new ChainmailLeggings(_km));
-			recipes.add(new ChainmailBoots(_km));
+		for (ACrafts tmp : recipes) {
+			if (tmp.getName().equals(name)) {
+				craft = tmp;
+			}
+		}
+		
+		if (craft != null) {
+			recipes.remove(craft);
 		}
 	}
 	

@@ -18,6 +18,7 @@ public class Config {
 	private boolean team;
 	private boolean same;
 	private boolean duoMode;
+	private boolean sbttMode;
 	private int teamSize;
 	private int spreadMin;
 	private int spreadMax;
@@ -57,6 +58,7 @@ public class Config {
 		booleanElems.put("TEAM", "setTeam");
 		booleanElems.put("SAME_MODE", "setSame");
 		booleanElems.put("DOUBLE_MODE", "setDoubleMode");
+		booleanElems.put("SBTT_MODE", "setSbttMode");
 
 		booleanRet.put("SATURATION", ret);
 		booleanRet.put("SPREADPLAYERS", ret);
@@ -66,6 +68,7 @@ public class Config {
 		booleanRet.put("TEAM", ret);
 		booleanRet.put("SAME_MODE", ret);
 		booleanRet.put("DOUBLE_MODE", ret);
+		booleanRet.put("SBTT_MODE", ret);
 
 		intElems.put("SPREAD_MIN_DISTANCE", "setSpreadDistance");
 		intElems.put("SPREAD_MIN_RADIUS", "setSpreadRadius");
@@ -278,6 +281,7 @@ public class Config {
 		sb.append("Team Size: ").append(teamSize).append("\n");
 		sb.append("Same mode: ").append(same).append("\n");
 		sb.append("Double mode: ").append(duoMode).append("\n");
+		sb.append("SBTT mode: ").append(sbttMode).append("\n");
 
 		return sb.toString();
 	}
@@ -312,6 +316,10 @@ public class Config {
 	
 	public boolean getDouble() {
 		return duoMode;
+	}
+	
+	public boolean getSBTT() {
+		return sbttMode;
 	}
 
 	public int getTeamSize() {
@@ -401,6 +409,12 @@ public class Config {
 	
 	public boolean setDoubleMode(boolean _duoMode) {
 		duoMode = _duoMode;
+		
+		return true;
+	}
+	
+	public boolean setSbttMode(boolean _sbttMode) {
+		sbttMode = _sbttMode;
 		
 		return true;
 	}

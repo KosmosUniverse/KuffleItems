@@ -114,6 +114,10 @@ public class KuffleLoad implements CommandExecutor {
 				for (String playerName : km.games.keySet()) {
 					ActionBar.sendRawTitle("{\"text\":\"5\",\"bold\":true,\"color\":\"red\"}", km.games.get(playerName).getPlayer());
 				}
+				
+				if (km.config.getSBTT()) {
+					Utils.setupTemplates(km);
+				}
 			}
 		}, 20);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
