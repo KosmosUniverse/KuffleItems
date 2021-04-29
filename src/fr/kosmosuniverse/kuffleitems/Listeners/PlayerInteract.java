@@ -121,11 +121,11 @@ public class PlayerInteract implements Listener {
 				player.setLevel(player.getLevel() - 5);
 			}
 		} else if (compareItems(item, km.crafts.findItemByName("OverworldTeleporter"))) {
-			if (player.getLevel() < (10 - xpSub)) {
+			if (player.getLevel() < xpSub) {
 				event.setCancelled(true);
-				player.sendMessage("You need " + (10 - xpSub) + " xp levels to craft this item.");
+				player.sendMessage("You need " + xpSub + " xp levels to craft this item.");
 			} else {
-				player.setLevel(player.getLevel() - (10 - xpSub));
+				player.setLevel(player.getLevel() - xpSub);
 			}
 		}
 	}

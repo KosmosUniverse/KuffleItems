@@ -206,6 +206,7 @@ public class Game {
 		currentItem = null;
 		itemCount = 1;
 		age++;
+		time = time + km.config.getAddedTime();
 		player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1f, 1f);
 		updatePlayerListName();
 		itemScore.setScore(itemCount);

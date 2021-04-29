@@ -57,5 +57,4 @@ public class KuffleConfigTab implements TabCompleter {
 		
 		return null;
 	}
-
 }

@@ -632,7 +632,7 @@
 			"mushroom_stew"
 		],
 		"rock" : [
-			"nether_bricks"
+			"nether_brick"
 		],
 		"ore" : [
 			"nether_quartz_ore"
@@ -658,6 +658,7 @@
 			"end_stone_brick_stairs",
 			"end_stone_brick_wall",
 			"end_stone_bricks",
+			"ender_chest",
 			"ender_eye",
 			"purpur_block",
 			"purpur_pillar",
@@ -736,9 +737,7 @@
 			"cobweb",
 			"filled_map",
 			"lead",
-			"scaffolding",
-			"sponge",
-			"wet_sponge"
+			"scaffolding"
 		],
 		"banner" : [
 			"blue_banner",
@@ -838,8 +837,7 @@
 			"emerald_ore"
 		],
 		"end" : [
-			"end_crystal",
-			"ender_chest"
+			"end_crystal"
 		],
 		"gray" : [
 			"gray_glazed_terracotta"
@@ -977,6 +975,10 @@
 			"prismarine_wall",
 			"sea_lantern",
 			"sea_pickle"
+		],
+		"diversity" : [
+			"sponge",
+			"wet_sponge"
 		]
 	}
 }

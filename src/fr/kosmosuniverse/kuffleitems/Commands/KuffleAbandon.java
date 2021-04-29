@@ -1,20 +1,16 @@
 package fr.kosmosuniverse.kuffleitems.Commands;
 
-import java.util.ArrayList;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
-import fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 
-public class KuffleAgeItems implements CommandExecutor  {
+public class KuffleAbandon implements CommandExecutor  {
 	private KuffleMain km;
 
-	public KuffleAgeItems(KuffleMain _km) {
+	public KuffleAbandon(KuffleMain _km) {
 		km = _km;
 	}
 	
@@ -25,14 +21,10 @@ public class KuffleAgeItems implements CommandExecutor  {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-ageitems>");
+		km.logs.logMsg(player, "achieved command <ki-abandon>");
 		
-		if (!player.hasPermission("ki-ageitems")) {
+		if (!player.hasPermission("ki-abandon")) {
 			km.logs.writeMsg(player, "You are not allowed to do this command.");
-			return false;
-		}
-		
-		if (args.length > 1) {
 			return false;
 		}
 		
@@ -42,22 +34,7 @@ public class KuffleAgeItems implements CommandExecutor  {
 				return true;
 			}
 			
-			String age;
-			
-			if (args.length == 0) {
-				age = AgeManager.getAgeByNumber(km.ages, km.games.get(player.getName()).getAge()).name;	
-			} else {
-				age = args[0];
-				
-				if (!AgeManager.ageExists(km.ages, age)) {
-					player.sendMessage("This age does not exist.");
-					return false;
-				}
-			}
-			
-			ArrayList<Inventory> ageItems = km.itemsInvs.get(age);
-			
-			player.openInventory(ageItems.get(0));
+			km.games.get(player.getName()).setLose(true);
 		} else {
 			km.logs.writeMsg(player, "The game has not launched yet.");			
 		}

@@ -1,5 +1,5 @@
 name: KuffleItems
-version: 1.5
+version: 1.5.1
 author: KosmosUniverse
 main: fr.kosmosuniverse.kuffleitems.KuffleMain
 api-version: 1.15
@@ -84,11 +84,14 @@ commands:
    ki-skip:
       usage: /<command>
       description: command to skip a block
+   ki-abandon:
+      usage: /<command>
+      description: command to abandon a game
    ki-crafts:
       usage: /<command>
       description: command to see custom crafts
    ki-ageitems:
-      usage: /<command>
+      usage: /<command> [age name]
       description: command to see current age blocks
    ki-lang:
       usage: /<command> [lang]
@@ -157,6 +160,9 @@ permissions:
       default: op
    ki-skip:
       description: command to skip a block
+      default: true
+   ki-abandon:
+      description: command to abandon a game
       default: true
    ki-crafts:
       description: command to see custom crafts

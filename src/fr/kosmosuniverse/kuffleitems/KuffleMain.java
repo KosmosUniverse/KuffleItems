@@ -131,6 +131,7 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-crafts").setExecutor(new KuffleCrafts(this));
 		getCommand("ki-lang").setExecutor(new KuffleLang(this));
 		getCommand("ki-skip").setExecutor(new KuffleSkip(this));
+		getCommand("ki-abandon").setExecutor(new KuffleAbandon(this));
 		getCommand("ki-adminskip").setExecutor(new KuffleSkip(this));
 		getCommand("ki-validate").setExecutor(new KuffleValidate(this));
 		getCommand("ki-validate-age").setExecutor(new KuffleValidate(this));
@@ -149,6 +150,7 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-config").setTabCompleter(new KuffleConfigTab(this));
 		getCommand("ki-list").setTabCompleter(new KuffleListTab(this));
 		getCommand("ki-lang").setTabCompleter(new KuffleLangTab(this));
+		getCommand("ki-ageitems").setTabCompleter(new KuffleAgeItemsTab(this));
 		getCommand("ki-validate").setTabCompleter(new KuffleValidateTab(this));
 		getCommand("ki-validate-age").setTabCompleter(new KuffleValidateTab(this));
 		
