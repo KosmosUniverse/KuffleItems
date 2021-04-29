@@ -24,7 +24,6 @@ public class KuffleAgeItemsTab implements TabCompleter  {
 			String age = AgeManager.getAgeByNumber(km.ages, cnt).name;
 
 			ages.add(age);
-			System.out.println("age: " + age);
 		}
 	}
 	

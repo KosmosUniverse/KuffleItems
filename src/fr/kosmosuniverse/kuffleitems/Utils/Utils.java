@@ -73,6 +73,26 @@ public class Utils {
 		return tmp.delete();
 	}
 	
+	public static int playeLasts(KuffleMain km) {
+		int notEnded = 0;
+		
+		for (String playerName : km.games.keySet()) {
+			if (!km.games.get(playerName).getFinished()) {
+				notEnded++;
+			}
+		}
+		
+		return notEnded;
+	}
+	
+	public static void forceFinish(KuffleMain km, int gameRank) {
+		for (String playerName : km.games.keySet()) {
+			if (!km.games.get(playerName).getFinished()) {
+				km.games.get(playerName).finish(gameRank);
+			}
+		}
+	}
+	
 	public static void loadGame(KuffleMain _km, Player player) {
 		FileReader reader = null;
 		JSONParser parser = new JSONParser();

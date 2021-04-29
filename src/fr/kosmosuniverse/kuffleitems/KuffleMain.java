@@ -37,6 +37,7 @@ public class KuffleMain extends JavaPlugin {
 	public HashMap<String, HashMap<String, String>> allLangs;
 	
 	public HashMap<String, ArrayList<String>> allItems = new HashMap<String, ArrayList<String>>();
+	public HashMap<String, ArrayList<String>> allTimes = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<Inventory>> itemsInvs;
 	
 	public HashMap<String, Game> games = new HashMap<String, Game>();

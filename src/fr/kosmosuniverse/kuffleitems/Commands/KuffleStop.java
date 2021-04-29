@@ -43,6 +43,12 @@ public class KuffleStop implements CommandExecutor {
 			km.games.get(playerName).resetBar();
 		}
 		
+		for (String playerName : km.allTimes.keySet()) {
+			km.allTimes.get(playerName).clear();
+		}
+		
+		km.allTimes.clear();
+		
 		Utils.removeTemplates(km);
 		km.scores.clear();
 		

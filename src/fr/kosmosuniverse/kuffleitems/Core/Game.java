@@ -2,6 +2,8 @@ package fr.kosmosuniverse.kuffleitems.Core;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -203,6 +205,11 @@ public class Game {
 			RewardManager.givePlayerReward(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age).name), player, km.ages,  AgeManager.getAgeByNumber(km.ages, age).number);
 		}
 		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();
+		
+		km.allTimes.get(player.getName()).set(age, dtf.format(now).replace(" ", " at "));
+		
 		currentItem = null;
 		itemCount = 1;
 		age++;
@@ -211,7 +218,7 @@ public class Game {
 		updatePlayerListName();
 		itemScore.setScore(itemCount);
 		updateBar();
-		Bukkit.broadcastMessage("§1" + player.getName() + " has moved to the §6§l" + AgeManager.getAgeByNumber(km.ages, age).name.replace("_", " ") + "§1.");
+		Bukkit.broadcastMessage("§6§l" + player.getName() + ChatColor.BLUE + " has moved to the " + AgeManager.getAgeByNumber(km.ages, age).color + AgeManager.getAgeByNumber(km.ages, age).name.replace("_", " ") + "§1.");
 	}
 	
 	public void finish(int _gameRank) {
@@ -226,8 +233,6 @@ public class Game {
 			ageDisplay.setProgress(1.0f);	
 		}
 		
-		age = -1;
-		
 		
 		updatePlayerListName();
 		km.playerRank.put(player.getName(), gameRank);
@@ -235,6 +240,21 @@ public class Game {
 		
 		for (PotionEffect pe : player.getActivePotionEffects()) {
 			player.removePotionEffect(pe.getType());
+		}
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
+		LocalDateTime now = LocalDateTime.now();
+		
+		km.allTimes.get(player.getName()).set(age, dtf.format(now).replace(" ", " at "));
+		
+		age = -1;
+		
+		player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.BLUE + " Times Tab:");
+		
+		for (int i = 0; i < km.config.getMaxAges(); i++) {
+			Age age = AgeManager.getAgeByNumber(km.ages, i);
+			
+			player.sendMessage(" - Finished " + age.color + age.name + ChatColor.RESET + " on " + km.allTimes.get(player.getName()).get(i));
 		}
 	}
 	

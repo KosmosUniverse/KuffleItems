@@ -9,11 +9,13 @@ import org.bukkit.scheduler.BukkitTask;
 
 import fr.kosmosuniverse.kuffleitems.Core.ActionBar;
 import fr.kosmosuniverse.kuffleitems.Utils.Pair;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class GameLoop {
 	private KuffleMain km;
 	private BukkitTask runnable;
+	private boolean finished = false;
 	
 	public GameLoop(KuffleMain _km) {
 		km = _km;
@@ -29,6 +31,26 @@ public class GameLoop {
 				
 				int bestRank = getBestRank();
 				int worseRank = getWorseRank();
+				
+				if (km.config.getGameEnd() && !finished) {
+					int lasts = Utils.playeLasts(km);
+					
+					if (lasts == 0) {
+						for (String playerName : km.allTimes.keySet()) {
+							Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ChatColor.BLUE + " Times Tab:");
+							
+							for (int i = 0; i < km.config.getMaxAges(); i++) {
+								Age age = AgeManager.getAgeByNumber(km.ages, i);
+								
+								Bukkit.broadcastMessage(" - Finished " + age.color + age.name + ChatColor.RESET + " on " + km.allTimes.get(playerName).get(i));
+							}
+						}
+						
+						finished = true;
+					} else if (lasts == 1 && km.config.getEndOne()) {
+						Utils.forceFinish(km, bestRank);
+					}
+				}
 				
 				for (String playerName : km.games.keySet()) {
 					Game tmpGame = km.games.get(playerName);
@@ -47,7 +69,7 @@ public class GameLoop {
 									tmpGame.finish(bestRank);
 									bestRank = getBestRank();
 									km.logs.logBroadcastMsg(tmpGame.getPlayer().getName() + " complete this game !");
-									Bukkit.broadcastMessage("§1" + tmpGame.getPlayer().getName() + " §6§lcomplete this game !§r");
+									Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + tmpGame.getPlayer().getName() + ChatColor.RESET + "" + ChatColor.BLUE + " complete this game !§r");
 								} else {
 									if (!km.config.getTeam() || checkTeamMates(tmpGame)) {
 										tmpGame.nextAge();
@@ -60,7 +82,7 @@ public class GameLoop {
 							}
 						} else {
 							if (System.currentTimeMillis() - tmpGame.getTimeShuffle() > (tmpGame.getTime() * 60000)) {
-								tmpGame.getPlayer().sendMessage("§4You didn't find your block. Let's give you another one.§r");
+								tmpGame.getPlayer().sendMessage(ChatColor.RED + "You didn't find your block. Let's give you another one.");
 								newItem(tmpGame);
 							} else if (km.config.getDouble() && !tmpGame.getCurrentItem().contains("/")) {
 								String currentTmp = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));

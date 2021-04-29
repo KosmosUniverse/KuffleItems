@@ -34,6 +34,12 @@ public class KuffleAbandon implements CommandExecutor  {
 				return true;
 			}
 			
+			for (int i = 0; i < km.config.getMaxAges(); i++) {
+				if (i >= km.games.get(player.getName()).getAge()) {
+					km.allTimes.get(player.getName()).set(i, "Abandon");
+				}
+			}
+			
 			km.games.get(player.getName()).setLose(true);
 		} else {
 			km.logs.writeMsg(player, "The game has not launched yet.");			

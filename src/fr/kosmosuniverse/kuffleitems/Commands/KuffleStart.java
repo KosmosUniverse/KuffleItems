@@ -1,5 +1,6 @@
 package fr.kosmosuniverse.kuffleitems.Commands;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import org.bukkit.Bukkit;
@@ -133,11 +134,21 @@ public class KuffleStart implements CommandExecutor {
 			}
 		}, 20 + spread);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
+				ArrayList<String> times = new ArrayList<String>();
+				
+				for (int i = 0; i < km.config.getMaxAges(); i++) {
+					times.add("N/A");
+				}
+				
 				for (String playerName : km.games.keySet()) {
 					ActionBar.sendRawTitle("{\"text\":\"4\",\"bold\":true,\"color\":\"gold\"}", km.games.get(playerName).getPlayer());
+					km.allTimes.put(playerName, (ArrayList<String>) times.clone());
 				}
+				
+				times.clear();
 			}
 		}, 40 + spread);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {

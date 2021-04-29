@@ -19,6 +19,8 @@ public class Config {
 	private boolean same;
 	private boolean duoMode;
 	private boolean sbttMode;
+	private boolean gameEnd;
+	private boolean endOne;
 	private int teamSize;
 	private int spreadMin;
 	private int spreadMax;
@@ -59,6 +61,8 @@ public class Config {
 		booleanElems.put("SAME_MODE", "setSame");
 		booleanElems.put("DOUBLE_MODE", "setDoubleMode");
 		booleanElems.put("SBTT_MODE", "setSbttMode");
+		booleanElems.put("AUTO_DETECT_END", "setGameEnd");
+		booleanElems.put("END_WHEN_ONE", "setEndOne");
 
 		booleanRet.put("SATURATION", ret);
 		booleanRet.put("SPREADPLAYERS", ret);
@@ -69,6 +73,8 @@ public class Config {
 		booleanRet.put("SAME_MODE", ret);
 		booleanRet.put("DOUBLE_MODE", ret);
 		booleanRet.put("SBTT_MODE", ret);
+		booleanRet.put("AUTO_DETECT_END", ret);
+		booleanRet.put("END_WHEN_ONE", ret);
 
 		intElems.put("SPREAD_MIN_DISTANCE", "setSpreadDistance");
 		intElems.put("SPREAD_MIN_RADIUS", "setSpreadRadius");
@@ -230,6 +236,17 @@ public class Config {
 			System.out.println("Config for enabling same mode is not correct, use of default value.");
 			configFile.set("game_settings.same_mode", false);
 		}
+		
+		if (!configFile.contains("game_settings.auto_detect_game_end.enable")) {
+			System.out.println("Config for enabling auto detect game end is not correct, use of default value.");
+			configFile.set("game_settings.auto_detect_game_end.enable", false);
+		}
+		
+		if (!configFile.contains("game_settings.auto_detect_game_end.end_when_one") ||
+				(!gameEnd && configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one"))) {
+			System.out.println("Config for enabling game end when one is not correct, use of default value.");
+			configFile.set("game_settings.auto_detect_game_end.end_when_one", false);
+		}
 
 		saturation = configFile.getBoolean("game_settings.saturation");
 		spread = configFile.getBoolean("game_settings.spreadplayers.enable");
@@ -238,7 +255,9 @@ public class Config {
 		crafts = configFile.getBoolean("game_settings.custom_crafts");
 		team = configFile.getBoolean("game_settings.team.enable");
 		same = configFile.getBoolean("game_settings.same_mode");
-
+		gameEnd = configFile.getBoolean("game_settings.auto_detect_game_end.enable");
+		endOne = configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one");
+		
 		spreadMin = configFile.getInt("game_settings.spreadplayers.minimum_distance");
 		spreadMax = configFile.getInt("game_settings.spreadplayers.minimum_radius");
 		blockPerAge = configFile.getInt("game_settings.block_per_age");
@@ -277,6 +296,8 @@ public class Config {
 		sb.append("Added duration: ").append(addedTime).append("\n");
 		sb.append("Lang: ").append(lang).append("\n");
 		sb.append("Level: ").append(LevelManager.getLevelByNumber(km.levels, level).name).append("\n");
+		sb.append("Detect Game End: ").append(gameEnd).append("\n");
+		sb.append("End game at one: ").append(endOne).append("\n");
 		sb.append("Team: ").append(team).append("\n");
 		sb.append("Team Size: ").append(teamSize).append("\n");
 		sb.append("Same mode: ").append(same).append("\n");
@@ -320,6 +341,14 @@ public class Config {
 	
 	public boolean getSBTT() {
 		return sbttMode;
+	}
+	
+	public boolean getGameEnd() {
+		return gameEnd;
+	}
+	
+	public boolean getEndOne() {
+		return endOne;
 	}
 
 	public int getTeamSize() {
@@ -415,6 +444,26 @@ public class Config {
 	
 	public boolean setSbttMode(boolean _sbttMode) {
 		sbttMode = _sbttMode;
+		
+		return true;
+	}
+	
+	public boolean setGameEnd(boolean _gameEnd) {
+		gameEnd = _gameEnd;
+		
+		if (!gameEnd) {
+			endOne = false;
+		}
+		
+		return true;
+	}
+	
+	public boolean setEndOne(boolean _endOne) {
+		if (!gameEnd) {
+			return false;
+		}
+		
+		endOne = _endOne;
 		
 		return true;
 	}
