@@ -23,7 +23,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
-import fr.kosmosuniverse.kuffleitems.Core.Age;
+import fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 import fr.kosmosuniverse.kuffleitems.Core.Game;
 import fr.kosmosuniverse.kuffleitems.Core.ItemManager;
 import fr.kosmosuniverse.kuffleitems.Crafts.Template;
@@ -211,13 +211,11 @@ public class Utils {
 	public static void setupTemplates(KuffleMain km) {
 		ArrayList<Template> templates = new ArrayList<Template>();
 		
-		for (Age age : km.ages) {
-			if (age.number != -1) {
-				String name = age.name;
-				
-				name = name.replace("_Age", "");
-				templates.add(new Template(km, name, getNineMaterials(age.name, km)));
-			}
+		for (int i = 0; i < km.config.getMaxAges(); i++)  {
+			String name = AgeManager.getAgeByNumber(km.ages, i).name;
+			
+			name = name.replace("_Age", "");
+			templates.add(new Template(km, name, getMaterials(AgeManager.getAgeByNumber(km.ages, i).name, km)));
 		}
 		
 		for (Template t : templates) {
@@ -227,24 +225,22 @@ public class Utils {
 	}
 	
 	public static void removeTemplates(KuffleMain km) {
-		for (Age age : km.ages) {
-			if (age.number != -1) {
-				String name = age.name;
-				name = name.replace("_Age", "");
-				name = name + "Template";
-				
-				km.removeRecipe(name);
-				km.crafts.removeCraft(name);
-			}
+		for (int i = 0; i < km.config.getMaxAges(); i++)  {
+			String name = AgeManager.getAgeByNumber(km.ages, i).name;
+			name = name.replace("_Age", "");
+			name = name + "Template";
+			
+			km.removeRecipe(name);
+			km.crafts.removeCraft(name);
 		}
 	}
 	
-	public static ArrayList<Material> getNineMaterials(String age, KuffleMain km) {
+	public static ArrayList<Material> getMaterials(String age, KuffleMain km) {
 		ArrayList<Material> compose = new ArrayList<Material>();
 		ArrayList<String> done = new ArrayList<String>();
 		
-		for (int cnt = 0; cnt < 9; cnt++) {
-			done.add(ItemManager.newItem(done, km.allItems.get(age)));
+		for (int cnt = 0; cnt < km.config.getSBTTAmount(); cnt++) {
+			done.add(ItemManager.newItem(done, km.allSbtts.get(age)));
 		}
 		
 		for (String item : done) {
@@ -259,7 +255,7 @@ public class Utils {
 		km.crafts.removeCraft(name);
 		km.removeRecipe(name);
 		
-		Template t = new Template(km, age, getNineMaterials(age, km));
+		Template t = new Template(km, age, getMaterials(age, km));
 		
 		km.crafts.addCraft(t);
 		km.addRecipe(t.getRecipe());

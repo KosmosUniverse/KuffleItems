@@ -35,7 +35,7 @@ public class Template extends ACrafts {
 		
 		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), item);
 		
-		for (int cnt = 0; cnt < 9; cnt++) {
+		for (int cnt = 0; cnt < _km.config.getSBTTAmount(); cnt++) {
 			((ShapelessRecipe) recipe).addIngredient(compose.get(cnt));
 		}
 	}
@@ -43,38 +43,35 @@ public class Template extends ACrafts {
 	@Override
 	public Inventory getInventoryRecipe() {
 		Inventory inv = Bukkit.createInventory(null,  27, "§8" + name);
+		ItemStack grayPane = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
 		ItemStack limePane = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
 		ItemStack redPane = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-		ItemMeta itM = limePane.getItemMeta();
+		ItemMeta itM = grayPane.getItemMeta();
 		
+		itM.setDisplayName(" ");
+		grayPane.setItemMeta(itM);
+		itM = limePane.getItemMeta();
 		itM.setDisplayName(" ");
 		limePane.setItemMeta(itM);
 		itM = redPane.getItemMeta();
 		itM.setDisplayName("<- Back");
 		redPane.setItemMeta(itM);
 		
+		int cnt = 0;
+		
 		for (int i = 0; i < 27; i++) {
 			if (i == 0) {
 				inv.setItem(i, new ItemStack(redPane));
-			} else if (i == 3) {
-				inv.setItem(i, new ItemStack(compose.get(0)));
-			} else if (i == 4) {
-				inv.setItem(i, new ItemStack(compose.get(1)));
-			} else if (i == 5) {
-				inv.setItem(i, new ItemStack(compose.get(2)));
-			} else if (i == 12) {
-				inv.setItem(i, new ItemStack(compose.get(3)));
-			} else if (i == 13) {
-				inv.setItem(i, new ItemStack(compose.get(4)));
-			} else if (i == 14) {
-				inv.setItem(i, new ItemStack(compose.get(5)));
-			} else if (i == 21) {
-				inv.setItem(i, new ItemStack(compose.get(6)));
-			} else if (i == 22) {
-				inv.setItem(i, new ItemStack(compose.get(7)));
-			} else if (i == 23) {
-				inv.setItem(i, new ItemStack(compose.get(8)));
-			}else if (i == 16) {
+			} else if (i == 3 || i == 4 || i == 5 ||
+					i == 12 || i == 13 || i == 14 ||
+					i == 21 || i == 22 || i == 23) {
+				if (cnt < compose.size()) {
+					inv.setItem(i, new ItemStack(compose.get(cnt)));
+					cnt++;
+				} else {
+					inv.setItem(i, new ItemStack(grayPane));
+				}
+			} else if (i == 16) {
 				inv.setItem(i, item);
 			} else {
 				inv.setItem(i, new ItemStack(limePane));

@@ -242,19 +242,26 @@ public class Game {
 			player.removePotionEffect(pe.getType());
 		}
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
-		LocalDateTime now = LocalDateTime.now();
-		
-		km.allTimes.get(player.getName()).set(age, dtf.format(now).replace(" ", " at "));
+		if (lose) {
+			for (int cnt = age; cnt < km.config.getMaxAges(); cnt++) {
+				km.allTimes.get(player.getName()).set(cnt, "Abandon");
+			}
+		} else {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
+			LocalDateTime now = LocalDateTime.now();
+			
+			km.allTimes.get(player.getName()).set(age, dtf.format(now).replace(" ", " at "));
+		}
 		
 		age = -1;
 		
 		player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.BLUE + " Times Tab:");
+		player.sendMessage(" - Start game on " + km.start);
 		
 		for (int i = 0; i < km.config.getMaxAges(); i++) {
 			Age age = AgeManager.getAgeByNumber(km.ages, i);
 			
-			player.sendMessage(" - Finished " + age.color + age.name + ChatColor.RESET + " on " + km.allTimes.get(player.getName()).get(i));
+			player.sendMessage(" - Finished " + age.color + age.name + ChatColor.RESET + " on: " + km.allTimes.get(player.getName()).get(i));
 		}
 	}
 	

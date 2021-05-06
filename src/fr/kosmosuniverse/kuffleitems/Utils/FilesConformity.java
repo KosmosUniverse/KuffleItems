@@ -111,7 +111,8 @@ public class FilesConformity {
 			return ageConformity(content);
 		} else if (file.equals("items_lang.json")) {
 			return langConformity(content);
-		} else if (file.equals("items_" + Utils.getVersion() + ".json")) {
+		} else if (file.equals("items_" + Utils.getVersion() + ".json") ||
+				file.equals("sbtt_" + Utils.getVersion() + ".json")) {
 			return itemsConformity(km, content);
 		} else if (file.equals("rewards_" + Utils.getVersion() + ".json")) {
 			return rewardsConformity(km, content);

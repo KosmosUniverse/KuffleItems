@@ -84,13 +84,16 @@ public class PlayerInteract implements Listener {
 				if (compareItems(item, km.crafts.findItemByName(name))) {
 					tmpGame.found();
 					
+					event.setCancelled(true);
+					
 					if (event.getHand() == EquipmentSlot.HAND) {
 						player.getInventory().setItemInMainHand(null);	
 					} else if (event.getHand() == EquipmentSlot.OFF_HAND) {
 						player.getInventory().setItemInOffHand(null);
 					}
+					
 					Utils.reloadTemplate(km, name, AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name);
-					Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + ChatColor.DARK_BLUE + " just used Template !");
+					Bukkit.broadcastMessage(ChatColor.GOLD + player.getName() + ChatColor.BLUE + " just used Template !");
 					
 					return ;
 				}

@@ -30,7 +30,7 @@ public class GameLoop {
 				}
 				
 				int bestRank = getBestRank();
-				int worseRank = getWorseRank();
+				int worstRank = getWorstRank();
 				
 				if (km.config.getGameEnd() && !finished) {
 					int lasts = Utils.playeLasts(km);
@@ -57,8 +57,8 @@ public class GameLoop {
 					
 					if (tmpGame.getLose()) {
 						if (!tmpGame.getFinished()) {
-							tmpGame.finish(worseRank);
-							worseRank = getWorseRank();
+							tmpGame.finish(worstRank);
+							worstRank = getWorstRank();
 						}
 					} else if (tmpGame.getFinished()) {
 						tmpGame.randomBarColor();
@@ -144,7 +144,8 @@ public class GameLoop {
 	private boolean checkTeamMates(Game tmpGame) {
 		for (String playerName : km.games.keySet()) {
 			if (km.games.get(playerName).getTeamName().equals(tmpGame.getTeamName()) &&
-					km.games.get(playerName).getItemCount() < (km.config.getBlockPerAge() + 1) && km.games.get(playerName).getAge() <= tmpGame.getAge()) {
+					km.games.get(playerName).getItemCount() < (km.config.getBlockPerAge() + 1) &&
+					tmpGame.getAge() <= km.games.get(playerName).getAge()) {
 				return false;
 			}
 		}
@@ -162,7 +163,7 @@ public class GameLoop {
 		return cntRank;
 	}
 	
-	private int getWorseRank() {
+	private int getWorstRank() {
 		int cntRank = km.playerRank.size();
 		
 		while (cntRank >= 1 && km.playerRank.containsValue(cntRank)) {

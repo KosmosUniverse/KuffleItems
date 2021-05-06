@@ -21,6 +21,7 @@ public class Config {
 	private boolean sbttMode;
 	private boolean gameEnd;
 	private boolean endOne;
+	private int sbttAmount;
 	private int teamSize;
 	private int spreadMin;
 	private int spreadMax;
@@ -84,7 +85,8 @@ public class Config {
 		intElems.put("START_DURATION", "setStartTime");
 		intElems.put("ADDED_DURATION", "setAddedTime");
 		intElems.put("TEAMSIZE", "setTeamSize");
-
+		intElems.put("SBTT_AMOUNT", "setSbttAmount");
+		
 		ret = new ArrayList<String>();
 
 		for (int i = 1; i < 11; i++) {
@@ -146,6 +148,14 @@ public class Config {
 
 		intRet.put("ADDED_DURATION", ret);
 
+		ret = new ArrayList<String>();
+
+		for (int i = 1; i < 10; i++) {
+			ret.add("" + i);
+		}
+		
+		intRet.put("SBTT_AMOUNT", ret);
+		
 		ret = new ArrayList<String>();
 
 		for (Level l : km.levels) {
@@ -242,10 +252,24 @@ public class Config {
 			configFile.set("game_settings.auto_detect_game_end.enable", false);
 		}
 		
+		gameEnd = configFile.getBoolean("game_settings.auto_detect_game_end.enable");
+		
 		if (!configFile.contains("game_settings.auto_detect_game_end.end_when_one") ||
 				(!gameEnd && configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one"))) {
 			System.out.println("Config for enabling game end when one is not correct, use of default value.");
 			configFile.set("game_settings.auto_detect_game_end.end_when_one", false);
+		}
+		
+		if (!configFile.contains("game_settings.sbtt_mode.enable")) {
+			System.out.println("Config for enabling SBTT mode is not correct, use of default value.");
+			configFile.set("game_settings.sbtt_mode.enable", false);
+		}
+		
+		if (!configFile.contains("game_settings.sbtt_mode.amount") ||
+				configFile.getInt("game_settings.sbtt_mode.amount") < 1 ||
+				configFile.getInt("game_settings.sbtt_mode.amount") > 9) {
+			System.out.println("Config for SBTT item amount is not correct, use of default value.");
+			configFile.set("game_settings.sbtt_mode.amount", 4);
 		}
 
 		saturation = configFile.getBoolean("game_settings.saturation");
@@ -255,8 +279,8 @@ public class Config {
 		crafts = configFile.getBoolean("game_settings.custom_crafts");
 		team = configFile.getBoolean("game_settings.team.enable");
 		same = configFile.getBoolean("game_settings.same_mode");
-		gameEnd = configFile.getBoolean("game_settings.auto_detect_game_end.enable");
 		endOne = configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one");
+		sbttMode = configFile.getBoolean("game_settings.sbtt_mode.enable");
 		
 		spreadMin = configFile.getInt("game_settings.spreadplayers.minimum_distance");
 		spreadMax = configFile.getInt("game_settings.spreadplayers.minimum_radius");
@@ -267,6 +291,7 @@ public class Config {
 		addedTime = configFile.getInt("game_settings.time_added");
 		level = configFile.getInt("game_settings.level");
 		teamSize = configFile.getInt("game_settings.team.size");
+		sbttAmount = configFile.getInt("game_settings.sbtt_mode.amount");
 
 		lang = configFile.getString("game_settings.lang");
 
@@ -303,8 +328,33 @@ public class Config {
 		sb.append("Same mode: ").append(same).append("\n");
 		sb.append("Double mode: ").append(duoMode).append("\n");
 		sb.append("SBTT mode: ").append(sbttMode).append("\n");
+		sb.append("SBTT amount: ").append(sbttAmount).append("\n");
 
 		return sb.toString();
+	}
+	
+	public void clear() {
+		ret.clear();
+		
+		booleanElems.clear();
+		intElems.clear();
+		stringElems.clear();
+		
+		for (String config : booleanRet.keySet()) {
+			booleanRet.get(config).clear();
+		}
+		
+		for (String config : intRet.keySet()) {
+			intRet.get(config).clear();
+		}
+		
+		for (String config : stringRet.keySet()) {
+			stringRet.get(config).clear();
+		}
+		
+		booleanRet.clear();
+		intRet.clear();
+		stringRet.clear();
 	}
 
 	public boolean getSaturation() {
@@ -381,6 +431,10 @@ public class Config {
 
 	public int getSpreadRadius() {
 		return spreadMax;
+	}
+	
+	public int getSBTTAmount() {
+		return sbttAmount;
 	}
 
 	public Level getLevel() {
@@ -469,6 +523,10 @@ public class Config {
 	}
 
  	public boolean setTeamSize(int _teamSize) {
+ 		if (km.gameStarted) {
+			return false;
+		}
+ 		
 		if (km.teams.getTeams().size() > 0 && km.teams.getMaxTeamSize() > _teamSize) {
 			return false;
 		}
@@ -521,6 +579,12 @@ public class Config {
 
 	public boolean setAddedTime(int _addedTime) {
 		addedTime = _addedTime;
+		return true;
+	}
+	
+	public boolean setSbttAmount(int _sbttAmount) {
+		sbttAmount = _sbttAmount;
+		
 		return true;
 	}
 

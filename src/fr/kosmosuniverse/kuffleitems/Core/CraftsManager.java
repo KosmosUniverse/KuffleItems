@@ -129,7 +129,9 @@ public class CraftsManager {
 	
 	public ACrafts findCraftByInventoryName(String invName) {
 		for (ACrafts craft : recipes) {
-			if (invName.contains(craft.getName())) {
+			String name = "§8" + craft.getName();
+			
+			if (invName.contains(name)) {
 				return (craft);
 			}
 		}

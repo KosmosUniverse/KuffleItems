@@ -23,4 +23,6 @@ game_settings:
       size: 2 # Size of a team, Default: 2
    same_mode: false # If true, players will have same blocks, Default: false
    double_mode: false # If true, players will have two block instead of one, Default: false
-   sbtt_mode: false # If true, players will be able to craft an item that will allow them to validate one item
+   sbtt_mode:
+      enable: false # If true, players will be able to craft an item that will allow them to validate one item, Default: false
+      amount: 4 # Amount of item randomly selected to craft Templates (must be between 1 and 9 included), Default 4

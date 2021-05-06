@@ -1,5 +1,7 @@
 package fr.kosmosuniverse.kuffleitems.Commands;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -190,6 +192,10 @@ public class KuffleStart implements CommandExecutor {
 					km.games.get(playerName).getPlayer().getInventory().addItem(box);
 				}
 				
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
+				LocalDateTime now = LocalDateTime.now();
+				
+				km.start = dtf.format(now).replace(" ", " at ");
 				km.playerInteract.setXpSub(10);
 				km.loop = new GameLoop(km);
 				km.loop.startRunnable();

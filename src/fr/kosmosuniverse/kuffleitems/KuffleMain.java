@@ -37,6 +37,7 @@ public class KuffleMain extends JavaPlugin {
 	public HashMap<String, HashMap<String, String>> allLangs;
 	
 	public HashMap<String, ArrayList<String>> allItems = new HashMap<String, ArrayList<String>>();
+	public HashMap<String, ArrayList<String>> allSbtts = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<String>> allTimes = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<Inventory>> itemsInvs;
 	
@@ -57,6 +58,8 @@ public class KuffleMain extends JavaPlugin {
 	public PlayerInteract playerInteract;
 	public PlayerEvents playerEvents;
 	
+	public String start = null;
+	
 	public boolean paused = false;
 	public boolean loaded = false;
 	
@@ -73,6 +76,11 @@ public class KuffleMain extends JavaPlugin {
 		}
 		
 		if ((allItems = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "items_" + Utils.getVersion() + ".json"), this.getDataFolder())) == null) {
+			this.getPluginLoader().disablePlugin(this);
+			return ;
+		}
+		
+		if ((allSbtts = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "sbtt_" + Utils.getVersion() + ".json"), this.getDataFolder())) == null) {
 			this.getPluginLoader().disablePlugin(this);
 			return ;
 		}
@@ -146,7 +154,7 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-remove-player").setExecutor(new KuffleTeamRemovePlayer(this));
 		getCommand("ki-team-reset-players").setExecutor(new KuffleTeamResetPlayers(this));
 		getCommand("ki-team-random-player").setExecutor(new KuffleTeamRandomPlayer(this));
-		System.out.println("[KuffleItems] Add 24 Plugin Commands.");
+		System.out.println("[KuffleItems] Add 25 Plugin Commands.");
 
 		getCommand("ki-config").setTabCompleter(new KuffleConfigTab(this));
 		getCommand("ki-list").setTabCompleter(new KuffleListTab(this));
@@ -162,7 +170,7 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-affect-player").setTabCompleter(new KuffleTeamAffectPlayerTab(this));
 		getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab(this));
 		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
-		System.out.println("[KuffleItems] Add 11 Plugin Tab Completer.");
+		System.out.println("[KuffleItems] Add 13 Plugin Tab Completer.");
 		
 		loaded = true;
 		
@@ -242,6 +250,10 @@ public class KuffleMain extends JavaPlugin {
 			}
 			
 			crafts.clear();
+		}
+		
+		if (config != null) {
+			config.clear();
 		}
 	}
 	
