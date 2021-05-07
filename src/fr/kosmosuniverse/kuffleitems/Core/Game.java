@@ -2,8 +2,6 @@ package fr.kosmosuniverse.kuffleitems.Core;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -29,11 +27,13 @@ import org.json.simple.JSONObject;
 import fr.kosmosuniverse.kuffleitems.Core.LangManager;
 import net.md_5.bungee.api.ChatColor;
 import fr.kosmosuniverse.kuffleitems.Core.RewardManager;
+import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class Game {
 	private KuffleMain km;
 	private ArrayList<String> alreadyGot;
+	private HashMap<String, Long> times;
 	
 	private boolean finished;
 	private boolean lose;
@@ -42,11 +42,14 @@ public class Game {
 	private int time;
 	private int itemCount = 1;
 	private int age = 0;
-	private int gameRank = 0;
+	private int gameRank = -1;
 	private int sameIdx = 0;
+	private int deathCount = 0;
+	private int skipCount = 0;
 	
 	private long timeShuffle = -1;
 	private long interval = -1;
+	private long timeBase;
 	
 	private String currentItem;
 	private String itemDisplay;
@@ -71,6 +74,8 @@ public class Game {
 	
 	public void setup() {
 		time = km.config.getStartTime();
+		timeBase = System.currentTimeMillis();
+		times = new HashMap<String, Long>();
 		alreadyGot = new ArrayList<String>();
 		ageDisplay = Bukkit.createBossBar("STARTING...", BarColor.PURPLE, BarStyle.SOLID);
 		ageDisplay.addPlayer(player);
@@ -128,6 +133,8 @@ public class Game {
 		global.put("death", jsonDeath);
 		global.put("teamName", teamName);
 		global.put("sameIdx", sameIdx);
+		global.put("deathCount", deathCount);
+		global.put("skipCount", skipCount);
 		
 		JSONArray got = new JSONArray();
 		
@@ -136,6 +143,16 @@ public class Game {
 		}
 		
 		global.put("alreadyGot", got);
+		
+		JSONObject saveTimes = new JSONObject();
+		
+		for (String time : times.keySet()) {
+			saveTimes.put(time, times.get(time));
+		}
+		
+		saveTimes.put("interval", System.currentTimeMillis() - timeBase);
+		
+		global.put("times", saveTimes);
 
 		return (global.toString());
 	}
@@ -205,11 +222,9 @@ public class Game {
 			RewardManager.givePlayerReward(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age).name), player, km.ages,  AgeManager.getAgeByNumber(km.ages, age).number);
 		}
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
-		LocalDateTime now = LocalDateTime.now();
+		times.put(AgeManager.getAgeByNumber(km.ages, age).name, System.currentTimeMillis() - timeBase);
 		
-		km.allTimes.get(player.getName()).set(age, dtf.format(now).replace(" ", " at "));
-		
+		timeBase = System.currentTimeMillis();
 		currentItem = null;
 		itemCount = 1;
 		age++;
@@ -223,6 +238,14 @@ public class Game {
 	
 	public void finish(int _gameRank) {
 		finished = true;
+		
+		if (km.config.getTeam()) {
+			int tmpRank;
+
+			if ((tmpRank = checkTeamMateRank()) != -1) {
+				_gameRank = tmpRank;
+			}
+		}
 		
 		gameRank = _gameRank;
 		ageDisplay.setTitle("Game Done ! Rank : " + gameRank);
@@ -244,25 +267,36 @@ public class Game {
 		
 		if (lose) {
 			for (int cnt = age; cnt < km.config.getMaxAges(); cnt++) {
-				km.allTimes.get(player.getName()).set(cnt, "Abandon");
+				times.put(AgeManager.getAgeByNumber(km.ages, age).name, (long) -1);
 			}
 		} else {
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
-			LocalDateTime now = LocalDateTime.now();
-			
-			km.allTimes.get(player.getName()).set(age, dtf.format(now).replace(" ", " at "));
+			times.put(AgeManager.getAgeByNumber(km.ages, age).name, System.currentTimeMillis() - timeBase);
 		}
 		
 		age = -1;
 		
+		player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.BLUE + " Death Count: " + deathCount);
+		player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.BLUE + " Skip Count: " + skipCount);
 		player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.BLUE + " Times Tab:");
-		player.sendMessage(" - Start game on " + km.start);
 		
 		for (int i = 0; i < km.config.getMaxAges(); i++) {
 			Age age = AgeManager.getAgeByNumber(km.ages, i);
 			
-			player.sendMessage(" - Finished " + age.color + age.name + ChatColor.RESET + " on: " + km.allTimes.get(player.getName()).get(i));
+			player.sendMessage(" - Finished " + age.color + age.name + ChatColor.RESET + " in: " + Utils.getTimeFromSec(times.get(age.name) / 1000));
 		}
+	}
+	
+	private int checkTeamMateRank() {
+		int tmp = -1;
+		
+		for (String playerName : km.games.keySet()) {
+			if (km.games.get(playerName).getTeamName().equals(teamName) &&
+					km.games.get(playerName).getRank() != -1) {
+				tmp = km.games.get(playerName).getRank();
+			}
+		}
+		
+		return tmp;
 	}
 	
 	public void randomBarColor() {
@@ -270,6 +304,8 @@ public class Game {
 	}
 	
 	public boolean skip(boolean malus) {
+		skipCount++;
+		
 		if (malus) {
 			if ((age + 1) < km.config.getSkipAge()) {
 				km.logs.writeMsg(player, "You can't skip block this age.");
@@ -381,12 +417,28 @@ public class Game {
 		return age;
 	}
 	
+	public int getRank() {
+		return gameRank;
+	}
+	
 	public int getSameIdx() {
 		return sameIdx;
 	}
 	
+	public int getDeathCount() {
+		return deathCount;
+	}
+	
+	public int getSkipCount() {
+		return skipCount;
+	}
+	
 	public long getTimeShuffle() {
 		return timeShuffle;
+	}
+	
+	public long getAgeTime(String age) {
+		return times.get(age);
 	}
 	
 	public String getCurrentItem() {
@@ -433,6 +485,10 @@ public class Game {
 	
 	public void setDead(boolean _dead) {
 		dead = _dead;
+		
+		if (dead) {
+			deathCount++;
+		}
 	}
 	
 	public void setTime(int _time) {
@@ -441,6 +497,8 @@ public class Game {
 	
 	public void setItemCount(int _itemCount) {
 		itemCount = _itemCount;
+		itemScore.setScore(itemCount);
+		updateBar();
 	}
 	
 	public void setAge(int _age) {
@@ -454,6 +512,14 @@ public class Game {
 	
 	public void setSameIdx(int _sameIdx) {
 		sameIdx = _sameIdx;
+	}
+	
+	public void setDeathCount(int _deathCount) {
+		deathCount = _deathCount;
+	}
+	
+	public void setSkipCount(int _skipCount) {
+		skipCount = _skipCount;
 	}
 	
 	public void setTimeShuffle(long _timeShuffle) {
@@ -530,6 +596,18 @@ public class Game {
 					(double) _deathLoc.get("X"),
 					(double) _deathLoc.get("Y"),
 					(double) _deathLoc.get("Z"));	
+		}
+	}
+	
+	public void setTimes(JSONObject _times) {
+		timeBase = System.currentTimeMillis() - (Long) _times.get("interval");
+		
+		for (int i = 0; i < km.config.getMaxAges(); i++) {
+			Age age = AgeManager.getAgeByNumber(km.ages, i);
+			
+			if (_times.containsKey(age.name)) {
+				times.put((String) age.name, (Long) _times.get(age.name));
+			}
 		}
 	}
 	

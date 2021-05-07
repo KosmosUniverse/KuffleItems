@@ -19,7 +19,6 @@ import org.json.simple.parser.ParseException;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
 import fr.kosmosuniverse.kuffleitems.Core.ActionBar;
-import fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 import fr.kosmosuniverse.kuffleitems.Core.GameLoop;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
@@ -32,7 +31,6 @@ public class KuffleLoad implements CommandExecutor {
 		dataFolder = _dataFolder;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -71,7 +69,12 @@ public class KuffleLoad implements CommandExecutor {
 		
 		for (String playerName : km.games.keySet()) {
 			km.playersHeads.setItem(invCnt, Utils.getHead(km.games.get(playerName).getPlayer()));
-			km.playerRank.put(playerName, 0);
+			
+			if (km.config.getTeam() && !km.playerRank.containsKey(km.games.get(playerName).getTeamName())) {
+				km.playerRank.put(km.games.get(playerName).getTeamName(), 0);
+			} else {
+				km.playerRank.put(playerName, 0);
+			}
 			
 			invCnt++;
 		}
@@ -120,33 +123,6 @@ public class KuffleLoad implements CommandExecutor {
 					mainObject = (JSONObject) parser.parse(reader);
 				} catch (ParseException e) {
 					e.printStackTrace();
-				}
-				
-				ArrayList<String> times = new ArrayList<String>();	
-				
-				for (Object playerName : mainObject.keySet()) {
-					if (km.games.containsKey(playerName.toString())) {
-						JSONObject playerObj = (JSONObject) mainObject.get(playerName);
-						
-						for (int i = 0; i < km.config.getMaxAges(); i++) {
-							if (playerObj.containsKey(AgeManager.getAgeByNumber(km.ages, i).name)) {
-								times.add((String) playerObj.get(AgeManager.getAgeByNumber(km.ages, i).name));
-							} else {
-								times.add("N/A");
-							}
-						}
-					} else {
-						for (int i = 0; i < km.config.getMaxAges(); i++) {
-							if (i >= km.games.get(playerName.toString()).getAge()) {
-								times.add("Abandon");
-							} else {
-								times.add("N/A");
-							}
-						}
-					}
-					
-					km.allTimes.put(playerName.toString(), (ArrayList<String>) times.clone());
-					times.clear();
 				}
 				
 				reader.close();

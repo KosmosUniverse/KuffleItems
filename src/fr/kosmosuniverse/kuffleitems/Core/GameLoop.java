@@ -33,16 +33,20 @@ public class GameLoop {
 				int worstRank = getWorstRank();
 				
 				if (km.config.getGameEnd() && !finished) {
-					int lasts = Utils.playeLasts(km);
+					int lasts = Utils.playerLasts(km);
 					
 					if (lasts == 0) {
-						for (String playerName : km.allTimes.keySet()) {
+						for (String playerName : km.games.keySet()) {
+							Game tmpGame = km.games.get(playerName);
+							
+							Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ChatColor.BLUE + " Death Count: " + tmpGame.getDeathCount());
+							Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ChatColor.BLUE + " Skip Count: " + tmpGame.getSkipCount());
 							Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ChatColor.BLUE + " Times Tab:");
 							
 							for (int i = 0; i < km.config.getMaxAges(); i++) {
 								Age age = AgeManager.getAgeByNumber(km.ages, i);
 								
-								Bukkit.broadcastMessage(" - Finished " + age.color + age.name + ChatColor.RESET + " on " + km.allTimes.get(playerName).get(i));
+								Bukkit.broadcastMessage(" - Finished " + age.color + age.name + ChatColor.RESET + " in " + Utils.getTimeFromSec(tmpGame.getAgeTime(age.name) / 1000));
 							}
 						}
 						
@@ -65,17 +69,15 @@ public class GameLoop {
 					} else {
 						if (tmpGame.getCurrentItem() == null) {
 							if (tmpGame.getItemCount() >= (km.config.getBlockPerAge() + 1)) {
-								if ((tmpGame.getAge() + 1) == km.config.getMaxAges()) {
-									tmpGame.finish(bestRank);
-									bestRank = getBestRank();
-									km.logs.logBroadcastMsg(tmpGame.getPlayer().getName() + " complete this game !");
-									Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + tmpGame.getPlayer().getName() + ChatColor.RESET + "" + ChatColor.BLUE + " complete this game !§r");
-								} else {
-									if (!km.config.getTeam() || checkTeamMates(tmpGame)) {
+								if (!km.config.getTeam() || checkTeamMates(tmpGame)) {
+									if ((tmpGame.getAge() + 1) == km.config.getMaxAges()) {
+										tmpGame.finish(bestRank);
+										bestRank = getBestRank();
+										km.logs.logBroadcastMsg(tmpGame.getPlayer().getName() + " complete this game !");
+										Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + tmpGame.getPlayer().getName() + ChatColor.RESET + "" + ChatColor.BLUE + " complete this game !§r");
+									} else {
 										tmpGame.nextAge();
 									}
-									
-									newItem(tmpGame);
 								}
 							} else {
 								newItem(tmpGame);
@@ -144,8 +146,8 @@ public class GameLoop {
 	private boolean checkTeamMates(Game tmpGame) {
 		for (String playerName : km.games.keySet()) {
 			if (km.games.get(playerName).getTeamName().equals(tmpGame.getTeamName()) &&
-					km.games.get(playerName).getItemCount() < (km.config.getBlockPerAge() + 1) &&
-					tmpGame.getAge() <= km.games.get(playerName).getAge()) {
+					km.games.get(playerName).getAge() <= tmpGame.getAge() &&
+					km.games.get(playerName).getItemCount() < (km.config.getBlockPerAge() + 1)) {
 				return false;
 			}
 		}

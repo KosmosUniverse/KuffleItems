@@ -45,7 +45,7 @@ public class KuffleValidate implements CommandExecutor {
 					String tmp = km.games.get(playerName).getCurrentItem();
 					
 					km.games.get(playerName).found();
-					km.logs.writeMsg(player, "Block [" + tmp + "] was validated for player <" + playerName + ">.");
+					km.logs.writeMsg(player, "Item [" + tmp + "] was validated for player <" + playerName + ">.");
 					
 					return true;
 				}
@@ -66,6 +66,12 @@ public class KuffleValidate implements CommandExecutor {
 			
 			for (String playerName : km.games.keySet()) {
 				if (playerName.equals(args[0])) {
+					if (km.games.get(playerName).getAge() == -1) {
+						km.logs.writeMsg(player, "Game is already finished for player <" + playerName + ">.");
+						
+						return true;
+					}
+					
 					String tmp = AgeManager.getAgeByNumber(km.ages, km.games.get(playerName).getAge()).name;
 					
 					km.games.get(playerName).setItemCount(km.config.getBlockPerAge() + 1);

@@ -1,8 +1,5 @@
 package fr.kosmosuniverse.kuffleitems.Commands;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 
 import org.bukkit.Bukkit;
@@ -116,7 +113,12 @@ public class KuffleStart implements CommandExecutor {
 		
 		for (String playerName : km.games.keySet()) {
 			km.playersHeads.setItem(invCnt, Utils.getHead(km.games.get(playerName).getPlayer()));
-			km.playerRank.put(playerName, 0);
+
+			if (km.config.getTeam() && !km.playerRank.containsKey(km.games.get(playerName).getTeamName())) {
+				km.playerRank.put(km.games.get(playerName).getTeamName(), 0);
+			} else {
+				km.playerRank.put(playerName, 0);
+			}
 			
 			invCnt++;
 		}
@@ -136,21 +138,11 @@ public class KuffleStart implements CommandExecutor {
 			}
 		}, 20 + spread);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
-				ArrayList<String> times = new ArrayList<String>();
-				
-				for (int i = 0; i < km.config.getMaxAges(); i++) {
-					times.add("N/A");
-				}
-				
 				for (String playerName : km.games.keySet()) {
 					ActionBar.sendRawTitle("{\"text\":\"4\",\"bold\":true,\"color\":\"gold\"}", km.games.get(playerName).getPlayer());
-					km.allTimes.put(playerName, (ArrayList<String>) times.clone());
 				}
-				
-				times.clear();
 			}
 		}, 40 + spread);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
@@ -191,11 +183,7 @@ public class KuffleStart implements CommandExecutor {
 					ActionBar.sendRawTitle("{\"text\":\"GO!\",\"bold\":true,\"color\":\"dark_purple\"}", km.games.get(playerName).getPlayer());
 					km.games.get(playerName).getPlayer().getInventory().addItem(box);
 				}
-				
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
-				LocalDateTime now = LocalDateTime.now();
-				
-				km.start = dtf.format(now).replace(" ", " at ");
+
 				km.playerInteract.setXpSub(10);
 				km.loop = new GameLoop(km);
 				km.loop.startRunnable();

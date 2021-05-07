@@ -8,10 +8,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
 
 import fr.kosmosuniverse.kuffleitems.KuffleMain;
-import fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 import fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleSave implements CommandExecutor {
@@ -23,7 +21,6 @@ public class KuffleSave implements CommandExecutor {
 		dataFolder = _dataFolder;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -81,38 +78,6 @@ public class KuffleSave implements CommandExecutor {
 				e.printStackTrace();
 			}
 		}
-		
-		try {
-			if (dataFolder.getPath().contains("\\")) {
-				writer = new FileWriter(dataFolder.getPath() + "\\" + "Game.ki");
-			} else {
-				writer = new FileWriter(dataFolder.getPath() + "/" + "Game.ki");
-			}
-			
-			JSONObject gameObj = new JSONObject();
-			
-			for (String playerName : km.allTimes.keySet()) {
-				JSONObject playerObj = new JSONObject();				
-				
-				for (int i = 0; i < km.config.getMaxAges(); i++) {
-					playerObj.put(AgeManager.getAgeByNumber(km.ages, i).name, km.allTimes.get(playerName).get(i));
-				}
-				
-				gameObj.put(playerName, playerObj);
-			}
-			
-			writer.write(gameObj.toJSONString());
-			writer.close();
-						
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		for (String playerName : km.allTimes.keySet()) {
-			km.allTimes.get(playerName).clear();
-		}
-		
-		km.allTimes.clear();
 		
 		Utils.removeTemplates(km);
 		km.scores.clear();

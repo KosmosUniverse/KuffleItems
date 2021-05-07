@@ -73,7 +73,7 @@ public class Utils {
 		return tmp.delete();
 	}
 	
-	public static int playeLasts(KuffleMain km) {
+	public static int playerLasts(KuffleMain km) {
 		int notEnded = 0;
 		
 		for (String playerName : km.games.keySet()) {
@@ -120,6 +120,9 @@ public class Utils {
 			tmpGame.setSpawnLoc((JSONObject) mainObject.get("spawn"));
 			tmpGame.setDeathLoc((JSONObject) mainObject.get("death"));
 			tmpGame.setSameIdx(Integer.parseInt(((Long) mainObject.get("sameIdx")).toString()));
+			tmpGame.setTimes((JSONObject) mainObject.get("times"));
+			tmpGame.setDeathCount(Integer.parseInt(mainObject.get("deathCount").toString()));
+			tmpGame.setSkipCount(Integer.parseInt(mainObject.get("skipCount").toString()));
 			
 			if (fileExists(_km.getDataFolder().getPath(), player.getName() + ".yml")) {
 				tmpGame.loadInventory();
@@ -259,6 +262,33 @@ public class Utils {
 		
 		km.crafts.addCraft(t);
 		km.addRecipe(t.getRecipe());
+	}
+	
+	public static String getTimeFromSec(long sec) {
+		if (sec < 0) {
+			return "Abandon";
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		
+		if (sec != 0 && sec >= 3600) {
+			sb.append(sec / 3600);
+			sb.append("h");
+			
+			sec = sec % 3600;
+		}
+		
+		if (sec != 0 && sec >= 60) {
+			sb.append(sec / 60);
+			sb.append("m");
+			
+			sec = sec % 60;
+		}
+	
+		sb.append(sec);
+		sb.append("s");
+		
+		return sb.toString();
 	}
 }
  

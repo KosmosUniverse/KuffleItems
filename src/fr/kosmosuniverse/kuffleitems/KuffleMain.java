@@ -38,7 +38,6 @@ public class KuffleMain extends JavaPlugin {
 	
 	public HashMap<String, ArrayList<String>> allItems = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<String>> allSbtts = new HashMap<String, ArrayList<String>>();
-	public HashMap<String, ArrayList<String>> allTimes = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<Inventory>> itemsInvs;
 	
 	public HashMap<String, Game> games = new HashMap<String, Game>();
@@ -57,8 +56,6 @@ public class KuffleMain extends JavaPlugin {
 	public Inventory playersHeads;
 	public PlayerInteract playerInteract;
 	public PlayerEvents playerEvents;
-	
-	public String start = null;
 	
 	public boolean paused = false;
 	public boolean loaded = false;
