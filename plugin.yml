@@ -1,7 +1,7 @@
 name: KuffleItems
-version: 1.5.4
+version: 1.5.5
 author: KosmosUniverse
-main: fr.kosmosuniverse.kuffleitems.KuffleMain
+main: main.fr.kosmosuniverse.kuffleitems.KuffleMain
 api-version: 1.15
 
 commands:
