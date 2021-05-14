@@ -42,6 +42,7 @@ public class GameLoop {
 							Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ":");
 							Bukkit.broadcastMessage(ChatColor.BLUE + " - Death Count: " + ChatColor.RESET + tmpGame.getDeathCount());
 							Bukkit.broadcastMessage(ChatColor.BLUE + " - Skip Count: " + ChatColor.RESET + tmpGame.getSkipCount());
+							Bukkit.broadcastMessage(ChatColor.BLUE + " - Template Count: " + ChatColor.RESET + tmpGame.getSbttCount());
 							Bukkit.broadcastMessage(ChatColor.BLUE + " - Times Tab:");
 							
 							for (int i = 0; i < km.config.getMaxAges(); i++) {

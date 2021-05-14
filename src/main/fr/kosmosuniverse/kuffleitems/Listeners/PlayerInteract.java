@@ -1,15 +1,21 @@
 package main.fr.kosmosuniverse.kuffleitems.Listeners;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -26,6 +32,7 @@ import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 public class PlayerInteract implements Listener {
 	private KuffleMain km;
 	private int xpSub;
+	private HashMap<Location, String> shulkers = new HashMap<Location, String>();
 	
 	public PlayerInteract(KuffleMain _km) {
 		km = _km;
@@ -82,7 +89,7 @@ public class PlayerInteract implements Listener {
 				name = name + "Template";
 
 				if (compareItems(item, km.crafts.findItemByName(name))) {
-					tmpGame.found();
+					tmpGame.foundSBTT();
 					
 					event.setCancelled(true);
 					
@@ -109,7 +116,70 @@ public class PlayerInteract implements Listener {
 	}
 	
 	@EventHandler
+	public void onPlaceShulker(BlockPlaceEvent event) {
+		if (!km.gameStarted || !km.config.getPassive()) {
+			return ;
+		}
+		
+		Player player = event.getPlayer();
+		Block block = event.getBlock();
+		Location location = block.getLocation();
+		
+		if (block.getType().name().toLowerCase().contains("shulker_box")) {
+			shulkers.put(location, player.getName());
+		}
+	}
+	
+	@EventHandler
+	public void onBreakShulker(BlockBreakEvent event) {
+		if (!km.gameStarted || !km.config.getPassive()) {
+			return ;
+		}
+		
+		Player player = event.getPlayer();
+		Block block = event.getBlock();
+		Location location = block.getLocation();
+		
+		if (!shulkers.containsKey(location)) {
+			return;
+		}
+		
+		String placerName = shulkers.get(location);
+		
+		if (!placerName.equals(player.getName()) &&
+				(!km.config.getTeam() ||
+						!km.games.get(player.getName()).getTeamName().equals(km.games.get(placerName).getTeamName()))) {
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onInteractShulker(PlayerInteractEvent event) {
+		if (!km.gameStarted || !km.config.getPassive()) {
+			return ;
+		}
+		
+		Player player = event.getPlayer();
+		Action action = event.getAction();
+		Block block = event.getClickedBlock();
+		
+		if (action == Action.RIGHT_CLICK_BLOCK && block != null) {
+			if (block.getType().name().toLowerCase().contains("shulker_box")) {
+				if (!shulkers.containsValue(player.getName()) &&
+						(!km.config.getTeam() ||
+								!km.games.get(player.getName()).getTeamName().equals(km.games.get(shulkers.get(block.getLocation())).getTeamName()))) {
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+	
+	@EventHandler
 	public void onCraft(CraftItemEvent event) {
+		if (!km.gameStarted) {
+			return ;
+		}
+		
 		ItemStack item = event.getInventory().getResult();
 		Player player = (Player) event.getWhoClicked();
 
@@ -137,6 +207,40 @@ public class PlayerInteract implements Listener {
 			
 			Utils.reloadTemplate(km, name, AgeManager.getAgeByNumber(km.ages, km.games.get(player.getName()).getAge()).name);
 			Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.RESET + "" + ChatColor.BLUE + " just crafted Template !");
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerHitPlayer(EntityDamageByEntityEvent event) {
+		if (!km.gameStarted) {
+			return ;
+		}
+		
+		Entity tmpDamager = event.getDamager();	
+		Entity tmpDamagee = event.getEntity();
+		
+		if (!(tmpDamager instanceof Player) || !(tmpDamagee instanceof Player)) {
+			return;
+		}
+		
+		Player damager = (Player) tmpDamager;
+		Player damagee = (Player) tmpDamagee;
+		
+		if (!km.games.containsKey(damager.getName()) || !km.games.containsKey(damagee.getName())) {
+			return ;
+		}
+		
+		if (km.config.getPassive()) {
+			event.setCancelled(true);
+			
+			return ;
+		}
+		
+		if (km.config.getTeam()) {
+			if (km.games.get(damager.getName()).getTeamName().equals(km.games.get(damagee.getName()).getTeamName())) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 	

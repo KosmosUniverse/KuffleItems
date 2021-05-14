@@ -8,6 +8,7 @@ game_settings:
       minimum_radius: 1000 # for spreadplayer command, minimum radius must be > minimum_distance parameter, Default: 1000
    saturation: false # True: give infinite saturation effect to all players
    rewards: true # True: give reward after each age
+   passive: true # True: pvp not enabled and open other player box is disable, Default: True
    start_time: 4 # minutes, Default: 4
    time_added: 2 # minutes added to start_time after each age, Default: 2
    max_age: 6 # number of Age to finish the game, Default : 6

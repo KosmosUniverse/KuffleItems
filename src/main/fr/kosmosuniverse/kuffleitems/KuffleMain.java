@@ -134,7 +134,8 @@ public class KuffleMain extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(playerEvents, this);
 		getServer().getPluginManager().registerEvents(playerInteract, this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
-		System.out.println("[KuffleItems] Add 3 Game Listeners.");
+		getServer().getPluginManager().registerEvents(new ItemEvent(this), this);
+		System.out.println("[KuffleItems] Add 4 Game Listeners.");
 		
 		getCommand("ki-config").setExecutor(new KuffleConfig(this));
 		getCommand("ki-list").setExecutor(new KuffleList(this));

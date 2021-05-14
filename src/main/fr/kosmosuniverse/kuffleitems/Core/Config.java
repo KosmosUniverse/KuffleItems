@@ -22,6 +22,7 @@ public class Config {
 	private boolean sbttMode;
 	private boolean gameEnd;
 	private boolean endOne;
+	private boolean passive;
 	private int sbttAmount;
 	private int teamSize;
 	private int spreadMin;
@@ -65,6 +66,7 @@ public class Config {
 		booleanElems.put("SBTT_MODE", "setSbttMode");
 		booleanElems.put("AUTO_DETECT_END", "setGameEnd");
 		booleanElems.put("END_WHEN_ONE", "setEndOne");
+		booleanElems.put("PASSIVE", "setPassive");
 
 		booleanRet.put("SATURATION", ret);
 		booleanRet.put("SPREADPLAYERS", ret);
@@ -77,6 +79,7 @@ public class Config {
 		booleanRet.put("SBTT_MODE", ret);
 		booleanRet.put("AUTO_DETECT_END", ret);
 		booleanRet.put("END_WHEN_ONE", ret);
+		booleanRet.put("PASSIVE", ret);
 
 		intElems.put("SPREAD_MIN_DISTANCE", "setSpreadDistance");
 		intElems.put("SPREAD_MIN_RADIUS", "setSpreadRadius");
@@ -266,6 +269,11 @@ public class Config {
 			configFile.set("game_settings.sbtt_mode.enable", false);
 		}
 		
+		if (!configFile.contains("game_settings.pasive")) {
+			System.out.println("Config for enabling passive mode is not correct, use of default value.");
+			configFile.set("game_settings.passive", true);
+		}
+		
 		if (!configFile.contains("game_settings.sbtt_mode.amount") ||
 				configFile.getInt("game_settings.sbtt_mode.amount") < 1 ||
 				configFile.getInt("game_settings.sbtt_mode.amount") > 9) {
@@ -282,6 +290,7 @@ public class Config {
 		same = configFile.getBoolean("game_settings.same_mode");
 		endOne = configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one");
 		sbttMode = configFile.getBoolean("game_settings.sbtt_mode.enable");
+		passive = configFile.getBoolean("game_settings.passive");
 		
 		spreadMin = configFile.getInt("game_settings.spreadplayers.minimum_distance");
 		spreadMax = configFile.getInt("game_settings.spreadplayers.minimum_radius");
@@ -324,6 +333,7 @@ public class Config {
 		sb.append("Level: ").append(LevelManager.getLevelByNumber(km.levels, level).name).append("\n");
 		sb.append("Detect Game End: ").append(gameEnd).append("\n");
 		sb.append("End game at one: ").append(endOne).append("\n");
+		sb.append("Passive: ").append(passive).append("\n");
 		sb.append("Team: ").append(team).append("\n");
 		sb.append("Team Size: ").append(teamSize).append("\n");
 		sb.append("Same mode: ").append(same).append("\n");
@@ -458,6 +468,10 @@ public class Config {
 	public boolean getEndOne() {
 		return endOne;
 	}
+	
+	public boolean getPassive() {
+		return passive;
+	}
 
 	public int getTeamSize() {
 		return teamSize;
@@ -576,6 +590,12 @@ public class Config {
 		}
 		
 		endOne = _endOne;
+		
+		return true;
+	}
+	
+	public boolean setPassive(boolean _passive) {
+		passive = _passive;
 		
 		return true;
 	}

@@ -44,8 +44,10 @@ public class Game {
 	private int age = 0;
 	private int gameRank = -1;
 	private int sameIdx = 0;
+	
 	private int deathCount = 0;
 	private int skipCount = 0;
+	private int sbttCount = 0;
 	
 	private long timeShuffle = -1;
 	private long interval = -1;
@@ -225,6 +227,12 @@ public class Game {
 		}
 	}
 	
+	public void foundSBTT() {
+		sbttCount++;
+		
+		found();
+	}
+	
 	public void found() {
 		currentItem = null;
 		itemCount++;
@@ -298,6 +306,7 @@ public class Game {
 		player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName());
 		player.sendMessage(ChatColor.BLUE + " - Death Count: " + ChatColor.RESET + deathCount);
 		player.sendMessage(ChatColor.BLUE + " - Skip Count: " + ChatColor.RESET + skipCount);
+		player.sendMessage(ChatColor.BLUE + " - Template Count: " + ChatColor.RESET + sbttCount);
 		player.sendMessage(ChatColor.BLUE + " - Times Tab:");
 		
 		for (int i = 0; i < km.config.getMaxAges(); i++) {
@@ -452,6 +461,10 @@ public class Game {
 	
 	public int getSkipCount() {
 		return skipCount;
+	}
+	
+	public int getSbttCount() {
+		return sbttCount;
 	}
 	
 	public long getTimeShuffle() {
