@@ -253,6 +253,7 @@ public class Game {
 		times.put(AgeManager.getAgeByNumber(km.ages, age).name, System.currentTimeMillis() - timeBase);
 		
 		timeBase = System.currentTimeMillis();
+		alreadyGot.clear();
 		currentItem = null;
 		itemCount = 1;
 		age++;

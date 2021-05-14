@@ -52,10 +52,8 @@ public class PlayerEvents implements Listener {
 		Player player = event.getPlayer();
 		Game tmpGame;
 
-		if (!player.hasPlayedBefore()) {
-			for (ACrafts item : km.crafts.getRecipeList()) {
-				player.discoverRecipe(new NamespacedKey(km, item.getName()));
-			}
+		for (ACrafts item : km.crafts.getRecipeList()) {
+			player.discoverRecipe(new NamespacedKey(km, item.getName()));
 		}
 	
 		if (!km.gameStarted) {
@@ -85,7 +83,7 @@ public class PlayerEvents implements Listener {
 		tmpGame.load();
 		km.updatePlayersHead(player.getName(), tmpGame.getItemDisplay());
 		
-		player.sendMessage("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
+		km.logs.writeBroadcastMsg("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
 		
 		return;
 	}
@@ -126,7 +124,7 @@ public class PlayerEvents implements Listener {
 			
 			tmpGame.stop();
 			
-			event.setQuitMessage("[KuffleItems] : <" + player.getName() + "> game is saved.");
+			km.logs.writeBroadcastMsg("[KuffleItems] : <" + player.getName() + "> game is saved.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -145,6 +143,8 @@ public class PlayerEvents implements Listener {
 		if (event.getDrops().size() > 0) {	
 			event.getDrops().clear();
 		}
+		
+		km.logs.logMsg(player, "just died.");
 		
 		for (String playerName : km.games.keySet()) {
 			if (playerName.equals(player.getName())) {
@@ -168,6 +168,8 @@ public class PlayerEvents implements Listener {
 		}
 		
 		Player player = event.getPlayer();
+		
+		km.logs.logMsg(player, "just respawned.");
 		
 		for (String playerName : km.games.keySet()) {
 			if (playerName.equals(player.getName())) {

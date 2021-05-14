@@ -90,6 +90,7 @@ public class PlayerInteract implements Listener {
 
 				if (compareItems(item, km.crafts.findItemByName(name))) {
 					tmpGame.foundSBTT();
+					km.logs.logMsg(tmpGame.getPlayer(), " just used " + name + " !");
 					
 					event.setCancelled(true);
 					
@@ -110,6 +111,7 @@ public class PlayerInteract implements Listener {
 						(tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ||
 						tmpGame.getCurrentItem().split("/")[1].equals(item.getType().name().toLowerCase()))) {
 					tmpGame.found();
+					km.logs.logMsg(tmpGame.getPlayer(), " validate his item !");
 				}
 			}
 		}
@@ -189,6 +191,7 @@ public class PlayerInteract implements Listener {
 				player.sendMessage("You need 5 xp levels to craft this item.");
 			} else {
 				player.setLevel(player.getLevel() - 5);
+				km.logs.logMsg(player, "Crafted EndTeleporter.");
 			}
 		} else if (compareItems(item, km.crafts.findItemByName("OverworldTeleporter"))) {
 			if (player.getLevel() < xpSub) {
@@ -196,6 +199,7 @@ public class PlayerInteract implements Listener {
 				player.sendMessage("You need " + xpSub + " xp levels to craft this item.");
 			} else {
 				player.setLevel(player.getLevel() - xpSub);
+				km.logs.logMsg(player, "Crafted OverworldTeleporter.");
 			}
 		} else if (item.hasItemMeta() &&
 				item.getItemMeta().hasDisplayName() &&
@@ -207,6 +211,7 @@ public class PlayerInteract implements Listener {
 			
 			Utils.reloadTemplate(km, name, AgeManager.getAgeByNumber(km.ages, km.games.get(player.getName()).getAge()).name);
 			Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.RESET + "" + ChatColor.BLUE + " just crafted Template !");
+			km.logs.logBroadcastMsg(player.getName() + " just crafted Template !");
 		}
 	}
 	
@@ -284,7 +289,6 @@ public class PlayerInteract implements Listener {
 			tmp.add(10, 0, 10);
 		}
 		
-		
 		tmp.setY((double) tmp.getWorld().getHighestBlockAt(tmp).getY());
 
 		if (km.config.getTeam()) {
@@ -295,12 +299,15 @@ public class PlayerInteract implements Listener {
 					km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
 					km.games.get(playerName).getPlayer().teleport(tmp);
 					km.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+					
+					km.logs.logMsg(km.games.get(playerName).getPlayer(), "Teleported to the End.");
 				}
 			}
 		} else {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
 			player.teleport(tmp);
 			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+			km.logs.logMsg(player, "Teleported to the End.");
 		}
 	}
 	
@@ -317,12 +324,14 @@ public class PlayerInteract implements Listener {
 					km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
 					km.games.get(playerName).getPlayer().teleport(tmp);
 					km.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+					km.logs.logMsg(km.games.get(playerName).getPlayer(), "Teleported to the Overworld.");
 				}
 			}
 		} else {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
 			player.teleport(tmp);
 			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+			km.logs.logMsg(player, "Teleported to the Overworld.");
 		}
 		
 		xpSub = (xpSub - 2) < 2 ? 2 : (xpSub - 2);

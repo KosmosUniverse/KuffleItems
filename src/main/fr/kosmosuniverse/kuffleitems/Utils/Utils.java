@@ -12,6 +12,7 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -268,6 +269,10 @@ public class Utils {
 		
 		km.crafts.addCraft(t);
 		km.addRecipe(t.getRecipe());
+		
+		for (String playerName : km.games.keySet()) {
+			km.games.get(playerName).getPlayer().discoverRecipe(new NamespacedKey(km, t.getName()));
+		}
 	}
 	
 	public static String getTimeFromSec(long sec) {

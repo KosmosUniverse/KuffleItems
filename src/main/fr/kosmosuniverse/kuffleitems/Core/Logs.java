@@ -75,7 +75,7 @@ public class Logs {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();  
 			
-			writer.write(dtf.format(now) + " : [" + to.getDisplayName() + "] -> " + msg + "\n");
+			writer.write(dtf.format(now) + " : [" + to.getName() + "] -> " + msg + "\n");
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -91,7 +91,7 @@ public class Logs {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
 			LocalDateTime now = LocalDateTime.now();  
 			
-			writer.write(dtf.format(now) + " : [" + to.getDisplayName() + "] -> " + msg + "\n");
+			writer.write(dtf.format(now) + " : [" + to.getName() + "] -> " + msg + "\n");
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
