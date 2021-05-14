@@ -200,7 +200,13 @@ public class KuffleMain extends JavaPlugin {
 	}
 	
 	public void removeRecipe(String name) {
-		getServer().removeRecipe(new NamespacedKey(this, name));
+		NamespacedKey n = new NamespacedKey(this, name);
+		
+		for (String playerName : games.keySet()) {
+			games.get(playerName).getPlayer().undiscoverRecipe(n);
+		}
+		
+		getServer().removeRecipe(n);
 	}
 	
 	private void killAll() {

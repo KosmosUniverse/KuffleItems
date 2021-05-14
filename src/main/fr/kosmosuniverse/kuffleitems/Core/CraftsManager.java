@@ -109,17 +109,9 @@ public class CraftsManager {
 	
 	public ACrafts findCraftInventoryByItem(ItemStack item) {
 		for (ACrafts craft : recipes) {
-			if (craft.getItem().getType() == item.getType()) {
-				return (craft);
-			}
-		}
-		
-		return null;
-	}
-	
-	public ACrafts findCraftInventoryByName(String name) {
-		for (ACrafts craft : recipes) {
-			if (name.contains(craft.getName())) {
+			if (Utils.compareItems(craft.getItem(), item, item.hasItemMeta(),
+					item.hasItemMeta() ? item.getItemMeta().hasDisplayName() : false,
+					item.hasItemMeta() ? item.getItemMeta().hasLore() : false)) {
 				return (craft);
 			}
 		}

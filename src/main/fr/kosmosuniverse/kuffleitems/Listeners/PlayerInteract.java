@@ -1,6 +1,5 @@
 package main.fr.kosmosuniverse.kuffleitems.Listeners;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -20,7 +19,6 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -57,7 +55,7 @@ public class PlayerInteract implements Listener {
 		}
 		
 		if (action == Action.RIGHT_CLICK_AIR && item != null) {
-			if (compareItems(item, km.crafts.findItemByName("EndTeleporter"))) {
+			if (Utils.compareItems(item, km.crafts.findItemByName("EndTeleporter"), true, true, true)) {
 				endTeleporter(player);
 				
 				if (event.getHand() == EquipmentSlot.HAND) {
@@ -69,7 +67,7 @@ public class PlayerInteract implements Listener {
 				return ;
 			}
 			
-			if (compareItems(item, km.crafts.findItemByName("OverworldTeleporter"))) {
+			if (Utils.compareItems(item, km.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
 				overworldTeleporter(player);
 				
 				if (event.getHand() == EquipmentSlot.HAND) {
@@ -88,7 +86,7 @@ public class PlayerInteract implements Listener {
 				name = name.replace("_Age", "");
 				name = name + "Template";
 
-				if (compareItems(item, km.crafts.findItemByName(name))) {
+				if (Utils.compareItems(item, km.crafts.findItemByName(name), true, true, true)) {
 					tmpGame.foundSBTT();
 					km.logs.logMsg(tmpGame.getPlayer(), " just used " + name + " !");
 					
@@ -185,7 +183,7 @@ public class PlayerInteract implements Listener {
 		ItemStack item = event.getInventory().getResult();
 		Player player = (Player) event.getWhoClicked();
 
-		if (compareItems(item, km.crafts.findItemByName("EndTeleporter"))) {
+		if (Utils.compareItems(item, km.crafts.findItemByName("EndTeleporter"), true, true, true)) {
 			if (player.getLevel() < 5) {
 				event.setCancelled(true);
 				player.sendMessage("You need 5 xp levels to craft this item.");
@@ -193,7 +191,7 @@ public class PlayerInteract implements Listener {
 				player.setLevel(player.getLevel() - 5);
 				km.logs.logMsg(player, "Crafted EndTeleporter.");
 			}
-		} else if (compareItems(item, km.crafts.findItemByName("OverworldTeleporter"))) {
+		} else if (Utils.compareItems(item, km.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
 			if (player.getLevel() < xpSub) {
 				event.setCancelled(true);
 				player.sendMessage("You need " + xpSub + " xp levels to craft this item.");
@@ -251,11 +249,15 @@ public class PlayerInteract implements Listener {
 	
 	@EventHandler
 	public void onFireWorkThrow(PlayerInteractEvent event) {
+		if (!km.gameStarted) {
+			return ;
+		}
+		
 		ItemStack item;
 		Action action = event.getAction();
 		Player player = event.getPlayer();
 
-		if (!km.gameStarted || !km.games.containsKey(player.getName())) {
+		if (!km.games.containsKey(player.getName())) {
 			return ;
 		}
 		
@@ -335,49 +337,5 @@ public class PlayerInteract implements Listener {
 		}
 		
 		xpSub = (xpSub - 2) < 2 ? 2 : (xpSub - 2);
-	}
-	
-	private boolean compareItems(ItemStack first, ItemStack second) {
-		if (first.getType() != second.getType()) {
-			return false;
-		}
-		
-		if (!first.hasItemMeta() || !second.hasItemMeta()) {
-			return false;
-		}
-		
-		ItemMeta firstMeta = first.getItemMeta();
-		ItemMeta secondMeta = second.getItemMeta();
-		
-		if (!firstMeta.hasDisplayName() || !secondMeta.hasDisplayName()) {
-			return false;
-		}
-		
-		if (!firstMeta.getDisplayName().equals(secondMeta.getDisplayName())) {
-			return false;
-		}
-		
-		if (firstMeta.hasLore() != secondMeta.hasLore()) {
-			return false;
-		}
-		
-		if (!firstMeta.hasLore()) {
-			return true;
-		}
-		
-		ArrayList<String> firstLore = (ArrayList<String>) firstMeta.getLore();
-		ArrayList<String> secondLore = (ArrayList<String>) secondMeta.getLore();
-		
-		if (firstLore.size() != secondLore.size()) {
-			return false;
-		}
-		
-		for (int i = 0; i < firstLore.size(); i++) {
-			if (!firstLore.get(i).equals(secondLore.get(i))) {
-				return false;
-			}
-		}
-		
-		return true;
 	}
 }

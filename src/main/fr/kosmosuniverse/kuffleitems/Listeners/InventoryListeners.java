@@ -24,6 +24,10 @@ public class InventoryListeners implements Listener {
 	
 	@EventHandler
 	public void onItemClick(InventoryClickEvent event) {
+		if (!km.gameStarted) {
+			return ;
+		}
+		
 		Player player = (Player) event.getWhoClicked();
 		ItemStack item = event.getCurrentItem();
 		Inventory current = event.getClickedInventory();
@@ -36,12 +40,7 @@ public class InventoryListeners implements Listener {
 		
 		if (event.getView().getTitle() == "§8AllCustomCrafts") {
 			event.setCancelled(true);
-			
-			if ((craft = km.crafts.findCraftInventoryByName(item.getItemMeta().getDisplayName())) != null) {
-				if ((inv = craft.getInventoryRecipe()) != null) {
-					player.openInventory(inv);
-				}
-			} else if ((craft = km.crafts.findCraftInventoryByItem(item)) != null) {
+			if ((craft = km.crafts.findCraftInventoryByItem(item)) != null) {
 				if ((inv = craft.getInventoryRecipe()) != null) {
 					player.openInventory(inv);
 				}

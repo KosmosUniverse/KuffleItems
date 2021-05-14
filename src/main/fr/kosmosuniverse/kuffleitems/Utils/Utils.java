@@ -16,6 +16,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.json.simple.JSONArray;
@@ -300,6 +301,70 @@ public class Utils {
 		sb.append("s");
 		
 		return sb.toString();
+	}
+	
+	public static boolean compareItems(ItemStack first, ItemStack second, boolean hasItemMeta, boolean hasDisplayName, boolean hasLore) {
+		if (first.getType() != second.getType()) {
+			return false;
+		}
+		
+		if (first.hasItemMeta() != second.hasItemMeta()) {
+			return false;
+		}
+		
+		if (first.hasItemMeta() != hasItemMeta) {
+			return false;
+		}
+		
+		if (!hasItemMeta) {
+			return true;
+		}
+		
+		ItemMeta firstMeta = first.getItemMeta();
+		ItemMeta secondMeta = second.getItemMeta();
+		
+		if (firstMeta.hasDisplayName() != secondMeta.hasDisplayName()) {
+			return false;
+		}
+		
+		if (firstMeta.hasDisplayName() != hasDisplayName) {
+			return false;
+		}
+		
+		if (!hasDisplayName) {
+			return true;
+		}
+		
+		if (!firstMeta.getDisplayName().equals(secondMeta.getDisplayName())) {
+			return false;
+		}
+		
+		if (firstMeta.hasLore() != secondMeta.hasLore()) {
+			return false;
+		}
+		
+		if (firstMeta.hasLore() != hasLore) {
+			return false;
+		}
+		
+		if (!hasLore) {
+			return true;
+		}
+		
+		ArrayList<String> firstLore = (ArrayList<String>) firstMeta.getLore();
+		ArrayList<String> secondLore = (ArrayList<String>) secondMeta.getLore();
+		
+		if (firstLore.size() != secondLore.size()) {
+			return false;
+		}
+		
+		for (int i = 0; i < firstLore.size(); i++) {
+			if (!firstLore.get(i).equals(secondLore.get(i))) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }
  
