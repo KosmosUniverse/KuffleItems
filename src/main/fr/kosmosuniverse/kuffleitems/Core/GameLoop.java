@@ -48,7 +48,15 @@ public class GameLoop {
 							for (int i = 0; i < km.config.getMaxAges(); i++) {
 								Age age = AgeManager.getAgeByNumber(km.ages, i);
 								
-								Bukkit.broadcastMessage(ChatColor.BLUE + "   - Finished " + age.color + age.name + ChatColor.BLUE + " in: " + ChatColor.RESET + Utils.getTimeFromSec(tmpGame.getAgeTime(age.name) / 1000));
+								String tmp;
+								
+								if (tmpGame.getAgeTime(age.name) == -1) {
+									tmp = ChatColor.RESET + ": Abandon";
+								} else {
+									tmp = ChatColor.BLUE + " in: " + ChatColor.RESET + Utils.getTimeFromSec(tmpGame.getAgeTime(age.name) / 1000);
+								}
+								
+								Bukkit.broadcastMessage(ChatColor.BLUE + "   - Finished " + age.color + age.name + tmp);
 							}
 						}
 						

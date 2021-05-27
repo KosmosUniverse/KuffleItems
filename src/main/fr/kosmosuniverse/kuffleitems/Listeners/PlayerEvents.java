@@ -45,6 +45,7 @@ public class PlayerEvents implements Listener {
 		
 		exceptions.add(Material.CRAFTING_TABLE);
 		exceptions.add(Material.FURNACE);
+		exceptions.add(Material.STONECUTTER);
 	}
 	
 	@EventHandler

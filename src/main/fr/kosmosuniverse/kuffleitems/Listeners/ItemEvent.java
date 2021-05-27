@@ -76,7 +76,7 @@ public class ItemEvent implements Listener {
 		
 		Player player = Bukkit.getPlayer(item.getOwner());
 		
-		if (!km.games.containsKey(player.getName())) {
+		if (player == null || !km.games.containsKey(player.getName())) {
 			return ;
 		}
 		

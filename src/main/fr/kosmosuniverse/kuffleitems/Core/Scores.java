@@ -32,13 +32,13 @@ public class Scores {
 		}
 		
 		age = scoreboard.registerNewObjective("ages", "dummy", ChatColor.LIGHT_PURPLE + "Ages");
-
+		
 		int ageCnt = 0;
-				
+		
 		for (; ageCnt < km.config.getMaxAges(); ageCnt++) {
 			S_ages.add(age.getScore(AgeManager.getAgeByNumber(km.ages, ageCnt).color + AgeManager.getAgeByNumber(km.ages, ageCnt).name.replace("_", " ")));
 		}
-		
+				
 		ageCnt = 1;
 		
 		for (Score ageScore : S_ages) {
@@ -52,14 +52,7 @@ public class Scores {
 			km.games.get(playerName).setItemScore(items.getScore(playerName));
 			km.games.get(playerName).getItemScore().setScore(1);
 			km.games.get(playerName).getPlayer().setScoreboard(scoreboard);
-			
-			if (km.config.getTeam()) {
-				km.games.get(playerName).getPlayer().setPlayerListName("[" + km.teams.getTeam(km.games.get(playerName).getTeamName()).color + km.games.get(playerName).getTeamName() + ChatColor.RESET + "] - " + ChatColor.RED + playerName);
-			} else {
-				km.games.get(playerName).getPlayer().setPlayerListName(ChatColor.RED + playerName);	
-			}
-			
-			
+			km.games.get(playerName).updatePlayerListName();
 		}
 	}
 	
@@ -74,10 +67,14 @@ public class Scores {
 	
 	public void clear() {
 		scoreboard.clearSlot(age.getDisplaySlot());
-		scoreboard.clearSlot(items.getDisplaySlot());
 		
+		if (items.getDisplaySlot() != null) {
+			scoreboard.clearSlot(items.getDisplaySlot());
+		}
+
 		age.unregister();
 		age = null;
+		S_ages.clear();
 		
 		for (String playerName : km.games.keySet()) {
 			km.games.get(playerName).getPlayer().setPlayerListName(ChatColor.WHITE + km.games.get(playerName).getPlayer().getName());

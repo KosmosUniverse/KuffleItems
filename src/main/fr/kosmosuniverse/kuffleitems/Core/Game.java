@@ -285,8 +285,6 @@ public class Game {
 			ageDisplay.setProgress(1.0f);	
 		}
 		
-		
-		updatePlayerListName();
 		km.playerRank.put(player.getName(), gameRank);
 		km.updatePlayersHead(player.getName(), null);
 		
@@ -296,13 +294,15 @@ public class Game {
 		
 		if (lose) {
 			for (int cnt = age; cnt < km.config.getMaxAges(); cnt++) {
-				times.put(AgeManager.getAgeByNumber(km.ages, age).name, (long) -1);
+				times.put(AgeManager.getAgeByNumber(km.ages, cnt).name, (long) -1);
 			}
 		} else {
 			times.put(AgeManager.getAgeByNumber(km.ages, age).name, System.currentTimeMillis() - timeBase);
 		}
 		
 		age = -1;
+		
+		updatePlayerListName();
 		
 		player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName());
 		player.sendMessage(ChatColor.BLUE + " - Death Count: " + ChatColor.RESET + deathCount);
@@ -313,7 +313,15 @@ public class Game {
 		for (int i = 0; i < km.config.getMaxAges(); i++) {
 			Age age = AgeManager.getAgeByNumber(km.ages, i);
 			
-			player.sendMessage(ChatColor.BLUE + "   - Finished " + age.color + age.name + ChatColor.BLUE + " in: " + ChatColor.RESET + Utils.getTimeFromSec(times.get(age.name) / 1000));
+			String tmp;
+			
+			if (times.get(age.name) == -1) {
+				tmp = ChatColor.RESET + ": Abandon";
+			} else {
+				tmp = ChatColor.BLUE + " in: " + ChatColor.RESET + Utils.getTimeFromSec(times.get(age.name) / 1000);
+			}
+			
+			player.sendMessage(ChatColor.BLUE + "   - Finished " + age.color + age.name + tmp);
 		}
 	}
 	
@@ -408,7 +416,7 @@ public class Game {
 		dead = false;
 	}
 	
-	private void updatePlayerListName() {
+	public void updatePlayerListName() {
 		if (km.config.getTeam()) {
 			player.setPlayerListName("[" + km.teams.getTeam(teamName).color + teamName + ChatColor.RESET + "] - " + AgeManager.getAgeByNumber(km.ages, age).color + player.getName());
 		} else {
