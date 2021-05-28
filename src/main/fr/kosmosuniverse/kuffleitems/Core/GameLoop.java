@@ -186,30 +186,36 @@ public class GameLoop {
 	}
 	
 	private void newItem(Game tmpGame) {
+		if (km.config.getDouble()) {
+			String currentItem = newItemSingle(tmpGame);
+			tmpGame.addToAlreadyGot(currentItem);
+			
+			String currentItem2 = newItemSingle(tmpGame);
+			tmpGame.addToAlreadyGot(currentItem2);
+			
+			tmpGame.setCurrentItem(currentItem + "/" + currentItem2);
+		} else {
+			tmpGame.setCurrentItem(newItemSingle(tmpGame));
+		}
+	}
+	
+	private String newItemSingle(Game tmpGame) {
 		if (tmpGame.getAlreadyGot().size() >= km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name).size()) {
 			tmpGame.resetList();
 		}
+		
+		String ret;
 		
 		if (km.config.getSame()) {
 			Pair tmpPair = ItemManager.nextItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name), tmpGame.getSameIdx());					
 
 			tmpGame.setSameIdx(tmpPair.key);
-			tmpGame.setCurrentItem(tmpPair.value);
-		} else if (km.config.getDouble()) {
-			String currentItem = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));
-			tmpGame.addToAlreadyGot(currentItem);
-			
-			if (tmpGame.getAlreadyGot().size() >= km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name).size()) {
-				tmpGame.resetList();
-			}
-			
-			String currentItem2 = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));			
-			tmpGame.addToAlreadyGot(currentItem2);
-			
-			tmpGame.setCurrentItem(currentItem + "/" + currentItem2);
+			ret = tmpPair.value;
 		} else {
-			tmpGame.setCurrentItem(ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name)));			
+			ret = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));
 		}
+		
+		return ret;
 	}
 	
 	public void kill() {

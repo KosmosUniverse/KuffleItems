@@ -104,12 +104,14 @@ public class PlayerInteract implements Listener {
 			
 			if (tmpGame != null && tmpGame.getCurrentItem() != null) {
 				if (!km.config.getDouble() && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {
-					tmpGame.found();	
+					km.logs.logMsg(tmpGame.getPlayer(), " validate his item [" + tmpGame.getCurrentItem() + "] !");
+					tmpGame.found();
 				} else if (km.config.getDouble() &&
 						(tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ||
 						tmpGame.getCurrentItem().split("/")[1].equals(item.getType().name().toLowerCase()))) {
+					String tmp = tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ? tmpGame.getCurrentItem().split("/")[0] : tmpGame.getCurrentItem().split("/")[1];
+					km.logs.logMsg(tmpGame.getPlayer(), " validate his item [" + tmp + "] !");
 					tmpGame.found();
-					km.logs.logMsg(tmpGame.getPlayer(), " validate his item !");
 				}
 			}
 		}

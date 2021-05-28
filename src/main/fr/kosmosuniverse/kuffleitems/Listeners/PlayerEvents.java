@@ -20,6 +20,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Core.Game;
@@ -187,8 +189,9 @@ public class PlayerEvents implements Listener {
 						if (km.config.getLevel().losable) {
 							player.sendMessage(ChatColor.RED + "YOU LOSE !");
 						} else {
-							km.games.get(playerName).reloadEffects();
 							teleportAutoBack(km.games.get(playerName));
+							km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 1));
+							km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 999999, 10));
 						}
 						
 						return;
@@ -247,6 +250,12 @@ public class PlayerEvents implements Listener {
 				
 				tmpGame.getPlayer().teleport(loc);
 				tmpGame.restorePlayerInv();
+
+				for (PotionEffect p : tmpGame.getPlayer().getActivePotionEffects()) {
+					tmpGame.getPlayer().removePotionEffect(p.getType());
+				}
+				
+				tmpGame.reloadEffects();
 			}
 		}, (km.config.getLevel().seconds * 20));
 	}
