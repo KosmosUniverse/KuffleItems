@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KufflePlayers implements CommandExecutor {
 
@@ -22,16 +23,16 @@ public class KufflePlayers implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-players>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-players>"));
 		
 		if (!player.hasPermission("ki-players")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			
 			return false;
 		}
 		
 		if (!km.gameStarted) {
-			km.logs.writeMsg(player, "Game has not launched yet.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 			
 			return false;
 		}

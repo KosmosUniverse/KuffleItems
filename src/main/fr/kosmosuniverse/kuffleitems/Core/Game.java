@@ -79,10 +79,10 @@ public class Game {
 		timeBase = System.currentTimeMillis();
 		times = new HashMap<String, Long>();
 		alreadyGot = new ArrayList<String>();
-		ageDisplay = Bukkit.createBossBar("STARTING...", BarColor.PURPLE, BarStyle.SOLID);
+		configLang = km.config.getLang();
+		ageDisplay = Bukkit.createBossBar(Utils.getLangString(km, player.getName(), "START"), BarColor.PURPLE, BarStyle.SOLID);
 		ageDisplay.addPlayer(player);
 		deathLoc = null;
-		configLang = km.config.getLang();
 		updateBar();
 	}
 	
@@ -142,8 +142,8 @@ public class Game {
 		
 		JSONArray got = new JSONArray();
 		
-		for (String block : alreadyGot) {
-			got.add(block);
+		for (String item : alreadyGot) {
+			got.add(item);
 		}
 		
 		global.put("alreadyGot", got);
@@ -202,19 +202,19 @@ public class Game {
 	private void updateBar() {
 		if (lose) {
 			ageDisplay.setProgress(0.0);
-			ageDisplay.setTitle("Game Done ! Rank : " + gameRank);
+			ageDisplay.setTitle(Utils.getLangString(km, player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
 			
 			return ;
 		} 
 		
 		if (finished) {
 			ageDisplay.setProgress(1.0);
-			ageDisplay.setTitle("Game Done ! Rank : " + gameRank);
+			ageDisplay.setTitle(Utils.getLangString(km, player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
 			
 			return ;
 		}
 		
-		double calc = ((double) itemCount) / km.config.getBlockPerAge();
+		double calc = ((double) itemCount) / km.config.getItemPerAge();
 		calc = calc > 1.0 ? 1.0 : calc;
 		ageDisplay.setProgress(calc);
 		ageDisplay.setTitle(AgeManager.getAgeByNumber(km.ages, age).name.replace("_", " ") + ": " + itemCount);
@@ -263,7 +263,13 @@ public class Game {
 		updatePlayerListName();
 		itemScore.setScore(itemCount);
 		updateBar();
-		Bukkit.broadcastMessage("§6§l" + player.getName() + ChatColor.BLUE + " has moved to the " + AgeManager.getAgeByNumber(km.ages, age).color + AgeManager.getAgeByNumber(km.ages, age).name.replace("_", " ") + "§1.");
+		
+		Age tmpAge = AgeManager.getAgeByNumber(km.ages, age);
+		
+		for (String playerName : km.games.keySet()) {
+			km.games.get(playerName).getPlayer().sendMessage(Utils.getLangString(km, playerName, "AGE_MOVED").replace("<#>", ChatColor.BLUE + "<§6§l" + player.getName() + ChatColor.BLUE + ">").replace("<##>", "<" + tmpAge.color + tmpAge.name.replace("_Age", "") + ChatColor.BLUE + ">"));
+			//km.games.get(playerName).getPlayer().sendMessage("§6§l" + player.getName() + ChatColor.BLUE + " has moved to the " + tmpAge.color + tmpAge.name.replace("_", " ") + "§1.");
+		}
 	}
 	
 	public void finish(int _gameRank) {
@@ -278,7 +284,7 @@ public class Game {
 		}
 		
 		gameRank = _gameRank;
-		ageDisplay.setTitle("Game Done ! Rank : " + gameRank);
+		ageDisplay.setTitle(Utils.getLangString(km, player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
 		
 		if (lose) {
 			ageDisplay.setProgress(0.0f);	
@@ -306,23 +312,30 @@ public class Game {
 		updatePlayerListName();
 		
 		player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName());
-		player.sendMessage(ChatColor.BLUE + " - Death Count: " + ChatColor.RESET + deathCount);
-		player.sendMessage(ChatColor.BLUE + " - Skip Count: " + ChatColor.RESET + skipCount);
-		player.sendMessage(ChatColor.BLUE + " - Template Count: " + ChatColor.RESET + sbttCount);
-		player.sendMessage(ChatColor.BLUE + " - Times Tab:");
+		player.sendMessage(ChatColor.BLUE + Utils.getLangString(km, player.getName(), "DEATH_COUNT").replace("%i", "" + ChatColor.RESET + deathCount));
+		player.sendMessage(ChatColor.BLUE + Utils.getLangString(km, player.getName(), "SKIP_COUNT").replace("%i", "" + ChatColor.RESET + skipCount));
+		player.sendMessage(ChatColor.BLUE + Utils.getLangString(km, player.getName(), "TEMPLATE_COUNT").replace("%i", "" + ChatColor.RESET + sbttCount));
+		player.sendMessage(ChatColor.BLUE + Utils.getLangString(km, player.getName(), "TIME_TAB"));
 		
 		for (int i = 0; i < km.config.getMaxAges(); i++) {
 			Age age = AgeManager.getAgeByNumber(km.ages, i);
 			
 			String tmp;
+			String tmpLog;
 			
 			if (times.get(age.name) == -1) {
-				tmp = ChatColor.RESET + ": Abandon";
+				tmp = Utils.getLangString(km, player.getName(), "FINISH_ABANDON").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.RESET);
+				tmpLog = Utils.getLangString(km, player.getName(), "FINISH_ABANDON").replace("%s", age.name.replace("_Age", ""));
+				//tmp = ChatColor.RESET + ": Abandon";
 			} else {
-				tmp = ChatColor.BLUE + " in: " + ChatColor.RESET + Utils.getTimeFromSec(times.get(age.name) / 1000);
+				tmp = Utils.getLangString(km, player.getName(), "FINISH_TIME").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.BLUE).replace("%t", ChatColor.RESET + Utils.getTimeFromSec(times.get(age.name) / 1000));
+				tmpLog = Utils.getLangString(km, player.getName(), "FINISH_TIME").replace("%s", age.name.replace("_Age", "")).replace("%t", Utils.getTimeFromSec(times.get(age.name) / 1000));
+				//tmp = ChatColor.BLUE + " in: " + ChatColor.RESET + Utils.getTimeFromSec(times.get(age.name) / 1000);
 			}
 			
-			player.sendMessage(ChatColor.BLUE + "   - Finished " + age.color + age.name + tmp);
+			player.sendMessage(tmp);
+			km.logs.logMsg(player, tmpLog);
+			//player.sendMessage(ChatColor.BLUE + "   - Finished " + age.color + age.name + tmp);
 		}
 	}
 	
@@ -348,19 +361,24 @@ public class Game {
 		
 		if (malus) {
 			if ((age + 1) < km.config.getSkipAge()) {
-				km.logs.writeMsg(player, "You can't skip block this age.");
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CANT_SKIP_AGE"));
 				
 				return false;
 			}
 			
 			if (itemCount == 1) {
-				km.logs.writeMsg(player, "You can't skip the first block of the age.");
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CANT_SKIP_FIRST"));
 				
 				return false;
 			}
 			
 			itemCount--;
-			km.logs.writeMsg(player, "Block [" + currentItem + "] was skipped.");
+			
+			if (currentItem.contains("/")) {
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEMS_SKIP").replace("[#]", "[" + currentItem.split("/")[0] + "]").replace("[##]", "[" + currentItem.split("/")[1] + "]"));
+			} else {
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEM_SKIP").replace("[#]", "[" + currentItem + "]"));	
+			}
 			
 			itemScore.setScore(itemCount);
 			updateBar();
@@ -584,7 +602,7 @@ public class Game {
 		if (km.config.getDouble()) {
 			timeShuffle = System.currentTimeMillis();
 			
-			itemDisplay = LangManager.findBlockDisplay(km.allLangs, currentItem.split("/")[0], configLang) + "/" + LangManager.findBlockDisplay(km.allLangs, currentItem.split("/")[1], configLang);
+			itemDisplay = LangManager.findDisplay(km.allItemsLangs, currentItem.split("/")[0], configLang) + "/" + LangManager.findDisplay(km.allItemsLangs, currentItem.split("/")[1], configLang);
 			km.updatePlayersHead(player.getName(), itemDisplay);
 		} else {
 			if (!alreadyGot.contains(currentItem)) {
@@ -592,7 +610,7 @@ public class Game {
 			}
 			
 			timeShuffle = System.currentTimeMillis();
-			itemDisplay = LangManager.findBlockDisplay(km.allLangs, currentItem, configLang);
+			itemDisplay = LangManager.findDisplay(km.allItemsLangs, currentItem, configLang);
 			km.updatePlayersHead(player.getName(), itemDisplay);
 		}
 	}
@@ -609,7 +627,7 @@ public class Game {
 		configLang = _configLang;
 		
 		if (currentItem != null) {
-			itemDisplay = LangManager.findBlockDisplay(km.allLangs, currentItem, configLang);
+			itemDisplay = LangManager.findDisplay(km.allItemsLangs, currentItem, configLang);
 		}
 	}
 	

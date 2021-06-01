@@ -86,7 +86,11 @@ public class PlayerEvents implements Listener {
 		tmpGame.load();
 		km.updatePlayersHead(player.getName(), tmpGame.getItemDisplay());
 		
-		km.logs.writeBroadcastMsg("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
+		for (String playerName : km.games.keySet()) {
+			km.games.get(playerName).getPlayer().sendMessage("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
+		}
+		
+		km.logs.logBroadcastMsg("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
 		
 		return;
 	}
@@ -127,7 +131,10 @@ public class PlayerEvents implements Listener {
 			
 			tmpGame.stop();
 			
-			km.logs.writeBroadcastMsg("[KuffleItems] : <" + player.getName() + "> game is saved.");
+			for (String playerName : km.games.keySet()) {
+				km.games.get(playerName).getPlayer().sendMessage("[KuffleItems] : <" + player.getName() + "> game is saved.");
+			}
+			km.logs.logBroadcastMsg("[KuffleItems] : <" + player.getName() + "> game is saved.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

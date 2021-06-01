@@ -37,6 +37,7 @@ import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleMain extends JavaPlugin {
 	public HashMap<String, HashMap<String, RewardElem>> allRewards;
+	public HashMap<String, HashMap<String, String>> allItemsLangs;
 	public HashMap<String, HashMap<String, String>> allLangs;
 	
 	public HashMap<String, ArrayList<String>> allItems = new HashMap<String, ArrayList<String>>();
@@ -98,7 +99,12 @@ public class KuffleMain extends JavaPlugin {
 			return ;
 		}
 		
-		if ((allLangs = LangManager.getAllBlocksLang(FilesConformity.getContent(this, "items_lang.json"), this.getDataFolder())) == null) {
+		if ((allItemsLangs = LangManager.getAllItemsLang(FilesConformity.getContent(this, "items_lang.json"), this.getDataFolder())) == null) {
+			this.getPluginLoader().disablePlugin(this);
+			return ;
+		}
+		
+		if ((allLangs = LangManager.getAllItemsLang(FilesConformity.getContent(this, "langs.json"), this.getDataFolder())) == null) {
 			this.getPluginLoader().disablePlugin(this);
 			return ;
 		}
@@ -109,7 +115,7 @@ public class KuffleMain extends JavaPlugin {
 		}
 		
 		logs = new Logs(this.getDataFolder());
-		langs = LangManager.findAllLangs(allLangs);
+		langs = LangManager.findAllLangs(allItemsLangs);
 		
 		config = new Config(this);
 		config.setupConfig(this, getConfig());
@@ -117,7 +123,6 @@ public class KuffleMain extends JavaPlugin {
 		crafts = new CraftsManager(this);
 		itemsInvs = ItemManager.getItemsInvs(allItems);
 		scores = new Scores(this);
-		logs = new Logs(this.getDataFolder());
 		
 		int cnt = 0;
 		
@@ -125,8 +130,8 @@ public class KuffleMain extends JavaPlugin {
 			getServer().addRecipe(item.getRecipe());
 			cnt++;
 		}
-		
-		System.out.println("[KuffleItems] Add " + cnt + " Custom Crafts.");
+		   
+		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ADD_CRAFTS").replace("%i", "" + cnt));
 		
 		playerInteract = new PlayerInteract(this);
 		playerEvents = new PlayerEvents(this, this.getDataFolder());
@@ -135,7 +140,7 @@ public class KuffleMain extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(playerInteract, this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
 		getServer().getPluginManager().registerEvents(new ItemEvent(this), this);
-		System.out.println("[KuffleItems] Add 4 Game Listeners.");
+		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ADD_LISTENERS").replace("%i", "4"));
 		
 		getCommand("ki-config").setExecutor(new KuffleConfig(this));
 		getCommand("ki-list").setExecutor(new KuffleList(this));
@@ -163,7 +168,7 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-remove-player").setExecutor(new KuffleTeamRemovePlayer(this));
 		getCommand("ki-team-reset-players").setExecutor(new KuffleTeamResetPlayers(this));
 		getCommand("ki-team-random-player").setExecutor(new KuffleTeamRandomPlayer(this));
-		System.out.println("[KuffleItems] Add 25 Plugin Commands.");
+		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ADD_CMD").replace("%i", "25"));
 
 		getCommand("ki-config").setTabCompleter(new KuffleConfigTab(this));
 		getCommand("ki-list").setTabCompleter(new KuffleListTab(this));
@@ -179,11 +184,11 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-affect-player").setTabCompleter(new KuffleTeamAffectPlayerTab(this));
 		getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab(this));
 		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
-		System.out.println("[KuffleItems] Add 13 Plugin Tab Completer.");
+		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ADD_TAB").replace("%i", "13"));
 		
 		loaded = true;
 		
-		System.out.println("[KuffleItems] Plugin turned ON.");
+		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ON"));
 	}
 	
 	@Override
@@ -192,7 +197,7 @@ public class KuffleMain extends JavaPlugin {
 			killAll();
 		}
 		
-		System.out.println("[KuffleItems] Plugin turned OFF.");
+		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "OFF"));
 	}
 	
 	public void addRecipe(Recipe recipe) {
@@ -227,12 +232,12 @@ public class KuffleMain extends JavaPlugin {
 		}
 
 		
-		if (allLangs != null) {
-			for (String key : allLangs.keySet()) {
-				allLangs.get(key).clear();
+		if (allItemsLangs != null) {
+			for (String key : allItemsLangs.keySet()) {
+				allItemsLangs.get(key).clear();
 			}
 			
-			allLangs.clear();
+			allItemsLangs.clear();
 		}
 		
 		if (itemsInvs != null) {

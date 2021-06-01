@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class ManageTeams {
@@ -128,7 +129,7 @@ public class ManageTeams {
 		return null;
 	}
 	
-	public String toString() {
+	public String toString(KuffleMain km) {
 		StringBuilder sb = new StringBuilder();
 		
 		if (teams.size() != 0) {
@@ -140,7 +141,7 @@ public class ManageTeams {
 				}
 			}
 		} else {
-			sb.append("No Team, please add teams with kteam-create command before print.");
+			sb.append(Utils.getLangString(km, null, "NO_TEAM"));
 		}
 		
 		return sb.toString();
@@ -168,7 +169,7 @@ public class ManageTeams {
 		return global.toString();
 	}
 	
-	public void loadTeams(JSONObject global, HashMap<String, Game> games) {
+	public void loadTeams(KuffleMain km, JSONObject global, HashMap<String, Game> games) {
 		for (Object key : global.keySet()) {
 			String name = key.toString();
 			JSONObject tmp = (JSONObject) global.get(key);
@@ -183,7 +184,8 @@ public class ManageTeams {
 					Game tmpPlayer = games.get((String) obj);
 					
 					if (tmpPlayer == null) {
-						System.out.println("Player <" + (String) obj + "> does not exists.");
+						System.out.println(Utils.getLangString(km, null, "PLAYER_NOT_EXISTS").replace("<#>", "<" + (String) obj + ">"));
+						//System.out.println("Player <" + (String) obj + "> does not exists.");
 					} else {
 						Player p = tmpPlayer.getPlayer();
 						affectPlayer(name, p);	

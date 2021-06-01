@@ -110,7 +110,7 @@ public class FilesConformity {
 		if (file.equals("ages.json")) {
 			return ageConformity(content);
 		} else if (file.equals("items_lang.json")) {
-			return langConformity(content);
+			return itemLangConformity(content);
 		} else if (file.equals("items_" + Utils.getVersion() + ".json") ||
 				file.equals("sbtt_" + Utils.getVersion() + ".json")) {
 			return itemsConformity(km, content);
@@ -118,6 +118,8 @@ public class FilesConformity {
 			return rewardsConformity(km, content);
 		} else if (file.equals("levels.json")) {
 			return levelsConformity(content);
+		} else if (file.equals("langs.json")) {
+			return langConformity(content);
 		}
 		
 		return false;
@@ -189,7 +191,7 @@ public class FilesConformity {
 		return false;
 	}
 	
-	private static boolean langConformity(String content) {
+	private static boolean itemLangConformity(String content) {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj = new JSONObject();
@@ -225,6 +227,48 @@ public class FilesConformity {
 				}
 				
 				materialObj.clear();
+			}
+			
+			langs.clear();
+			jsonObj.clear();
+			
+			return true;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	private static boolean langConformity(String content) {
+		try {
+			JSONParser parser = new JSONParser();
+			JSONObject jsonObj = new JSONObject();
+			ArrayList<String> langs = null;
+			
+			parser.parse(content);
+			
+			for (Object key : jsonObj.keySet()) {
+				JSONObject phraseObj = (JSONObject) jsonObj.get(key);
+				
+				if (langs == null) {
+					langs = new ArrayList<String>();
+					
+					for (Object keyLang : phraseObj.keySet()) {
+						langs.add((String) keyLang);
+					}
+				} else {
+					for (Object keyLang : phraseObj.keySet()) {
+						if (!langs.contains((String) keyLang)) {
+							System.out.println("Lang [" + (String) keyLang + "] is not everywhere in lang file.");
+							langs.clear();
+							phraseObj.clear();
+							return false;
+						}
+					}
+				}
+				
+				phraseObj.clear();
 			}
 			
 			langs.clear();

@@ -26,15 +26,15 @@ public class ItemManager {
 		int max = AgeManager.getAgeMaxNumber(ages);
 		
 		for (int ageCnt = 0; ageCnt <= max; ageCnt++) {
-			finalMap.put(AgeManager.getAgeByNumber(ages, ageCnt).name, getAgeBlocks(AgeManager.getAgeByNumber(ages, ageCnt).name, itemsContent, dataFolder));
+			finalMap.put(AgeManager.getAgeByNumber(ages, ageCnt).name, getAgeItems(AgeManager.getAgeByNumber(ages, ageCnt).name, itemsContent, dataFolder));
 		}
 		
 		return finalMap;
 	}
 	
-	public static synchronized ArrayList<String> getAgeBlocks(String age, String itemsContent, File dataFolder) {
+	public static synchronized ArrayList<String> getAgeItems(String age, String itemsContent, File dataFolder) {
 		ArrayList<String> finalList = new ArrayList<String>();
-		JSONObject blocks = new JSONObject();
+		JSONObject items = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
 		FileWriter writer = null;
 		
@@ -45,7 +45,7 @@ public class ItemManager {
 				writer = new FileWriter(dataFolder.getPath() + "/logs.txt");
 			}
 			
-			blocks = (JSONObject) jsonParser.parse(itemsContent);
+			items = (JSONObject) jsonParser.parse(itemsContent);
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
@@ -53,7 +53,7 @@ public class ItemManager {
 		JSONObject ageObject = new JSONObject();
 		JSONArray agePart = new JSONArray();
 		
-		ageObject = (JSONObject) blocks.get(age);
+		ageObject = (JSONObject) items.get(age);
 					
 		for (Object k : ageObject.keySet()) {
 			agePart = (JSONArray) ageObject.get(k);
@@ -100,15 +100,15 @@ public class ItemManager {
 		return finalList.get(r.nextInt(finalList.size()));
 	}
 	
-	public static synchronized Pair nextItem(ArrayList<String> done, ArrayList<String> allAgeBlocks, int sameIdx) {	
-		String testBlock = allAgeBlocks.get(sameIdx);
+	public static synchronized Pair nextItem(ArrayList<String> done, ArrayList<String> allAgeItems, int sameIdx) {	
+		String testItem = allAgeItems.get(sameIdx);
 		
-		while (done.contains(testBlock)) {
+		while (done.contains(testItem)) {
 			sameIdx++;
-			testBlock = allAgeBlocks.get(sameIdx);
+			testItem = allAgeItems.get(sameIdx);
 		}
 		
-		return (new Pair(sameIdx, testBlock));
+		return (new Pair(sameIdx, testItem));
 	}
 	
 	public static HashMap<String, ArrayList<Inventory>> getItemsInvs(HashMap<String, ArrayList<String>> allItems) {

@@ -1,12 +1,12 @@
 name: KuffleItems
-version: 1.5.9
+version: 1.6
 author: KosmosUniverse
 main: main.fr.kosmosuniverse.kuffleitems.KuffleMain
 api-version: 1.15
 
 commands:
    ki-config:
-      usage: /<command>
+      usage: /<command> [<key> <value>]*
       description: command to see or change game configuration
       permission: inferno.flagrate
    ki-list:

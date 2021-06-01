@@ -10,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Core.AgeManager;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleAgeItems implements CommandExecutor  {
 	private KuffleMain km;
@@ -25,10 +26,10 @@ public class KuffleAgeItems implements CommandExecutor  {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-ageitems>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-ageitems>"));
 		
 		if (!player.hasPermission("ki-ageitems")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
@@ -38,7 +39,7 @@ public class KuffleAgeItems implements CommandExecutor  {
 		
 		if (km.gameStarted) {
 			if (!km.games.containsKey(player.getName())) {
-				km.logs.writeMsg(player, "You are not playing in this game.");
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
 				return true;
 			}
 			
@@ -50,7 +51,7 @@ public class KuffleAgeItems implements CommandExecutor  {
 				age = args[0];
 				
 				if (!AgeManager.ageExists(km.ages, age)) {
-					player.sendMessage("This age does not exist.");
+					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "AGE_NOT_EXISTS"));
 					return false;
 				}
 			}
@@ -59,7 +60,7 @@ public class KuffleAgeItems implements CommandExecutor  {
 			
 			player.openInventory(ageItems.get(0));
 		} else {
-			km.logs.writeMsg(player, "The game has not launched yet.");			
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));			
 		}
 
 		return true;

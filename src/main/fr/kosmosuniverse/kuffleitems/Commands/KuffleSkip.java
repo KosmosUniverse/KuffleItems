@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleSkip implements CommandExecutor {
 	private KuffleMain km;
@@ -21,23 +22,23 @@ public class KuffleSkip implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-skip>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-skip>"));
 		
 		if (!km.gameStarted) {
-			km.logs.writeMsg(player, "No game launched, you can launch a game with ki-start command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 			
 			return false;
 		}
 
 		if (!km.config.getSkip()) {
-			km.logs.writeMsg(player, "This command is disabled in config.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CONFIG_DISABLED"));
 			
 			return false;
 		}
 		
 		if (msg.equals("ki-skip")) {
 			if (!player.hasPermission("ki-skip")) {
-				km.logs.writeMsg(player, "You are not allowed to do this command.");
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			} else {
 				if (args.length != 0) {
 					return false;
@@ -51,13 +52,13 @@ public class KuffleSkip implements CommandExecutor {
 					}
 				}
 				
-				km.logs.writeMsg(player, "You are not in the game.");
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
 			}
 			
 			return false;
 		} else if (msg.equals("ki-adminskip")) {
 			if (!player.hasPermission("ki-adminskip")) {
-				km.logs.writeMsg(player, "You are not allowed to do this command.");
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			} else {
 				if (args.length != 1) {
 					return false;
@@ -68,13 +69,13 @@ public class KuffleSkip implements CommandExecutor {
 						if (playerName.equals(args[0])) {
 							String tmp = km.games.get(playerName).getCurrentItem();
 							km.games.get(playerName).skip(false);
-							km.logs.writeMsg(player, "Block [" + tmp + "] was skipped for player <" + playerName + ">.");
+							km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEM_SKIPPED").replace("[#]", " [" + tmp + "] ").replace("<#>", " <" + playerName + ">"));
 							
 							return true;
 						}
 					}
 					
-					km.logs.writeMsg(player, "Can't find player to skip his block.");
+					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "PLAYER_NOT_FOUND"));
 				}
 				
 				return false;

@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleLang implements CommandExecutor {
 	private KuffleMain km;
@@ -25,10 +26,10 @@ public class KuffleLang implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-lang>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-lang>"));
 		
 		if (!player.hasPermission("ki-lang")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
@@ -45,9 +46,9 @@ public class KuffleLang implements CommandExecutor {
 						if (km.langs.contains(lang)) {
 							km.games.get(playerName).setLang(lang);
 							
-							km.logs.writeMsg(player, "Lang set to [" + lang + "]");
+							km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "LANG_SET").replace("[#]", " [" + lang + "]"));
 						} else {
-							km.logs.writeMsg(player, "Requested lang is not available.");
+							km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "REQ_LANG_NOT_AVAIL"));
 						}
 						
 						return true;
@@ -55,11 +56,11 @@ public class KuffleLang implements CommandExecutor {
 				}
 			}
 		} else {
-			km.logs.writeMsg(player, "You are not playing in this game.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
 			return false;
 		}
 
-		km.logs.writeMsg(player, "Game has not launched yet.");
+		km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 		return true;
 	}
 

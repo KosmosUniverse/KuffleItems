@@ -23,15 +23,15 @@ public class KuffleStop implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-stop>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-stop>"));
 		
 		if (!player.hasPermission("ki-stop")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (!km.gameStarted) {
-			km.logs.writeMsg(player, "No game launched, you can launch a game with ki-start command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
@@ -53,7 +53,7 @@ public class KuffleStop implements CommandExecutor {
 		
 		km.gameStarted = false;
 		km.paused = false;
-		km.logs.writeMsg(player, "Game Stopped.");
+		km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_STOPPED"));
 		
 		return true;
 	}

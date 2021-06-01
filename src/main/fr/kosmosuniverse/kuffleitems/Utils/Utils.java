@@ -28,6 +28,7 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 import main.fr.kosmosuniverse.kuffleitems.Core.Game;
 import main.fr.kosmosuniverse.kuffleitems.Core.ItemManager;
+import main.fr.kosmosuniverse.kuffleitems.Core.LangManager;
 import main.fr.kosmosuniverse.kuffleitems.Crafts.Template;
 
 public class Utils {
@@ -277,10 +278,6 @@ public class Utils {
 	}
 	
 	public static String getTimeFromSec(long sec) {
-		if (sec < 0) {
-			return "Abandon";
-		}
-		
 		StringBuilder sb = new StringBuilder();
 		
 		if (sec != 0 && sec >= 3600) {
@@ -365,6 +362,14 @@ public class Utils {
 		}
 		
 		return true;
+	}
+	
+	public static String getLangString(KuffleMain km, String player, String tag) {
+		if (km.gameStarted && player != null && km.games.containsKey(player)) {
+			return (LangManager.findDisplay(km.allLangs, tag, km.games.get(player).getLang()));
+		} else {
+			return (LangManager.findDisplay(km.allLangs, tag, km.config.getLang()));
+		}
 	}
 }
  

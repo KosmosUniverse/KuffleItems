@@ -26,15 +26,15 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-team-random-player>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-random-player>"));
 		
 		if (!player.hasPermission("ki-team-random-player")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() > 0 && km.gameStarted) {
-			km.logs.writeMsg(player, "Game is already launched, you cannot modify teams during the game.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 		
@@ -42,13 +42,18 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 			return false;
 		}
 		
+		if (km.games.size() == 0) {
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "LIST_EMPTY"));
+			return true;
+		}
+		
 		if (calcMAxPlayers() < Utils.getPlayerList(km.games).size()) {
-			km.logs.writeMsg(player, "There are too many players for that number of team, please create more teams or change team size with ki-config command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_TOO_MANY_PLAYERS"));
 			return true;
 		}
 		
 		if (!checkEmptyTeams()) {
-			km.logs.writeMsg(player, "There already are players in some teams, please reset all teams using ki-team-reset-players command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_ALREADY_PLAYERS"));
 			return true;
 		}
 		
@@ -70,8 +75,8 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 			}
 		}
 		
-		km.logs.writeMsg(player, "Randomly add " + Utils.getPlayerNames(km.games).size() + " in " + km.teams.getTeams().size() + " teams.");
-		
+		km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "RANDOM").replace("%i", "" + Utils.getPlayerNames(km.games).size()).replace("%j", "" + km.teams.getTeams().size()));
+
 		return true;
 	}
 	

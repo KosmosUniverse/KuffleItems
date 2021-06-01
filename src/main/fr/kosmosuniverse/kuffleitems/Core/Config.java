@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Core.Level;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class Config {
 	private KuffleMain km;
@@ -27,7 +28,7 @@ public class Config {
 	private int teamSize;
 	private int spreadMin;
 	private int spreadMax;
-	private int blockPerAge;
+	private int itemPerAge;
 	private int skipAge;
 	private int maxAges;
 	private int startTime;
@@ -44,10 +45,6 @@ public class Config {
 	public HashMap<String, ArrayList<String>> booleanRet = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<String>> intRet = new HashMap<String, ArrayList<String>>();
 	public HashMap<String, ArrayList<String>> stringRet = new HashMap<String, ArrayList<String>>();
-
-	public String booleanErrorMsg = "Invalid value ! True or False awaited.";
-	public String stringErrorMsg = "Invalid value !";
-	public String intErrorMsg = "Invalid value !";
 
 	public Config(KuffleMain _km) {
 		km = _km;
@@ -83,7 +80,7 @@ public class Config {
 
 		intElems.put("SPREAD_MIN_DISTANCE", "setSpreadDistance");
 		intElems.put("SPREAD_MIN_RADIUS", "setSpreadRadius");
-		intElems.put("BLOCK_PER_AGE", "setBlockAge");
+		intElems.put("ITEM_PER_AGE", "setItemAge");
 		intElems.put("FIRST_AGE_SKIP", "setFirstSkip");
 		intElems.put("NB_AGE", "setMaxAge");
 		intElems.put("START_DURATION", "setStartTime");
@@ -97,7 +94,7 @@ public class Config {
 			ret.add("" + i);
 		}
 
-		intRet.put("BLOCK_PER_AGE", ret);
+		intRet.put("ITEM_PER_AGE", ret);
 
 		ret = new ArrayList<String>();
 
@@ -174,85 +171,87 @@ public class Config {
 	}
 
 	public void setupConfig(KuffleMain km, FileConfiguration configFile) {
-		if (!configFile.contains("game_settings.block_per_age")
-				|| configFile.getInt("game_settings.block_per_age") < 1) {
-			System.out.println("Config for block per age is not correct, use of default value.");
-			configFile.set("game_settings.block_per_age", 5);
+		if (!configFile.contains("game_settings.lang")
+				|| !km.langs.contains(configFile.getString("game_settings.lang"))) {
+			System.out.println("Config Lang parameter is not correct, use of default value.");
+			configFile.set("game_settings.lang", "en");
+		} else {
+			lang = configFile.getString("game_settings.lang");
+		}
+		
+		if (!configFile.contains("game_settings.item_per_age")
+				|| configFile.getInt("game_settings.item_per_age") < 1) {
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "item per age"));
+			configFile.set("game_settings.item_per_age", 5);
 		}
 
 		if (!configFile.contains("game_settings.spreadplayers.minimum_distance")
 				|| configFile.getInt("game_settings.spreadplayers.minimum_distance") < 1) {
-			System.out.println("Config for spreadplayers minimum distance is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "spreadplayers minimum distance"));
 			configFile.set("game_settings.spreadplayers.minimum_distance", 500);
 		}
 
 		if (!configFile.contains("game_settings.spreadplayers.minimum_radius")
 				|| configFile.getInt("game_settings.spreadplayers.minimum_radius") < configFile
 						.getInt("game_settings.spreadplayers.minimum_distance")) {
-			System.out.println("Config for spreadplayers maximum area is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "spreadplayers minimum radius"));
 			configFile.set("game_settings.spreadplayers.minimum_radius", 1000);
 		}
 
 		if (!configFile.contains("game_settings.start_time") || configFile.getInt("game_settings.start_time") < 1) {
-			System.out.println("Config for start time is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "start time"));
 			configFile.set("game_settings.start_time", 4);
 		}
 
 		if (!configFile.contains("game_settings.time_added") || configFile.getInt("game_settings.time_added") < 1) {
-			System.out.println("Config for time added is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "time added"));
 			configFile.set("game_settings.time_added", 2);
 		}
 
 		if (!configFile.contains("game_settings.max_age") || configFile.getInt("game_settings.max_age") < 1 || configFile.getInt("game_settings.max_age") > (AgeManager.getAgeMaxNumber(km.ages) + 1)) {
-			System.out.println("Config for max age is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "max ages"));
 			configFile.set("game_settings.max_age", AgeManager.getAgeMaxNumber(km.ages) + 1);
-		}
-
-		if (!configFile.contains("game_settings.lang")
-				|| !km.langs.contains(configFile.getString("game_settings.lang"))) {
-			System.out.println("Config for lang is not correct, use of default value.");
-			configFile.set("game_settings.lang", "en");
 		}
 
 		if (!configFile.contains("game_settings.level") || configFile.getInt("game_settings.level") < 0
 				|| configFile.getInt("game_settings.level") > 3) {
-			System.out.println("Config for level is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "level"));
 			configFile.set("game_settings.level", 1);
 		}
 
 		if (!configFile.contains("game_settings.skip.enable")) {
-			System.out.println("Config for enabling skip is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "enabling skip"));
 			configFile.set("game_settings.skip.enable", true);
 		}
 
 		if (!configFile.contains("game_settings.skip.age") || configFile.getInt("game_settings.skip.age") < 1) {
-			System.out.println("Config for min skip age is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "skip age"));
 			configFile.set("game_settings.skip.age", 2);
 		}
 
 		if (!configFile.contains("game_settings.custom_crafts")) {
-			System.out.println("Config for enabling custom crafts is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "enabling custom crafts"));
 			configFile.set("game_settings.custom_crafts", true);
 		}
 
 		if (!configFile.contains("game_settings.team.enable")) {
-			System.out.println("Config for enabling team is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "enabling team"));
 			configFile.set("game_settings.team.enable", false);
 		}
 
 		if (!configFile.contains("game_settings.team.size") || configFile.getInt("game_settings.team.size") < 2
 				|| configFile.getInt("game_settings.team.size") > 10) {
-			System.out.println("Config for max team size is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "max team size"));
 			configFile.set("game_settings.team.size", 2);
 		}
 		
 		if (!configFile.contains("game_settings.same_mode")) {
-			System.out.println("Config for enabling same mode is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "enabling same mode"));
 			configFile.set("game_settings.same_mode", false);
 		}
 		
 		if (!configFile.contains("game_settings.auto_detect_game_end.enable")) {
-			System.out.println("Config for enabling auto detect game end is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "enabling auto detect game end"));
 			configFile.set("game_settings.auto_detect_game_end.enable", false);
 		}
 		
@@ -260,24 +259,24 @@ public class Config {
 		
 		if (!configFile.contains("game_settings.auto_detect_game_end.end_when_one") ||
 				(!gameEnd && configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one"))) {
-			System.out.println("Config for enabling game end when one is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "game end when one"));
 			configFile.set("game_settings.auto_detect_game_end.end_when_one", false);
 		}
 		
 		if (!configFile.contains("game_settings.sbtt_mode.enable")) {
-			System.out.println("Config for enabling SBTT mode is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "SBTT mode"));
 			configFile.set("game_settings.sbtt_mode.enable", false);
 		}
 		
-		if (!configFile.contains("game_settings.pasive")) {
-			System.out.println("Config for enabling passive mode is not correct, use of default value.");
+		if (!configFile.contains("game_settings.passive")) {
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "passive mode"));
 			configFile.set("game_settings.passive", true);
 		}
 		
 		if (!configFile.contains("game_settings.sbtt_mode.amount") ||
 				configFile.getInt("game_settings.sbtt_mode.amount") < 1 ||
 				configFile.getInt("game_settings.sbtt_mode.amount") > 9) {
-			System.out.println("Config for SBTT item amount is not correct, use of default value.");
+			System.out.println(Utils.getLangString(km, null, "CONFIG_DEFAULT").replace("<#>", "SBTT item amount"));
 			configFile.set("game_settings.sbtt_mode.amount", 4);
 		}
 
@@ -294,7 +293,7 @@ public class Config {
 		
 		spreadMin = configFile.getInt("game_settings.spreadplayers.minimum_distance");
 		spreadMax = configFile.getInt("game_settings.spreadplayers.minimum_radius");
-		blockPerAge = configFile.getInt("game_settings.block_per_age");
+		itemPerAge = configFile.getInt("game_settings.item_per_age");
 		skipAge = configFile.getInt("game_settings.skip.age");
 		maxAges = configFile.getInt("game_settings.max_age");
 		startTime = configFile.getInt("game_settings.start_time");
@@ -302,8 +301,6 @@ public class Config {
 		level = configFile.getInt("game_settings.level");
 		teamSize = configFile.getInt("game_settings.team.size");
 		sbttAmount = configFile.getInt("game_settings.sbtt_mode.amount");
-
-		lang = configFile.getString("game_settings.lang");
 
 		ret = new ArrayList<String>();
 
@@ -324,7 +321,7 @@ public class Config {
 		sb.append("Rewards: ").append(rewards).append("\n");
 		sb.append("Skip: ").append(skip).append("\n");
 		sb.append("Crafts: ").append(crafts).append("\n");
-		sb.append("Nb block per age: ").append(blockPerAge).append("\n");
+		sb.append("Nb item per age: ").append(itemPerAge).append("\n");
 		sb.append("First Age for Skipping: ").append(skipAge).append("\n");
 		sb.append("Max age: ").append(maxAges).append("\n");
 		sb.append("Start duration: ").append(startTime).append("\n");
@@ -387,7 +384,7 @@ public class Config {
 		configObj.put("teamSize", teamSize);
 		configObj.put("spreadMin", spreadMin);
 		configObj.put("spreadMax", spreadMax);
-		configObj.put("blockPerAge", blockPerAge);
+		configObj.put("itemPerAge", itemPerAge);
 		configObj.put("skipAge", skipAge);
 		configObj.put("maxAges", maxAges);
 		configObj.put("startTime", startTime);
@@ -415,7 +412,7 @@ public class Config {
 		teamSize = Integer.parseInt(configObj.get("teamSize").toString());
 		spreadMin = Integer.parseInt(configObj.get("spreadMin").toString());
 		spreadMax = Integer.parseInt(configObj.get("spreadMax").toString());
-		blockPerAge = Integer.parseInt(configObj.get("blockPerAge").toString());
+		itemPerAge = Integer.parseInt(configObj.get("itemPerAge").toString());
 		skipAge = Integer.parseInt(configObj.get("skipAge").toString());
 		maxAges = Integer.parseInt(configObj.get("maxAges").toString());
 		startTime = Integer.parseInt(configObj.get("startTime").toString());
@@ -477,8 +474,8 @@ public class Config {
 		return teamSize;
 	}
 
-	public int getBlockPerAge() {
-		return blockPerAge;
+	public int getItemPerAge() {
+		return itemPerAge;
 	}
 
 	public int getSkipAge() {
@@ -623,12 +620,16 @@ public class Config {
 		return true;
 	}
 
-	public boolean setBlockAge(int _blockPerAge) {
-		blockPerAge = _blockPerAge;
+	public boolean setItemAge(int _itemPerAge) {
+		itemPerAge = _itemPerAge;
 		return true;
 	}
 
 	public boolean setFirstSkip(int _skipAge) {
+		if (_skipAge > maxAges) {
+			return false;
+		}
+		
 		skipAge = _skipAge;
 		return true;
 	}
@@ -679,7 +680,11 @@ public class Config {
 	}
 
 	public boolean setLang(String _lang) {
-		lang = _lang;
-		return true;
+		if (km.langs.contains(_lang)) {
+			lang = _lang;
+			return true;
+		}
+		
+		return false;
 	}
 }

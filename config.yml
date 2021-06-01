@@ -12,7 +12,7 @@ game_settings:
    start_time: 4 # minutes, Default: 4
    time_added: 2 # minutes added to start_time after each age, Default: 2
    max_age: 6 # number of Age to finish the game, Default : 6
-   block_per_age: 5 # number of block to complete to move to the next age, min: 1, Default: 5
+   item_per_age: 5 # number of block to complete to move to the next age, min: 1, Default: 5
    lang: "en" # Lang for all players, Default: "en"
    level: 1 # Number describes game difficulty can be [0, 1, 2, 3], Default: 1
    skip:

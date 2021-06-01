@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleTeamResetPlayers implements CommandExecutor {
 	private KuffleMain km;
@@ -21,15 +22,15 @@ public class KuffleTeamResetPlayers implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-team-reset-players>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-reset-players>"));
 		
 		if (!player.hasPermission("ki-team-reset-players")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() > 0 && km.gameStarted) {
-			km.logs.writeMsg(player, "Game is already launched, you cannot modify teams during the game.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 				
@@ -38,10 +39,10 @@ public class KuffleTeamResetPlayers implements CommandExecutor {
 		}
 		
 		if (!km.teams.hasTeam(args[0])) {
-			km.logs.writeMsg(player, "Team <" + args[0] + "> does not exist, please choose another name.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
 		} else {
 			km.teams.getTeam(args[0]).players.clear();
-			km.logs.writeMsg(player, "Team <" + args[0] + "> player list was reseted.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_RESETED").replace("<#>", "<" + args[0] + ">"));
 		}
 		
 		return true;

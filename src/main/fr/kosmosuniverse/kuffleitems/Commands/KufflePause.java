@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Core.ActionBar;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KufflePause implements CommandExecutor {
 	private KuffleMain km;
@@ -24,20 +25,20 @@ public class KufflePause implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-pause>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-pause>"));
 		
 		if (!player.hasPermission("ki-pause")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (!km.gameStarted) {
-			km.logs.writeMsg(player, "You need to first add people with ki-list command and launch a game with ki-start command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
 		if (km.paused) {
-			km.logs.writeMsg(player, "Your game is already paused, you can resume it with ki-resume command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_PAUSED"));
 			return false;
 		}
 		
@@ -45,7 +46,7 @@ public class KufflePause implements CommandExecutor {
 		
 		for (String playerName : km.games.keySet()) {
 			km.games.get(playerName).pause();
-			ActionBar.sendRawTitle("{\"text\":\"Game Paused..\",\"bold\":true,\"color\":\"dark_purple\"}", km.games.get(playerName).getPlayer());
+			ActionBar.sendRawTitle("{\"text\":\"" + Utils.getLangString(km, player.getName(), "GAME_PAUSED") + "..\",\"bold\":true,\"color\":\"dark_purple\"}", km.games.get(playerName).getPlayer());
 			km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 10, false, false, false));
 		}
 		

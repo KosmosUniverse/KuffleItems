@@ -12,7 +12,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class LangManager {
-	public static HashMap<String, HashMap<String, String>> getAllBlocksLang(String JSONContent, File dataFolder) {
+	public static HashMap<String, HashMap<String, String>> getAllItemsLang(String JSONContent, File dataFolder) {
 		HashMap<String, HashMap<String, String>> finalMap = new HashMap<String, HashMap<String, String>>();
 		JSONObject langages = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
@@ -27,25 +27,25 @@ public class LangManager {
 			
 			langages = (JSONObject) jsonParser.parse(JSONContent);
 
-			for (Iterator<?> itBlock = langages.keySet().iterator(); itBlock.hasNext();) {
-				String keyBlock = (String) itBlock.next();
-				JSONObject block = (JSONObject) langages.get(keyBlock);
+			for (Iterator<?> itItem = langages.keySet().iterator(); itItem.hasNext();) {
+				String keyItem = (String) itItem.next();
+				JSONObject item = (JSONObject) langages.get(keyItem);
 				
 				
-				writer.append(keyBlock);
+				writer.append(keyItem);
 				
 				
-				HashMap<String, String> blockLangs = new HashMap<String, String>();
+				HashMap<String, String> itemLangs = new HashMap<String, String>();
 				
-				for (Iterator<?> itLang = block.keySet().iterator(); itLang.hasNext();) {
+				for (Iterator<?> itLang = item.keySet().iterator(); itLang.hasNext();) {
 					String keyLang = (String) itLang.next();
-					String value = (String) block.get(keyLang);
+					String value = (String) item.get(keyLang);
 					
 					writer.append("\t" + keyLang + " :\n" + value + "\n");
-					blockLangs.put(keyLang, value);
+					itemLangs.put(keyLang, value);
 				}
 				
-				finalMap.put(keyBlock, blockLangs);
+				finalMap.put(keyItem, itemLangs);
 			}
 			
 			writer.close();
@@ -56,28 +56,28 @@ public class LangManager {
 		return finalMap;
 	}
 	
-	public static String findBlockDisplay(HashMap<String, HashMap<String, String>> allLangs, String block, String lang) {
+	public static String findDisplay(HashMap<String, HashMap<String, String>> allLangs, String item, String lang) {
 		String res = null;
 		
-		if (allLangs.containsKey(block)) {
-			HashMap<String, String> langs = allLangs.get(block);
+		if (allLangs.containsKey(item)) {
+			HashMap<String, String> langs = allLangs.get(item);
 			
 			if (langs.containsKey(lang) && langs.get(lang) != "") {
 				return langs.get(lang);
 			} else {
-				return block;
+				return item;
 			}
 		} else {
-			res = block;
+			res = item;
 		}
 			
 		return res;
 	}
 	
-	public static ArrayList<String> findAllLangs(HashMap<String, HashMap<String, String>> allBlocksLangs) {
+	public static ArrayList<String> findAllLangs(HashMap<String, HashMap<String, String>> allitemsLangs) {
 		ArrayList<String> allLangs = new ArrayList<String>();
 		
-		HashMap<String, String> first = allBlocksLangs.get(allBlocksLangs.keySet().toArray()[0]);
+		HashMap<String, String> first = allitemsLangs.get(allitemsLangs.keySet().toArray()[0]);
 		
 		for (String key : first.keySet()) {
 			allLangs.add(key);

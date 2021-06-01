@@ -38,18 +38,18 @@ public class KuffleLoad implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, " achieved command <ki-load>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-load>"));
 		
 		if (!player.hasPermission("ki-load")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() != 0) {
 			if (km.gameStarted) {
-				km.logs.logMsg(player, "A game is already launched.");
+				km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "GAME_LAUNCHED"));
 			} else {
-				km.logs.logMsg(player, "There already are players in list.");
+				km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "LIST_NOT_EMPTY") + ".");
 			}
 			
 			return false;
@@ -128,7 +128,7 @@ public class KuffleLoad implements CommandExecutor {
 					e.printStackTrace();
 				}
 				
-				km.teams.loadTeams(mainObject, km.games);
+				km.teams.loadTeams(km, mainObject, km.games);
 				
 				reader.close();
 			} catch (IOException e) {

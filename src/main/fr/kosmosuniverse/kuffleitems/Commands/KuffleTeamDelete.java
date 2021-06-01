@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleTeamDelete implements CommandExecutor {
 	private KuffleMain km;
@@ -21,15 +22,15 @@ public class KuffleTeamDelete implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-team-delete>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-delete>"));
 		
 		if (!player.hasPermission("ki-team-delete")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() > 0 && km.gameStarted) {
-			km.logs.writeMsg(player, "Game is already launched, you cannot modify teams during the game.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 				
@@ -38,11 +39,11 @@ public class KuffleTeamDelete implements CommandExecutor {
 		}
 		
 		if (!km.teams.hasTeam(args[0])) {
-			km.logs.writeMsg(player, "Team <" + args[0] + "> does not exist, please choose another name.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
 		} else {
 			km.teams.deleteTeam(args[0]);
 			
-			km.logs.writeMsg(player, "Team <" + args[0] + "> was deleted.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_DELETED").replace("<#>", "<" + args[0] + ">"));
 		}
 		
 		return true;

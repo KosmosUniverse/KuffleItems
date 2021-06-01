@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class Logs {
@@ -52,8 +51,8 @@ public class Logs {
 		}		
 	}
 	
-	public void writeBroadcastMsg(String msg) {
-		Bukkit.broadcastMessage(msg);
+	/*public void writeBroadcastMsg(String msg) {
+		Utils.broadcastMsg(km, msg);
 		
 		try {
 			FileWriter writer = new FileWriter(path, true);
@@ -66,7 +65,7 @@ public class Logs {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
-	}
+	}*/
 	
 	public void logMsg(Player to, String msg) {
 		try {

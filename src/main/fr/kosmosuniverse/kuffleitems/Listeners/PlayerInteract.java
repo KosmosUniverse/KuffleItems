@@ -210,7 +210,10 @@ public class PlayerInteract implements Listener {
 			name = name + "Template";
 			
 			Utils.reloadTemplate(km, name, AgeManager.getAgeByNumber(km.ages, km.games.get(player.getName()).getAge()).name);
-			Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.RESET + "" + ChatColor.BLUE + " just crafted Template !");
+			
+			for (String playerName : km.games.keySet()) {
+				km.games.get(playerName).getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.RESET + "" + ChatColor.BLUE + " just crafted Template !");
+			}
 			km.logs.logBroadcastMsg(player.getName() + " just crafted Template !");
 		}
 	}

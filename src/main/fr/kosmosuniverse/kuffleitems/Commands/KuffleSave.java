@@ -30,16 +30,16 @@ public class KuffleSave implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-save>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-save>"));
 		
 		if (!player.hasPermission("ki-save")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			
 			return false;
 		}
 		
 		if (!km.gameStarted) {
-			km.logs.writeMsg(player, "No game launched, you can launch a game with ki-start command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
@@ -107,7 +107,7 @@ public class KuffleSave implements CommandExecutor {
 		km.games.clear();
 		km.paused = false;
 		km.gameStarted = false;
-		km.logs.writeMsg(player, "Game Saved and Stopped.");
+		km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_SAVED"));
 		
 		return true;
 	}

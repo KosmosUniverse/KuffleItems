@@ -2,7 +2,6 @@ package main.fr.kosmosuniverse.kuffleitems.Core;
 
 import java.util.Random;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -39,24 +38,24 @@ public class GameLoop {
 						for (String playerName : km.games.keySet()) {
 							Game tmpGame = km.games.get(playerName);
 							
-							Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ":");
-							Bukkit.broadcastMessage(ChatColor.BLUE + " - Death Count: " + ChatColor.RESET + tmpGame.getDeathCount());
-							Bukkit.broadcastMessage(ChatColor.BLUE + " - Skip Count: " + ChatColor.RESET + tmpGame.getSkipCount());
-							Bukkit.broadcastMessage(ChatColor.BLUE + " - Template Count: " + ChatColor.RESET + tmpGame.getSbttCount());
-							Bukkit.broadcastMessage(ChatColor.BLUE + " - Times Tab:");
-							
+							for (String toSend : km.games.keySet()) {
+								km.games.get(toSend).getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ChatColor.RESET + ":");
+								km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "DEATH_COUNT").replace("%i", "" + ChatColor.RESET + tmpGame.getDeathCount()));
+								km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "SKIP_COUNT").replace("%i", "" + ChatColor.RESET + tmpGame.getSkipCount()));
+								km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "TEMPLATE_COUNT").replace("%i", "" + ChatColor.RESET + tmpGame.getSbttCount()));
+								km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "TIME_TAB"));
+							}
+						
 							for (int i = 0; i < km.config.getMaxAges(); i++) {
 								Age age = AgeManager.getAgeByNumber(km.ages, i);
 								
-								String tmp;
-								
-								if (tmpGame.getAgeTime(age.name) == -1) {
-									tmp = ChatColor.RESET + ": Abandon";
-								} else {
-									tmp = ChatColor.BLUE + " in: " + ChatColor.RESET + Utils.getTimeFromSec(tmpGame.getAgeTime(age.name) / 1000);
+								for (String toSend : km.games.keySet()) {
+									if (tmpGame.getAgeTime(age.name) == -1) {
+										km.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(km, toSend, "FINISH_ABANDON").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.RESET));
+									} else {
+										km.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(km, toSend, "FINISH_TIME").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.BLUE).replace("%t", ChatColor.RESET + Utils.getTimeFromSec(tmpGame.getAgeTime(age.name) / 1000)));
+									}
 								}
-								
-								Bukkit.broadcastMessage(ChatColor.BLUE + "   - Finished " + age.color + age.name + tmp);
 							}
 						}
 						
@@ -78,13 +77,16 @@ public class GameLoop {
 						tmpGame.randomBarColor();
 					} else {
 						if (tmpGame.getCurrentItem() == null) {
-							if (tmpGame.getItemCount() >= (km.config.getBlockPerAge() + 1)) {
+							if (tmpGame.getItemCount() >= (km.config.getItemPerAge() + 1)) {
 								if (!km.config.getTeam() || checkTeamMates(tmpGame)) {
 									if ((tmpGame.getAge() + 1) == km.config.getMaxAges()) {
 										tmpGame.finish(bestRank);
 										bestRank = getBestRank();
 										km.logs.logBroadcastMsg(tmpGame.getPlayer().getName() + " complete this game !");
-										Bukkit.broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + tmpGame.getPlayer().getName() + ChatColor.RESET + "" + ChatColor.BLUE + " complete this game !§r");
+										
+										for (String toSend : km.games.keySet()) {
+											km.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(km, toSend, "GAME_COMPLETE").replace("<#>", ChatColor.GOLD + "" + ChatColor.BOLD + tmpGame.getPlayer().getName() + ChatColor.BLUE));
+										}
 									} else {
 										tmpGame.nextAge();
 									}
@@ -94,7 +96,7 @@ public class GameLoop {
 							}
 						} else {
 							if (System.currentTimeMillis() - tmpGame.getTimeShuffle() > (tmpGame.getTime() * 60000)) {
-								tmpGame.getPlayer().sendMessage(ChatColor.RED + "You didn't find your block. Let's give you another one.");
+								tmpGame.getPlayer().sendMessage(ChatColor.RED + Utils.getLangString(km, tmpGame.getPlayer().getName(), "ITEM_NOT_FOUND"));
 								newItem(tmpGame);
 							} else if (km.config.getDouble() && !tmpGame.getCurrentItem().contains("/")) {
 								String currentTmp = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));
@@ -118,8 +120,8 @@ public class GameLoop {
 	}
 	
 	private void printTimerItem(Game tmpGame) {
-		if (km.config.getTeam() && tmpGame.getItemCount() >= (km.config.getBlockPerAge() + 1)) {
-			ActionBar.sendMessage(ChatColor.LIGHT_PURPLE + "Waiting for other players of the team.", tmpGame.getPlayer());
+		if (km.config.getTeam() && tmpGame.getItemCount() >= (km.config.getItemPerAge() + 1)) {
+			ActionBar.sendMessage(ChatColor.LIGHT_PURPLE + Utils.getLangString(km, tmpGame.getPlayer().getName(), "TEAM_WAIT"), tmpGame.getPlayer());
 			return ;
 		}
 		
@@ -130,10 +132,10 @@ public class GameLoop {
 		count /= 1000;
 		
 		if (tmpGame.getCurrentItem() == null) {
-			dispCuritem = "Something New...";
+			dispCuritem = Utils.getLangString(km, tmpGame.getPlayer().getName(), "SOMETHING_NEW");
 		} else {
 			if (tmpGame.getItemDisplay().contains("/")) {
-				dispCuritem = tmpGame.getItemDisplay().split("/")[0] + " or " + tmpGame.getItemDisplay().split("/")[1];
+				dispCuritem = Utils.getLangString(km, tmpGame.getPlayer().getName(), "ITEM_DOUBLE").replace("[#]", tmpGame.getItemDisplay().split("/")[0]).replace("[##]", tmpGame.getItemDisplay().split("/")[1]);
 			} else {
 				dispCuritem = tmpGame.getItemDisplay();	
 			}
@@ -149,7 +151,7 @@ public class GameLoop {
 			color = ChatColor.GREEN;
 		}
 		
-		ActionBar.sendMessage(color + "Time Left: " + count + " seconds to find: " + dispCuritem + ".", tmpGame.getPlayer());	
+		ActionBar.sendMessage(color + Utils.getLangString(km, tmpGame.getPlayer().getName(), "COUNTDOWN").replace("%i", "" + count).replace("%s", dispCuritem), tmpGame.getPlayer());	
 
 	}
 	
@@ -157,7 +159,7 @@ public class GameLoop {
 		for (String playerName : km.games.keySet()) {
 			if (km.games.get(playerName).getTeamName().equals(tmpGame.getTeamName()) &&
 					km.games.get(playerName).getAge() <= tmpGame.getAge() &&
-					km.games.get(playerName).getItemCount() < (km.config.getBlockPerAge() + 1)) {
+					km.games.get(playerName).getItemCount() < (km.config.getItemPerAge() + 1)) {
 				return false;
 			}
 		}

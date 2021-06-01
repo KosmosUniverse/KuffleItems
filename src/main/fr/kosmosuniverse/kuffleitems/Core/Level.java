@@ -1,12 +1,5 @@
 package main.fr.kosmosuniverse.kuffleitems.Core;
 
-/*public enum Level {
-	EASY,
-	NORMAL,
-	EXPERT,
-	ULTRA
-}*/
-
 public class Level {
 	public String name;
 	public int number;

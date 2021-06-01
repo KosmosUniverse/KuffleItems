@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
+import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleAbandon implements CommandExecutor  {
 	private KuffleMain km;
@@ -21,22 +22,22 @@ public class KuffleAbandon implements CommandExecutor  {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, "achieved command <ki-abandon>");
+		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-abandon>"));
 		
 		if (!player.hasPermission("ki-abandon")) {
-			km.logs.writeMsg(player, "You are not allowed to do this command.");
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.gameStarted) {
 			if (!km.games.containsKey(player.getName())) {
-				km.logs.writeMsg(player, "You are not playing in this game.");
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
 				return true;
 			}
 			
 			km.games.get(player.getName()).setLose(true);
 		} else {
-			km.logs.writeMsg(player, "The game has not launched yet.");			
+			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 		}
 
 		return true;
