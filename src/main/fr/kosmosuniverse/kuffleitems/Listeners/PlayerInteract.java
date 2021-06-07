@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -153,6 +154,30 @@ public class PlayerInteract implements Listener {
 						!km.games.get(player.getName()).getTeamName().equals(km.games.get(placerName).getTeamName()))) {
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onBreakSign(BlockBreakEvent event) {
+		if (!km.gameStarted) {
+			return ;
+		}
+		
+		Block block = event.getBlock();
+		
+		if (block.getType() != Material.OAK_SIGN) {
+			return;
+		}
+		
+		Sign sign = (Sign) block.getState();
+		
+		if (sign == null ||
+				!sign.getLine(0).equals("[KuffleItems]") ||
+				!sign.getLine(1).equals("Here dies") ||
+				!km.games.containsKey(sign.getLine(2))) {
+			return ;
+		}
+		
+		event.setCancelled(true);
 	}
 	
 	@EventHandler

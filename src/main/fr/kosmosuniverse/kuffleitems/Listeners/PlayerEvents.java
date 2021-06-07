@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -245,7 +246,9 @@ public class PlayerEvents implements Listener {
 								wall = loc.clone();
 								wall.add(x, y, z);
 								
-								if (x <= 1 && x >= -1 && y <= 1 && y >= -1 && z <= 1 && z >= -1) {
+								if (x == 0 && y == -1 && z == 0) {
+									setSign(wall, tmpGame.getPlayer().getName());
+								} else if (x <= 1 && x >= -1 && y <= 1 && y >= -1 && z <= 1 && z >= -1) {
 									replaceExeption(wall, Material.AIR);
 								} else {
 									replaceExeption(wall, Material.DIRT);
@@ -270,6 +273,19 @@ public class PlayerEvents implements Listener {
 	private void replaceExeption(Location loc, Material m) {
 		if (!exceptions.contains(loc.getBlock().getType())) {
 			loc.getBlock().setType(m);
+		}
+	}
+	
+	private void setSign(Location loc, String playerName) {
+		if (!exceptions.contains(loc.getBlock().getType())) {
+			loc.getBlock().setType(Material.OAK_SIGN);
+			
+			Sign sign = (Sign) loc.getBlock().getState();
+			
+			sign.setLine(0, "[KuffleItems]");
+			sign.setLine(1, Utils.getLangString(km, null, "HERE_DIES"));
+			sign.setLine(2, playerName);
+			sign.update(true);
 		}
 	}
 	

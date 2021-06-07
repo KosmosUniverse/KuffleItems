@@ -1,5 +1,6 @@
 package main.fr.kosmosuniverse.kuffleitems.Utils;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,14 +35,14 @@ public class FilesConformity {
 	}
 	
 	private static String getFromFile(KuffleMain km, String file) {
-		if (Utils.fileExists(km.getDataFolder().getPath(), file)) {
+		if (fileExists(km, km.getDataFolder().getPath(), file)) {
 			try {
 				FileReader fr;
 				
 				if (km.getDataFolder().getPath().contains("\\")) {
-					fr = new FileReader(km.getDataFolder().getPath() + "\\" + file);
+					fr = new FileReader(km.getDataFolder().getPath() + "\\" + km.getDescription().getVersion() + "\\"  + file);
 				} else {
-					fr = new FileReader(km.getDataFolder().getPath() + "/" + file);
+					fr = new FileReader(km.getDataFolder().getPath() + "/" + km.getDescription().getVersion() + "/" + file);
 				}
 				
 				JSONParser parser = new JSONParser();
@@ -63,11 +64,16 @@ public class FilesConformity {
 	private static void createFromResource(KuffleMain km, String fileName) {
 		try {
 			FileWriter file;
+			String path;
 			
 			if (km.getDataFolder().getPath().contains("\\")) {
-				file = new FileWriter(km.getDataFolder().getPath() + "\\" + fileName);
+				path = km.getDataFolder().getPath() + "\\" + km.getDescription().getVersion();
+				directoryExists(path);
+				file = new FileWriter(path + "\\"  + fileName);
 			} else {
-				file = new FileWriter(km.getDataFolder().getPath() + "/" + fileName);
+				path = km.getDataFolder().getPath() + "/" + km.getDescription().getVersion();
+				directoryExists(path);
+				file = new FileWriter(path + "/" + fileName);
 			}
 			
 			InputStream in = km.getResource(fileName);
@@ -130,7 +136,7 @@ public class FilesConformity {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj = new JSONObject();
 			
-			parser.parse(content);
+			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
 				
@@ -197,7 +203,7 @@ public class FilesConformity {
 			JSONObject jsonObj = new JSONObject();
 			ArrayList<String> langs = null;
 			
-			parser.parse(content);
+			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
 				
@@ -246,7 +252,7 @@ public class FilesConformity {
 			JSONObject jsonObj = new JSONObject();
 			ArrayList<String> langs = null;
 			
-			parser.parse(content);
+			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
 				JSONObject phraseObj = (JSONObject) jsonObj.get(key);
@@ -287,7 +293,7 @@ public class FilesConformity {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj = new JSONObject();
 			
-			parser.parse(content);
+			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
 				if (AgeManager.ageExists(km.ages, (String) key)) {
@@ -320,7 +326,7 @@ public class FilesConformity {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj = new JSONObject();
 			
-			parser.parse(content);
+			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
 				if (AgeManager.ageExists(km.ages, (String) key)) {
@@ -432,7 +438,7 @@ public class FilesConformity {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj = new JSONObject();
 			
-			parser.parse(content);
+			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
 				JSONObject levelObj = (JSONObject) jsonObj.get(key);
@@ -471,5 +477,25 @@ public class FilesConformity {
 		}
 		
 		return false;
+	}
+	
+	public static boolean fileExists(KuffleMain km, String path, String fileName) {
+		File tmp = null;
+		
+		if (path.contains("\\")) {
+			tmp = new File(path + "\\" + km.getDescription().getVersion() + "\\" + fileName);
+		} else {
+			tmp = new File(path + "/" + km.getDescription().getVersion() + "/" + fileName);
+		}
+		
+		return tmp.exists();
+	}
+	
+	public static void directoryExists(String path) {
+		File file = new File(path);
+		 
+        if (!file.isDirectory()) {
+        	file.mkdir();
+        }
 	}
 }

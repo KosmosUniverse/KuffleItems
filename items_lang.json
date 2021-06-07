@@ -2151,9 +2151,9 @@
 		"en" : "Nether Bricks",
 		"fr" : "Briques du Nether"
 	},
-	"nether_bricks" : {
-		"en" : "Nether Bricks",
-		"fr" : "Briques du Nether"
+	"nether_brick" : {
+		"en" : "Nether Brick",
+		"fr" : "Brique du Nether"
 	},
 	"nether_gold_ore" : {
 		"en" : "Nether Gold Ore",
