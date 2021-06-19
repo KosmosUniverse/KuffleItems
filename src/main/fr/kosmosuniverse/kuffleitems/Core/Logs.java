@@ -51,22 +51,6 @@ public class Logs {
 		}		
 	}
 	
-	/*public void writeBroadcastMsg(String msg) {
-		Utils.broadcastMsg(km, msg);
-		
-		try {
-			FileWriter writer = new FileWriter(path, true);
-			
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
-			LocalDateTime now = LocalDateTime.now();  
-			
-			writer.write(dtf.format(now) + " : [SYSTEM] -> " + msg + "\n");
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-	}*/
-	
 	public void logMsg(Player to, String msg) {
 		try {
 			FileWriter writer = new FileWriter(path, true);

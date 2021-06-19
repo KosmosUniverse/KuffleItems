@@ -268,7 +268,6 @@ public class Game {
 		
 		for (String playerName : km.games.keySet()) {
 			km.games.get(playerName).getPlayer().sendMessage(Utils.getLangString(km, playerName, "AGE_MOVED").replace("<#>", ChatColor.BLUE + "<§6§l" + player.getName() + ChatColor.BLUE + ">").replace("<##>", "<" + tmpAge.color + tmpAge.name.replace("_Age", "") + ChatColor.BLUE + ">"));
-			//km.games.get(playerName).getPlayer().sendMessage("§6§l" + player.getName() + ChatColor.BLUE + " has moved to the " + tmpAge.color + tmpAge.name.replace("_", " ") + "§1.");
 		}
 	}
 	
@@ -326,16 +325,13 @@ public class Game {
 			if (times.get(age.name) == -1) {
 				tmp = Utils.getLangString(km, player.getName(), "FINISH_ABANDON").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.RESET);
 				tmpLog = Utils.getLangString(km, player.getName(), "FINISH_ABANDON").replace("%s", age.name.replace("_Age", ""));
-				//tmp = ChatColor.RESET + ": Abandon";
 			} else {
 				tmp = Utils.getLangString(km, player.getName(), "FINISH_TIME").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.BLUE).replace("%t", ChatColor.RESET + Utils.getTimeFromSec(times.get(age.name) / 1000));
 				tmpLog = Utils.getLangString(km, player.getName(), "FINISH_TIME").replace("%s", age.name.replace("_Age", "")).replace("%t", Utils.getTimeFromSec(times.get(age.name) / 1000));
-				//tmp = ChatColor.BLUE + " in: " + ChatColor.RESET + Utils.getTimeFromSec(times.get(age.name) / 1000);
 			}
 			
 			player.sendMessage(tmp);
 			km.logs.logMsg(player, tmpLog);
-			//player.sendMessage(ChatColor.BLUE + "   - Finished " + age.color + age.name + tmp);
 		}
 	}
 	

@@ -58,7 +58,7 @@ public class InventoryListeners implements Listener {
 				if (!item.getItemMeta().getDisplayName().equals(player.getDisplayName())) {
 					Game tmpGame = km.games.get(item.getItemMeta().getDisplayName());
 					
-					if (tmpGame != null) {
+					if (tmpGame != null && km.games.get(player.getName()).getFinished()) {
 						if (player.getGameMode() != GameMode.SPECTATOR) {
 							player.setGameMode(GameMode.SPECTATOR);
 						}

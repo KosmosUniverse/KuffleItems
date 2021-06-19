@@ -185,7 +185,6 @@ public class ManageTeams {
 					
 					if (tmpPlayer == null) {
 						System.out.println(Utils.getLangString(km, null, "PLAYER_NOT_EXISTS").replace("<#>", "<" + (String) obj + ">"));
-						//System.out.println("Player <" + (String) obj + "> does not exists.");
 					} else {
 						Player p = tmpPlayer.getPlayer();
 						affectPlayer(name, p);	

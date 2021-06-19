@@ -212,7 +212,7 @@
 		"fr" : "Le joueur <#> a déjà fini sa partie."
 	},
 	"AGE_VALIDATED" : {
-		"en" : "Age [#] wa validated for player <#>.",
+		"en" : "Age [#] was validated for player <#>.",
 		"fr" : "L'age [#] a été validé pour le joueur <#>."
 	},
 	"VALIDATE_PLAYER_AGE" : {
@@ -264,8 +264,8 @@
 		"fr" : "Jeu Terminé ! Rang : %i"
 	},
 	"AGE_MOVED" : {
-		"en" : "<#> has moved to the <##> Age §1.",
-		"fr" : "<#> est passé à l'age <##>§1."
+		"en" : "<#> has moved to the <##> Age.",
+		"fr" : "<#> est passé à l'age <##>."
 	},
 	"DEATH_COUNT" : {
 		"en" : " - Death Count: %i",
