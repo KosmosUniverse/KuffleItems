@@ -23,11 +23,7 @@ public class InventoryListeners implements Listener {
 	}
 	
 	@EventHandler
-	public void onItemClick(InventoryClickEvent event) {
-		if (!km.gameStarted) {
-			return ;
-		}
-		
+	public void onItemClick(InventoryClickEvent event) {	
 		Player player = (Player) event.getWhoClicked();
 		ItemStack item = event.getCurrentItem();
 		Inventory current = event.getClickedInventory();

@@ -45,7 +45,6 @@
 		],
 		"food" : [
 			"apple",
-			"beef",
 			"bowl",
 			"bread",
 			"sugar"
@@ -396,7 +395,6 @@
 		"loot" : [
 			"bone",
 			"gunpowder",
-			"spider_eye",
 			"string"
 		],
 		"diversity" : [
@@ -480,7 +478,6 @@
 			"netherrack",
 			"polished_basalt",
 			"shroomlight",
-			"soul_campfire",
 			"soul_lantern",
 			"soul_sand",
 			"soul_soil",
@@ -573,7 +570,6 @@
 		"end" : [
 			"chorus_flower",
 			"chorus_fruit",
-			"end_portal_frame",
 			"end_rod",
 			"end_stone",
 			"end_stone_brick_slab",
