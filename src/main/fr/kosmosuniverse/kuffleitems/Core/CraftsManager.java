@@ -18,11 +18,18 @@ public class CraftsManager {
 		recipes.add(new EndTeleporter(_km));
 		recipes.add(new OverworldTeleporter(_km));
 		
-		if ("1.16".equalsIgnoreCase(Utils.getVersion())) {
+		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.16")) {
 			recipes.add(new ChainmailHelmet(_km));
 			recipes.add(new ChainmailChestplate(_km));
 			recipes.add(new ChainmailLeggings(_km));
 			recipes.add(new ChainmailBoots(_km));
+		}
+		
+		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.17")) {
+			recipes.add(new MossBlock(_km));
+			recipes.add(new SmallDripleaf(_km));
+			recipes.add(new PowderSnowBucket(_km));
+			recipes.add(new BuddingAmethyst(_km));
 		}
 		
 		if (!_km.config.getCrafts()) {
@@ -30,6 +37,7 @@ public class CraftsManager {
 		}
 		
 		recipes.add(new RedSand(_km));
+		recipes.add(new Mycelium(_km));
 		recipes.add(new MossyCobblestone(_km));
 		recipes.add(new MossyStoneBrick(_km));
 		
@@ -55,6 +63,27 @@ public class CraftsManager {
 		recipes.add(new IronHorseArmor(_km));
 		recipes.add(new GoldHorseArmor(_km));
 		recipes.add(new DiamondHorseArmor(_km));
+		
+		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.17")) {
+			recipes.add(new CoalOreDeepslate(_km));
+			recipes.add(new CopperOreDeepslate(_km));
+			recipes.add(new DiamondOreDeepslate(_km));
+			recipes.add(new EmeraldOreDeepslate(_km));
+			recipes.add(new GoldOreDeepslate(_km));
+			recipes.add(new IronOreDeepslate(_km));
+			recipes.add(new LapisOreDeepslate(_km));
+			recipes.add(new RedstoneOreDeepslate(_km));
+			recipes.add(new CopperOre(_km));
+			recipes.add(new GoldOre(_km));
+			recipes.add(new IronOre(_km));
+			recipes.add(new RawCopper(_km));
+			recipes.add(new RawGold(_km));
+			recipes.add(new RawIron(_km));
+			recipes.add(new PointedDripstone(_km));
+			recipes.add(new ExposedCopper(_km));
+			recipes.add(new WeatheredCopper(_km));
+			recipes.add(new OxidizedCopper(_km));
+		}
 	}
 	
 	public void clear() {

@@ -7,7 +7,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
-import main.fr.kosmosuniverse.kuffleitems.Core.ActionBar;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Pair;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 

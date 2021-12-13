@@ -25,8 +25,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
-import main.fr.kosmosuniverse.kuffleitems.Core.LangManager;
-import main.fr.kosmosuniverse.kuffleitems.Core.RewardManager;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 

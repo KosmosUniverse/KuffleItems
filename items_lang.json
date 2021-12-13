@@ -3558,5 +3558,465 @@
 	"zombie_head" : {
 		"en" : "Zombie Head",
 		"fr" : "Tete de Zombie"
+	},
+	"amethyst_block" : {
+		"en" : "Amethyst Block",
+		"fr" : "Bloc d'Amethyste"
+	},
+	"amethyst_cluster" : {
+		"en" : "Amethyst Cluster",
+		"fr" : "Amas d'Amethyste"
+	},
+	"amethyst_shard" : {
+		"en" : "Amethyst Shard",
+		"fr" : "Eclat d'Amethyste"
+	},
+	"budding_amethyst" : {
+		"en" : "Budding Amethyst",
+		"fr" : "Druse d'Amethyste"
+	},
+	"large_amethyst_bud" : {
+		"en" : "Large Amethyst Bud",
+		"fr" : "Grand Crystal d'Amethyste"
+	},
+	"medium_amethyst_bud" : {
+		"en" : "Medium Amethyst Bud",
+		"fr" : "Crystal Moyen d'Amethyste"
+	},
+	"small_amethyst_bud" : {
+		"en" : "Small Amethyst Bud",
+		"fr" : "Petit Crystal d'Amethyste"
+	},
+	"azalea" : {
+		"en" : "Azalea",
+		"fr" : "Azalée"
+	},
+	"azalea_leaves" : {
+		"en" : "Azalea Leaves",
+		"fr" : "Feuilles d'Azalée"
+	},
+	"flowering_azalea" : {
+		"en" : "Flowering Azalea",
+		"fr" : "Azalée Fleurie"
+	},
+	"flowering_azalea_leaves" : {
+		"en" : "Flowering Azalea Leaves",
+		"fr" : "Feuilles d'Azalée Fleurie"
+	},
+	"blue_candle" : {
+		"en" : "Blue Candle",
+		"fr" : "Bougie Bleue"
+	},
+	"brown_candle" : {
+		"en" : "Brown Candle",
+		"fr" : "Bougie Marron"
+	},
+	"candle" : {
+		"en" : "Candle",
+		"fr" : "Bougie"
+	},
+	"cyan_candle" : {
+		"en" : "Cyan Candle",
+		"fr" : "Bougie Cyan"
+	},
+	"gray_candle" : {
+		"en" : "Gray Candle",
+		"fr" : "Bougie Grise"
+	},
+	"green_candle" : {
+		"en" : "Green Candle",
+		"fr" : "Bougie Verte"
+	},
+	"light_blue_candle" : {
+		"en" : "Light Blue Candle",
+		"fr" : "Bougie Bleue Clair"
+	},
+	"light_gray_candle" : {
+		"en" : "Light Gray Candle",
+		"fr" : "Bougie Grise Clair"
+	},
+	"lime_candle" : {
+		"en" : "Lime Candle",
+		"fr" : "Bougie Verte Clair"
+	},
+	"magenta_candle" : {
+		"en" : "Magenta Candle",
+		"fr" : "Bougie Magenta"
+	},
+	"orange_candle" : {
+		"en" : "Orange Candle",
+		"fr" : "Bougie Orange"
+	},
+	"pink_candle" : {
+		"en" : "Pink Candle",
+		"fr" : "Bougie Rose"
+	},
+	"purple_candle" : {
+		"en" : "Purple Candle",
+		"fr" : "Bougie Violette"
+	},
+	"red_candle" : {
+		"en" : "Red Candle",
+		"fr" : "Bougie Rouge"
+	},
+	"white_candle" : {
+		"en" : "White Candle",
+		"fr" : "Bougie Blanche"
+	},
+	"yellow_candle" : {
+		"en" : "Yellow Candle",
+		"fr" : "Bougie Jaune"
+	},
+	"powder_snow_bucket" : {
+		"en" : "Powder Snow Bucket",
+		"fr" : "Seau de Poudreuse"
+	},
+	"copper_block" : {
+		"en" : "Copper Block",
+		"fr" : "Bloc de Cuivre"
+	},
+	"copper_ingot" : {
+		"en" : "Copper Ingot",
+		"fr" : "L'ingot de Cuivre"
+	},
+	"cut_copper" : {
+		"en" : "Cut Copper",
+		"fr" : "Bloc de Cuivre Taillé"
+	},
+	"cut_copper_slab" : {
+		"en" : "Cut Copper Slab",
+		"fr" : "Dalle de Cuivre Taillée"
+	},
+	"cut_copper_stairs" : {
+		"en" : "Cut Copper Stairs",
+		"fr" : "Escaliers de Cuivre Taillés"
+	},
+	"lightning_rod" : {
+		"en" : "Lightning Rod",
+		"fr" : "Paratonnerre"
+	},
+	"waxed_copper_block" : {
+		"en" : "Waxed Copper Block",
+		"fr" : "Bloc de Cuivre Ciré"
+	},
+	"waxed_cut_copper" : {
+		"en" : "Waxed Cut Copper",
+		"fr" : "Bloc de Cuivre Ciré Taillé"
+	},
+	"waxed_cut_copper_slab" : {
+		"en" : "Waxed Cut Copper Slab",
+		"fr" : "Dalle de Cuivre Cirée Taillée"
+	},
+	"waxed_cut_copper_stairs" : {
+		"en" : "Waxed Cut Copper Stairs",
+		"fr" : "Escaliers de Cuivre Cirés Taillés"
+	},
+	"chiseled_deepslate" : {
+		"en" : "Chiseled Deepslate",
+		"fr" : "Ardoise des Abimes Sculptée"
+	},
+	"cobbled_deepslate" : {
+		"en" : "Cobbled Deepslate",
+		"fr" : "Pierre des Abimes"
+	},
+	"cobbled_deepslate_slab" : {
+		"en" : "Cobbled Deepslate Slab",
+		"fr" : "Dalle de Pierre des Abimes"
+	},
+	"cobbled_deepslate_stairs" : {
+		"en" : "Cobbled Deepslate Stairs",
+		"fr" : "Escaliers de Pierre des Abimes"
+	},
+	"cobbled_deepslate_wall" : {
+		"en" : "Cobbled Deepslate Wall",
+		"fr" : "Mur de Pierre des Abimes"
+	},
+	"cracked_deepslate_bricks" : {
+		"en" : "Cracked Deepslate Bricks",
+		"fr" : "Ardoise des Abimes Taillée Craquelée"
+	},
+	"cracked_deepslate_tiles" : {
+		"en" : "Cracked Deepslate Tiles",
+		"fr" : "Ardoise des Abimes Carrelée Craquelée"
+	},
+	"deepslate" : {
+		"en" : "Deepslate",
+		"fr" : "Ardoise des Abimes"
+	},
+	"deepslate_brick_slab" : {
+		"en" : "Deepslate Brick Slab",
+		"fr" : "Dalle en Ardoise des Abimes Taillée"
+	},
+	"deepslate_brick_stairs" : {
+		"en" : "Deepslate Brick Stairs",
+		"fr" : "Escaliers en Ardoise des Abimes Taillée"
+	},
+	"deepslate_brick_wall" : {
+		"en" : "Deepslate Brick Wall",
+		"fr" : "Mur en Ardoise des Abimes Taillée"
+	},
+	"deepslate_bricks" : {
+		"en" : "Deepslate Bricks",
+		"fr" : "Ardoise des Abimes Taillée"
+	},
+	"deepslate_tile_slab" : {
+		"en" : "Deepslate Tile Slab",
+		"fr" : "Dalle en Ardoise des Abimes Carrelée"
+	},
+	"deepslate_tile_stairs" : {
+		"en" : "Deepslate Tile Stairs",
+		"fr" : "Escaliers en Ardoise des Abimes Carrelée"
+	},
+	"deepslate_tile_wall" : {
+		"en" : "Deepslate Tile Wall",
+		"fr" : "Mur en Ardoise des Abimes Carrelée"
+	},
+	"deepslate_tiles" : {
+		"en" : "Deepslate Tiles",
+		"fr" : "Ardoise des Abimes Carrelée"
+	},
+	"infested_deepslate" : {
+		"en" : "Infested Deepslate",
+		"fr" : "Ardoise des Abimes Infestée"
+	},
+	"polished_deepslate" : {
+		"en" : "Polished Deepslate",
+		"fr" : "Ardoise des Abimes Polie"
+	},
+	"polished_deepslate_slab" : {
+		"en" : "Polished Deepslate Slab",
+		"fr" : "Dalle en Ardoise des Abimes Polie"
+	},
+	"polished_deepslate_stairs" : {
+		"en" : "Polished Deepslate Stairs",
+		"fr" : "Escaliers en Ardoise des Abimes Polie"
+	},
+	"polished_deepslate_wall" : {
+		"en" : "Polished Deepslate Wall",
+		"fr" : "Mur en Ardoise des Abimes Polie"
+	},
+	"deepslate_coal_ore" : {
+		"en" : "Deepslate Coal Ore",
+		"fr" : "Minerai de Charbon des Abimes"
+	},
+	"deepslate_copper_ore" : {
+		"en" : "Deepslate Copper Ore",
+		"fr" : "Minerai de Cuivre des Abimes"
+	},
+	"deepslate_diamond_ore" : {
+		"en" : "Deepslate Diamond Ore",
+		"fr" : "Minerai de Diamant des Abimes"
+	},
+	"deepslate_emerald_ore" : {
+		"en" : "Deepslate Emerald Ore",
+		"fr" : "Minerai d'Emeraude des Abimes"
+	},
+	"deepslate_gold_ore" : {
+		"en" : "Deepslate Gold Ore",
+		"fr" : "Minerai d'Or des Abimes"
+	},
+	"deepslate_iron_ore" : {
+		"en" : "Deepslate Iron Ore",
+		"fr" : "Minerai de Fer des Abimes"
+	},
+	"deepslate_lapis_ore" : {
+		"en" : "Deepslate Lapis Ore",
+		"fr" : "Minerai de Lapis des Abimes"
+	},
+	"deepslate_redstone_ore" : {
+		"en" : "Deepslate Redstone Ore",
+		"fr" : "Minerai de Redstone des Abimes"
+	},
+	"dirt_path" : {
+		"en" : "Dirt Path",
+		"fr" : "Chemin d'Herbe"
+	},
+	"calcite" : {
+		"en" : "Calcite",
+		"fr" : "Calcite"
+	},
+	"glow_ink_sac" : {
+		"en" : "Glow Ink Sac",
+		"fr" : "Poche d'encre luisante"
+	},
+	"smooth_basalt" : {
+		"en" : "Smooth Basalt",
+		"fr" : "Basalte Lisse"
+	},
+	"spyglass" : {
+		"en" : "Spyglass",
+		"fr" : "Longue-vue"
+	},
+	"tinted_glass" : {
+		"en" : "Tinted Glass",
+		"fr" : "Verre Teinté"
+	},
+	"exposed_copper" : {
+		"en" : "Exposed Copper",
+		"fr" : "Bloc de Cuivre Exposé"
+	},
+	"exposed_cut_copper" : {
+		"en" : "Exposed Cut Copper",
+		"fr" : "Bloc de Cuivre Taillé Exposé"
+	},
+	"exposed_cut_copper_slab" : {
+		"en" : "Exposed Cut Copper Slab",
+		"fr" : "Dalle de Cuivre Taillé Exposée"
+	},
+	"exposed_cut_copper_stairs" : {
+		"en" : "Exposed Cut Copper Stairs",
+		"fr" : "Escaliers de Cuivre Taillés Exposés"
+	},
+	"waxed_exposed_copper" : {
+		"en" : "Waxed Exposed Copper",
+		"fr" : "Bloc de Cuivre Ciré Exposé"
+	},
+	"waxed_exposed_cut_copper" : {
+		"en" : "Waxed Exposed Cut Copper",
+		"fr" : "Bloc de Cuivre Ciré Taillé Exposé"
+	},
+	"waxed_exposed_cut_copper_slab" : {
+		"en" : "Waxed Exposed Cut Copper Slab",
+		"fr" : "Dalle de Cuivre Ciré Taillée  Exposée"
+	},
+	"waxed_exposed_cut_copper_stairs" : {
+		"en" : "Waxed Exposed Cut Copper Stairs",
+		"fr" : "Escaliers de Cuivre Ciré Taillés  Exposés"
+	},
+	"moss_block" : {
+		"en" : "Moss Block",
+		"fr" : "Bloc de Mousse"
+	},
+	"moss_carpet" : {
+		"en" : "Moss Carpet",
+		"fr" : "Tapis de Mousse"
+	},
+	"copper_ore" : {
+		"en" : "Copper Ore",
+		"fr" : "Minerai de Cuivre"
+	},
+	"oxidized_copper" : {
+		"en" : "Oxidized Copper",
+		"fr" : "Bloc de Cuivre Oxidé"
+	},
+	"oxidized_cut_copper" : {
+		"en" : "Oxidized Cut Copper",
+		"fr" : "Bloc de Cuivre Taillé Oxidé"
+	},
+	"oxidized_cut_copper_slab" : {
+		"en" : "Oxidized Cut Copper Slab",
+		"fr" : "Dalle de Cuivre Taillée Oxidée"
+	},
+	"oxidized_cut_copper_stairs" : {
+		"en" : "Oxidized Cut Copper Stairs",
+		"fr" : "Escaliers de Cuivre Taillés Oxidés"
+	},
+	"waxed_oxidized_copper" : {
+		"en" : "Waxed Oxidized Copper",
+		"fr" : "Bloc de Cuivre Ciré Oxidé"
+	},
+	"waxed_oxidized_cut_copper" : {
+		"en" : "Waxed Oxidized Cut Copper",
+		"fr" : "Bloc de Cuivre Ciré Taillé Oxidé"
+	},
+	"waxed_oxidized_cut_copper_slab" : {
+		"en" : "Waxed Oxidized Cut Copper Slab",
+		"fr" : "Dalle de Cuivre Cirée Taillée Oxidée"
+	},
+	"waxed_oxidized_cut_copper_stairs" : {
+		"en" : "Waxed Oxidized Cut Copper Stairs",
+		"fr" : "Escaliers de Cuivre Cirés Taillés Oxidés"
+	},
+	"big_dripleaf" : {
+		"en" : "Big Dripleaf",
+		"fr" : "Grande Foliogoutte"
+	},
+	"big_dripleaf_stem" : {
+		"en" : "Big Dripleaf Stem",
+		"fr" : "Tige de Grande Foliogoutte"
+	},
+	"glow_lichen" : {
+		"en" : "Glow Lichen",
+		"fr" : "Lichen Lumineux"
+	},
+	"hanging_roots" : {
+		"en" : "Hanging Roots",
+		"fr" : "Racines Suspendues"
+	},
+	"rooted_dirt" : {
+		"en" : "Rooted Dirt",
+		"fr" : "Terre Racineuse"
+	},
+	"small_dripleaf" : {
+		"en" : "Small Dripleaf",
+		"fr" : "Petite Foliogoutte"
+	},
+	"raw_copper" : {
+		"en" : "Raw Copper",
+		"fr" : "Cuivre Brut"
+	},
+	"raw_copper_block" : {
+		"en" : "Raw Copper Block",
+		"fr" : "Bloc de Cuivre Brut"
+	},
+	"raw_gold" : {
+		"en" : "Raw Gold",
+		"fr" : "Or Brut"
+	},
+	"raw_gold_block" : {
+		"en" : "Raw Gold Block",
+		"fr" : "Bloc d'Or Brut"
+	},
+	"raw_iron" : {
+		"en" : "Raw Iron",
+		"fr" : "Fer Brut"
+	},
+	"raw_iron_block" : {
+		"en" : "Raw Iron Block",
+		"fr" : "Bloc de Fer brut"
+	},
+	"dripstone_block" : {
+		"en" : "Dripstone Block",
+		"fr" : "Bloc de Spéléothème"
+	},
+	"pointed_dripstone" : {
+		"en" : "Pointed Dripstone",
+		"fr" : "Spéléothème Pointu"
+	},
+	"tuff" : {
+		"en" : "Tuff",
+		"fr" : "Tuf"
+	},
+	"waxed_weathered_copper" : {
+		"en" : "Waxed Weathered Copper",
+		"fr" : "Bloc de Cuivre Ciré Erodé"
+	},
+	"waxed_weathered_cut_copper" : {
+		"en" : "Waxed Weathered Cut Copper",
+		"fr" : "Bloc de Cuivre Ciré Taillé Erodé"
+	},
+	"waxed_weathered_cut_copper_slab" : {
+		"en" : "Waxed Weathered Cut Copper Slab",
+		"fr" : "Dalle de Cuivre Cirée Taillée Erodée"
+	},
+	"waxed_weathered_cut_copper_stairs" : {
+		"en" : "Waxed Weathered Cut Copper Stairs",
+		"fr" : "Escaliers de Cuivre Cirés Taillés Erodés"
+	},
+	"weathered_copper" : {
+		"en" : "Weathered Copper",
+		"fr" : "Bloc de Cuivre Erodé"
+	},
+	"weathered_cut_copper" : {
+		"en" : "Weathered Cut Copper",
+		"fr" : "Bloc de Cuivre Taillé Erodé"
+	},
+	"weathered_cut_copper_slab" : {
+		"en" : "Weathered Cut Copper Slab",
+		"fr" : "Dalle de Cuivre Taillée Erodée"
+	},
+	"weathered_cut_copper_stairs" : {
+		"en" : "Weathered Cut Copper Stairs",
+		"fr" : "Escaliers de Cuivre Taillés Erodés"
 	}
 }
