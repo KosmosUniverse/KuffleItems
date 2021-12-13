@@ -37,6 +37,7 @@ public class CraftsManager {
 		}
 		
 		recipes.add(new RedSand(_km));
+		recipes.add(new Mycelium(_km));
 		recipes.add(new MossyCobblestone(_km));
 		recipes.add(new MossyStoneBrick(_km));
 		

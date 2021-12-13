@@ -7,7 +7,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.json.simple.JSONObject;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
-import main.fr.kosmosuniverse.kuffleitems.Core.Level;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class Config {
