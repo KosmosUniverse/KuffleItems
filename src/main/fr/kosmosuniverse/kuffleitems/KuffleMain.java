@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +15,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
 import main.fr.kosmosuniverse.kuffleitems.Commands.*;
+import main.fr.kosmosuniverse.kuffleitems.TabCmd.*;
+import main.fr.kosmosuniverse.kuffleitems.Listeners.*;
 import main.fr.kosmosuniverse.kuffleitems.Core.Age;
 import main.fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 import main.fr.kosmosuniverse.kuffleitems.Core.Config;
@@ -30,8 +33,6 @@ import main.fr.kosmosuniverse.kuffleitems.Core.RewardElem;
 import main.fr.kosmosuniverse.kuffleitems.Core.RewardManager;
 import main.fr.kosmosuniverse.kuffleitems.Core.Scores;
 import main.fr.kosmosuniverse.kuffleitems.Crafts.ACrafts;
-import main.fr.kosmosuniverse.kuffleitems.Listeners.*;
-import main.fr.kosmosuniverse.kuffleitems.TabCmd.*;
 import main.fr.kosmosuniverse.kuffleitems.Utils.FilesConformity;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
@@ -39,19 +40,19 @@ public class KuffleMain extends JavaPlugin {
 	public HashMap<String, HashMap<String, RewardElem>> allRewards;
 	public HashMap<String, HashMap<String, String>> allItemsLangs;
 	public HashMap<String, HashMap<String, String>> allLangs;
-	
-	public HashMap<String, ArrayList<String>> allItems = new HashMap<String, ArrayList<String>>();
-	public HashMap<String, ArrayList<String>> allSbtts = new HashMap<String, ArrayList<String>>();
+
+	public HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+	public HashMap<String, ArrayList<String>> allSbtts = new HashMap<>();
 	public HashMap<String, ArrayList<Inventory>> itemsInvs;
-	
-	public HashMap<String, Game> games = new HashMap<String, Game>();
-	public HashMap<String, Integer> playerRank = new HashMap<String, Integer>();
+
+	public HashMap<String, Game> games = new HashMap<>();
+	public HashMap<String, Integer> playerRank = new HashMap<>();
 	public HashMap<Integer, String> versions;
-	
+
 	public ArrayList<String> langs;
 	public ArrayList<Age> ages;
 	public ArrayList<Level> levels;
-	
+
 	public GameLoop loop;
 	public Config config;
 	public Logs logs;
@@ -61,93 +62,78 @@ public class KuffleMain extends JavaPlugin {
 	public Inventory playersHeads;
 	public PlayerInteract playerInteract;
 	public PlayerEvents playerEvents;
-	
+
 	public boolean paused = false;
 	public boolean loaded = false;
-	
+
 	public boolean gameStarted = false;
-	
+
 	public KuffleMain() {
 		super();
 	}
-	
+
 	public KuffleMain(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
 		super(loader, description, dataFolder, file);
 	}
-	
+
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
 		reloadConfig();
 
-		if ((versions = Utils.loadVersions(this, "versions.json")) == null) {
+		if (((versions = Utils.loadVersions(this, "versions.json")) == null) || ((ages = AgeManager.getAges(FilesConformity.getContent(this, "ages.json"))) == null) || ((allItems = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "items_%v.json"), this.getDataFolder())) == null) || ((allSbtts = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "sbtt_%v.json"), this.getDataFolder())) == null)) {
 			this.getPluginLoader().disablePlugin(this);
 			return ;
 		}
-		
-		if ((ages = AgeManager.getAges(FilesConformity.getContent(this, "ages.json"))) == null) {
-			this.getPluginLoader().disablePlugin(this);
-			return ;
-		}
-		
-		if ((allItems = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "items_%v.json"), this.getDataFolder())) == null) {
-			this.getPluginLoader().disablePlugin(this);
-			return ;
-		}
-		
-		if ((allSbtts = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "sbtt_%v.json"), this.getDataFolder())) == null) {
-			this.getPluginLoader().disablePlugin(this);
-			return ;
-		}
-		
+
 		if ((allRewards = RewardManager.getAllRewards(ages, FilesConformity.getContent(this, "rewards_%v.json"), this.getDataFolder())) == null) {
 			this.getPluginLoader().disablePlugin(this);
 			return ;
 		}
-		
+
 		if ((allItemsLangs = LangManager.getAllItemsLang(FilesConformity.getContent(this, "items_lang.json"), this.getDataFolder())) == null) {
 			this.getPluginLoader().disablePlugin(this);
 			return ;
 		}
-		
+
 		if ((allLangs = LangManager.getAllItemsLang(FilesConformity.getContent(this, "langs.json"), this.getDataFolder())) == null) {
 			this.getPluginLoader().disablePlugin(this);
 			return ;
 		}
-		
+
 		if ((levels = LevelManager.getLevels(FilesConformity.getContent(this, "levels.json"))) == null) {
 			this.getPluginLoader().disablePlugin(this);
 			return ;
 		}
-		
+
 		logs = new Logs(this.getDataFolder());
 		langs = LangManager.findAllLangs(allItemsLangs);
-		
+
 		config = new Config(this);
 		config.setupConfig(this, getConfig());
-		
+
 		crafts = new CraftsManager(this);
 		itemsInvs = ItemManager.getItemsInvs(allItems);
 		scores = new Scores(this);
-		
+
 		int cnt = 0;
-		
+
 		for (ACrafts item : crafts.getRecipeList()) {
 			getServer().addRecipe(item.getRecipe());
 			cnt++;
 		}
-		   
+
 		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ADD_CRAFTS").replace("%i", "" + cnt));
-		
+
 		playerInteract = new PlayerInteract(this);
 		playerEvents = new PlayerEvents(this, this.getDataFolder());
-		
+
 		getServer().getPluginManager().registerEvents(playerEvents, this);
 		getServer().getPluginManager().registerEvents(playerInteract, this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
 		getServer().getPluginManager().registerEvents(new ItemEvent(this), this);
 		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ADD_LISTENERS").replace("%i", "4"));
-		
+
 		getCommand("ki-config").setExecutor(new KuffleConfig(this));
 		getCommand("ki-list").setExecutor(new KuffleList(this));
 		getCommand("ki-save").setExecutor(new KuffleSave(this, this.getDataFolder()));
@@ -165,7 +151,8 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-validate").setExecutor(new KuffleValidate(this));
 		getCommand("ki-validate-age").setExecutor(new KuffleValidate(this));
 		getCommand("ki-players").setExecutor(new KufflePlayers(this));
-		
+		getCommand("ki-add-during-game").setExecutor(new KuffleAddDuringGame(this));
+
 		getCommand("ki-team-create").setExecutor(new KuffleTeamCreate(this));
 		getCommand("ki-team-delete").setExecutor(new KuffleTeamDelete(this));
 		getCommand("ki-team-color").setExecutor(new KuffleTeamColor(this));
@@ -182,6 +169,7 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-ageitems").setTabCompleter(new KuffleAgeItemsTab(this));
 		getCommand("ki-validate").setTabCompleter(new KuffleValidateTab(this));
 		getCommand("ki-validate-age").setTabCompleter(new KuffleValidateTab(this));
+		getCommand("ki-add-during-game").setTabCompleter(new KuffleAddDuringGameTab(this));
 		
 		getCommand("ki-team-create").setTabCompleter(new KuffleTeamCreateTab(this));
 		getCommand("ki-team-delete").setTabCompleter(new KuffleTeamDeleteTab(this));
@@ -191,116 +179,127 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab(this));
 		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
 		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ADD_TAB").replace("%i", "13"));
-		
+
 		loaded = true;
-		
+
 		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "ON"));
 	}
-	
+
 	@Override
 	public void onDisable() {
 		if (loaded) {
 			killAll();
 		}
-		
+
 		System.out.println("[KuffleItems] " + Utils.getLangString(this, null, "OFF"));
 	}
-	
+
 	public void addRecipe(Recipe recipe) {
 		getServer().addRecipe(recipe);
 	}
-	
+
 	public void removeRecipe(String name) {
 		NamespacedKey n = new NamespacedKey(this, name);
-		
+
 		for (String playerName : games.keySet()) {
 			games.get(playerName).getPlayer().undiscoverRecipe(n);
 		}
-		
+
 		getServer().removeRecipe(n);
 	}
-	
+
 	private void killAll() {
 		if (allRewards != null) {
 			for (String key : allRewards.keySet()) {
 				allRewards.get(key).clear();
 			}
-			
+
 			allRewards.clear();
 		}
-		
+
 		if (allItems != null) {
 			for (String key : allItems.keySet()) {
 				allItems.get(key).clear();
 			}
-			
+
 			allItems.clear();
 		}
 
-		
+
 		if (allItemsLangs != null) {
 			for (String key : allItemsLangs.keySet()) {
 				allItemsLangs.get(key).clear();
 			}
-			
+
 			allItemsLangs.clear();
 		}
-		
+
 		if (itemsInvs != null) {
 			for (String key : itemsInvs.keySet()) {
 				itemsInvs.get(key).clear();
 			}
-			
+
 			itemsInvs.clear();
 		}
-		
+
 		if (playerRank != null) {
 			playerRank.clear();
 		}
-		
+
 		if (games != null) {
-			games.clear();	
+			games.clear();
 		}
-		
-		if (langs != null) { 
+
+		if (langs != null) {
 			langs.clear();
 		}
-		
+
 		if (ages != null) {
-			ages.clear();	
+			ages.clear();
 		}
-		
+
 		if (crafts != null) {
 			for (ACrafts craft : crafts.getRecipeList()) {
 				removeRecipe(craft.getName());
 			}
-			
+
 			crafts.clear();
 		}
-		
+
 		if (config != null) {
 			config.clear();
 		}
 	}
 	
-	public void updatePlayersHead(String player, String currentItem) {
-		ItemMeta itM;
+	public void updatePlayersHead() {
+		Inventory newInv = Bukkit.createInventory(null, Utils.getNbInventoryRows(games.size()), "§8Players");
 		
+		for (String playerName : games.keySet()) {
+			newInv.addItem(Utils.getHead(games.get(playerName).getPlayer(), games.get(playerName).getItemDisplay()));
+		}
+		
+		playersHeads.clear();
+		playersHeads = newInv;
+	}
+
+	public void updatePlayersHeadData(String player, String currentItem) {
+		ItemMeta itM;
+
 		if (playersHeads == null) {
 			return;
 		}
-		
+
 		for (ItemStack item : playersHeads) {
 			if (item != null) {
 				itM = item.getItemMeta();
-				
+
 				if (itM.getDisplayName().equals(player)) {
-					ArrayList<String> lore = new ArrayList<String>();
-					
+					ArrayList<String> lore = new ArrayList<>();
+
 					if (currentItem != null) {
 						lore.add(currentItem);
 					}
-					
+
 					itM.setLore(lore);
 					item.setItemMeta(itM);
 				}

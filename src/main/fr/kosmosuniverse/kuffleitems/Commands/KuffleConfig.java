@@ -30,14 +30,14 @@ public class KuffleConfig implements CommandExecutor {
 		
 		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-config>"));
 		
-		if (!player.hasPermission("ki-config")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
-			return false;
-		}
-		
 		if (args.length == 0) {
 			player.sendMessage(km.config.displayConfig());
 		} else {
+			if (!player.hasPermission("ki-op")) {
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+				return false;
+			}
+			
 			String before = "";
 			
 			for (int i = 0; i < args.length; i++) {

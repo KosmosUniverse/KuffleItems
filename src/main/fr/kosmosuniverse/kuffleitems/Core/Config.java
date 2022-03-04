@@ -3,6 +3,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.json.simple.JSONObject;
 
@@ -313,29 +314,30 @@ public class Config {
 	public String displayConfig() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Saturation: ").append(saturation).append("\n");
-		sb.append("Spreadplayers: ").append(spread).append("\n");
-		sb.append("Spreadplayer min distance: ").append(spreadMin).append("\n");
-		sb.append("Spreadplayer min radius: ").append(spreadMax).append("\n");
-		sb.append("Rewards: ").append(rewards).append("\n");
-		sb.append("Skip: ").append(skip).append("\n");
-		sb.append("Crafts: ").append(crafts).append("\n");
-		sb.append("Nb item per age: ").append(itemPerAge).append("\n");
-		sb.append("First Age for Skipping: ").append(skipAge).append("\n");
-		sb.append("Max age: ").append(maxAges).append("\n");
-		sb.append("Start duration: ").append(startTime).append("\n");
-		sb.append("Added duration: ").append(addedTime).append("\n");
-		sb.append("Lang: ").append(lang).append("\n");
-		sb.append("Level: ").append(LevelManager.getLevelByNumber(km.levels, level).name).append("\n");
-		sb.append("Detect Game End: ").append(gameEnd).append("\n");
-		sb.append("End game at one: ").append(endOne).append("\n");
-		sb.append("Passive: ").append(passive).append("\n");
-		sb.append("Team: ").append(team).append("\n");
-		sb.append("Team Size: ").append(teamSize).append("\n");
-		sb.append("Same mode: ").append(same).append("\n");
-		sb.append("Double mode: ").append(duoMode).append("\n");
-		sb.append("SBTT mode: ").append(sbttMode).append("\n");
-		sb.append("SBTT amount: ").append(sbttAmount).append("\n");
+		sb.append("Configuration:").append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Saturation: " + ChatColor.GOLD).append(saturation).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Spreadplayers: " + ChatColor.GOLD).append(spread).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Spreadplayer min distance: " + ChatColor.GOLD).append(spreadMin).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Spreadplayer min radius: " + ChatColor.GOLD).append(spreadMax).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Rewards: " + ChatColor.GOLD).append(rewards).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Skip: " + ChatColor.GOLD).append(skip).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Crafts: " + ChatColor.GOLD).append(crafts).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Nb item per age: " + ChatColor.GOLD).append(itemPerAge).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("First Age for Skipping: " + ChatColor.GOLD).append(skipAge).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Max age: " + ChatColor.GOLD).append(maxAges).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Start duration: " + ChatColor.GOLD).append(startTime).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Added duration: " + ChatColor.GOLD).append(addedTime).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Lang: " + ChatColor.GOLD).append(lang).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Level: " + ChatColor.GOLD).append(LevelManager.getLevelByNumber(km.levels, level).name).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Detect Game End: " + ChatColor.GOLD).append(gameEnd).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("End game at one: " + ChatColor.GOLD).append(endOne).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Passive: " + ChatColor.GOLD).append(passive).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Team: " + ChatColor.GOLD).append(team).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Team Size: " + ChatColor.GOLD).append(teamSize).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Same mode: " + ChatColor.GOLD).append(same).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Double mode: " + ChatColor.GOLD).append(duoMode).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("SBTT mode: " + ChatColor.GOLD).append(sbttMode).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("SBTT amount: " + ChatColor.GOLD).append(sbttAmount).append("\n");
 
 		return sb.toString();
 	}

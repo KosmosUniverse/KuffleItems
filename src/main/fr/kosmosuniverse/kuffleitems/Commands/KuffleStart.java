@@ -27,72 +27,72 @@ public class KuffleStart implements CommandExecutor {
 	public KuffleStart(KuffleMain _km) {
 		km = _km;
 	}
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
 			return false;
-		
+
 		Player player = (Player) sender;
-		
+
 		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-start>"));
-		
+
 		if (!player.hasPermission("ki-start")) {
 			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
-		
+
 		if (km.games.size() == 0) {
 			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NO_PLAYERS"));
-			
+
 			return false;
 		}
-		
+
 		if (km.gameStarted) {
 			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_LAUNCHED"));
 			return false;
 		}
-		
+
 		if (km.config.getSaturation()) {
 			for (String p : km.games.keySet()) {
 				km.games.get(p).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false));
 			}
 		}
-		
+
 		int spread = 0;
-		
+
 		if (km.config.getTeam() && !checkTeams()) {
 			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "PLAYER_NOT_IN_TEAM"));
 			return true;
 		}
-		
+
 		for (String key : km.allItems.keySet()) {
 			Collections.shuffle(km.allItems.get(key));
 		}
-		
+
 		for (String playerName : km.games.keySet()) {
 			km.games.get(playerName).getPlayer().sendMessage(Utils.getLangString(km, player.getName(), "GAME_STARTED"));
 		}
-		
+
 		km.logs.logBroadcastMsg(Utils.getLangString(km, player.getName(), "GAME_STARTED"));
-		
+
 		if (km.config.getSpread()) {
 			if (km.config.getTeam()) {
-				SpreadPlayer.spreadPlayers(km, player, (double) km.config.getSpreadDistance(), km.config.getSpreadRadius(), km.teams.getTeams(), Utils.getPlayerList(km.games));	
+				SpreadPlayer.spreadPlayers(km, player, km.config.getSpreadDistance(), km.config.getSpreadRadius(), km.teams.getTeams(), Utils.getPlayerList(km.games));
 			} else {
-				SpreadPlayer.spreadPlayers(km, player, (double) km.config.getSpreadDistance(), km.config.getSpreadRadius(), null, Utils.getPlayerList(km.games));
+				SpreadPlayer.spreadPlayers(km, player, km.config.getSpreadDistance(), km.config.getSpreadRadius(), null, Utils.getPlayerList(km.games));
 			}
-			
+
 			for (String playerName : km.games.keySet()) {
 				if (km.config.getTeam()) {
 					km.games.get(playerName).setTeamName(km.teams.findTeamByPlayer(playerName));
 				}
-				
+
 				km.games.get(playerName).getPlayer().setBedSpawnLocation(km.games.get(playerName).getPlayer().getLocation(), true);
 				km.games.get(playerName).setSpawnLoc(km.games.get(playerName).getPlayer().getLocation());
 				km.games.get(playerName).getSpawnLoc().add(0, -1, 0).getBlock().setType(Material.BEDROCK);
 			}
-			
+
 			spread = 20;
 		} else {
 			Location spawn = null;
@@ -101,21 +101,21 @@ public class KuffleStart implements CommandExecutor {
 				if (km.config.getTeam()) {
 					km.games.get(playerName).setTeamName(km.teams.findTeamByPlayer(playerName));
 				}
-				
+
 				if (spawn == null) {
 					spawn = km.games.get(playerName).getPlayer().getLocation().getWorld().getSpawnLocation();
 				}
-				
+
 				km.games.get(playerName).setSpawnLoc(spawn);
 			}
-			
+
 			spawn.add(0, -1, 0).getBlock().setType(Material.BEDROCK);
 		}
-		
+
 		int invCnt = 0;
-		
+
 		km.playersHeads = Bukkit.createInventory(null, 54, "§8Players");
-		
+
 		for (String playerName : km.games.keySet()) {
 			km.playersHeads.setItem(invCnt, Utils.getHead(km.games.get(playerName).getPlayer()));
 
@@ -124,19 +124,19 @@ public class KuffleStart implements CommandExecutor {
 			} else {
 				km.playerRank.put(playerName, 0);
 			}
-			
+
 			invCnt++;
 		}
-		
+
 		km.paused = true;
-		
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
 			@Override
 			public void run() {
 				for (String playerName : km.games.keySet()) {
 					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 				}
-				
+
 				if (km.config.getSBTT()) {
 					Utils.setupTemplates(km);
 				}
@@ -166,7 +166,7 @@ public class KuffleStart implements CommandExecutor {
 				}
 			}
 		}, 80 + spread);
-		
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
 			@Override
 			public void run() {
@@ -174,16 +174,16 @@ public class KuffleStart implements CommandExecutor {
 					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.BLUE + "1" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 					km.games.get(playerName).setup();
 				}
-				
+
 				km.scores.setupPlayerScores();
 			}
 		}, 100 + spread);
-		
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
 			@Override
 			public void run() {
 				ItemStack box = getStartBox();
-				
+
 				for (String playerName : km.games.keySet()) {
 					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 					km.games.get(playerName).getPlayer().getInventory().addItem(box);
@@ -196,17 +196,17 @@ public class KuffleStart implements CommandExecutor {
 				km.paused = false;
 			}
 		}, 120 + spread);
-		
+
 		return true;
 	}
-	
-	private ItemStack getStartBox() {
+
+	static ItemStack getStartBox() {
 		ItemStack item = new ItemStack(Material.WHITE_SHULKER_BOX);
 		ItemMeta itM = item.getItemMeta();
-		
+
 		itM.setDisplayName("Start Box");
 		item.setItemMeta(itM);
-		
+
 		return item;
 	}
 
@@ -216,7 +216,7 @@ public class KuffleStart implements CommandExecutor {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 }

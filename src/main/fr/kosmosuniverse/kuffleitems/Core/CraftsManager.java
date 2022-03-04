@@ -115,7 +115,7 @@ public class CraftsManager {
 	}
 	
 	public Inventory getAllCraftsInventory() {
-		Inventory inv = Bukkit.createInventory(null, getNbRows(), "§8AllCustomCrafts");
+		Inventory inv = Bukkit.createInventory(null, Utils.getNbInventoryRows(recipes.size()), "§8AllCustomCrafts");
 		int i = 0;
 		
 		for (ACrafts item : recipes) {
@@ -126,15 +126,7 @@ public class CraftsManager {
 		return (inv);
 	}
 	
-	private int getNbRows() {
-		int rows = recipes.size() / 9;
-		
-		if (recipes.size() % 9 == 0) {
-			return rows * 9;
-		} else {
-			return (rows + 1) * 9;
-		}
-	}
+	
 	
 	public ACrafts findCraftInventoryByItem(ItemStack item) {
 		for (ACrafts craft : recipes) {

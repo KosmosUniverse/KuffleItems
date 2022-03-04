@@ -72,21 +72,10 @@ public class PlayerEvents implements Listener {
 		}
 		
 		tmpGame = km.games.get(player.getName());
-
-		Inventory newInv = Bukkit.createInventory(null, 54, "§8Players");
-		
-		for (ItemStack item : km.playersHeads) {
-			if (item != null) {
-				newInv.addItem(item);
-			}
-		}
-		
-		newInv.addItem(Utils.getHead(tmpGame.getPlayer()));
-		
-		km.playersHeads = newInv;
+		km.updatePlayersHead();
 		km.scores.setupPlayerScores(tmpGame);
 		tmpGame.load();
-		km.updatePlayersHead(player.getName(), tmpGame.getItemDisplay());
+		km.updatePlayersHeadData(player.getName(), tmpGame.getItemDisplay());
 		
 		for (String playerName : km.games.keySet()) {
 			km.games.get(playerName).getPlayer().sendMessage("[KuffleItems] : <" + player.getName() + "> game is reloaded !");

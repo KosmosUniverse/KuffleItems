@@ -1,5 +1,5 @@
 name: KuffleItems
-version: 1.8
+version: 1.11
 author: KosmosUniverse
 main: main.fr.kosmosuniverse.kuffleitems.KuffleMain
 api-version: 1.15
@@ -8,7 +8,6 @@ commands:
    ki-config:
       usage: /<command> [<key> <value>]*
       description: command to see or change game configuration
-      permission: inferno.flagrate
    ki-list:
       usage: /<command> [reset | remove <Player name> | add <@a | Player name>]
       description: command to add/remove players to the list and view/reset the list
@@ -81,6 +80,10 @@ commands:
       usage: /<command> <TeamName> <TeamColor>
       description: command to change team color
       permission: inferno.flagrate
+   ki-add-during-game:
+      usage: /<command> <PlayerName> [TeamName]
+      description: command to add a player during the game
+      permission: inferno.flagrate
    ki-skip:
       usage: /<command>
       description: command to skip a block
@@ -101,9 +104,9 @@ commands:
       description: command to tp to other players after game end
 
 permissions:
-   ki-config:
+   ki-op:
+      description: default op permission
       default: op
-      description: command to see or change game configuration
    ki-list:
       description: command to add players to the list and view the list
       default: op
@@ -158,6 +161,12 @@ permissions:
    ki-team-color:
       description: command to change team color
       default: op
+   ki-addDuringGame:
+      description: command to add a player during the game
+      default: op
+   ki-config:
+      default: true
+      description: command to see or change game configuration
    ki-skip:
       description: command to skip a block
       default: true

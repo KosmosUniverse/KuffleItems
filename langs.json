@@ -291,6 +291,10 @@
 		"en" : "    - %s Age: Abandoned",
 		"fr" : "    - Age %s: Abandoné"
 	},
+	"FINISH_TOTAL" : {
+		"en" : "    - Total Time: %t",
+		"fr" : "    - Temps total: %t"
+	},
 	"CANT_SKIP_AGE" : {
 		"en" : "You can't skip item this age.",
 		"fr" : "Vous ne pouvez pas passer d'objet à cet Age."
@@ -346,5 +350,9 @@
 	"HERE_DIES" : {
 		"en" : "Here dies",
 		"fr" : "Ici est mort"
+	},
+	"TIME_AGE" : {
+		"en" : "Total Time at this point: %t",
+		"fr" : "Temps total à cet instant : %t"
 	}
 }
