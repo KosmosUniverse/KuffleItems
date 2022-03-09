@@ -8,6 +8,10 @@ import org.bukkit.inventory.ItemStack;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Crafts.*;
+import main.fr.kosmosuniverse.kuffleitems.Crafts.ores.*;
+import main.fr.kosmosuniverse.kuffleitems.Crafts.resources.*;
+import main.fr.kosmosuniverse.kuffleitems.Crafts.armors.*;
+import main.fr.kosmosuniverse.kuffleitems.Crafts.naturals.*;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class CraftsManager {
@@ -40,6 +44,12 @@ public class CraftsManager {
 		recipes.add(new Mycelium(_km));
 		recipes.add(new MossyCobblestone(_km));
 		recipes.add(new MossyStoneBrick(_km));
+		
+		recipes.add(new TubeCoralBlock(_km));
+		recipes.add(new BubbleCoralBlock(_km));
+		recipes.add(new HornCoralBlock(_km));
+		recipes.add(new FireCoralBlock(_km));
+		recipes.add(new BrainCoralBlock(_km));
 		
 		recipes.add(new Coal(_km));
 		recipes.add(new Lapis(_km));
