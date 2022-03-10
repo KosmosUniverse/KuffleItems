@@ -78,10 +78,10 @@ public class PlayerEvents implements Listener {
 		km.updatePlayersHeadData(player.getName(), tmpGame.getItemDisplay());
 		
 		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).getPlayer().sendMessage("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
+			km.games.get(playerName).getPlayer().sendMessage("[" + km.getName() + "] : <" + player.getName() + "> game is reloaded !");
 		}
 		
-		km.logs.logBroadcastMsg("[KuffleItems] : <" + player.getName() + "> game is reloaded !");
+		km.logs.logBroadcastMsg("[" + km.getName() + "] : <" + player.getName() + "> game is reloaded !");
 		
 		return;
 	}
@@ -89,7 +89,6 @@ public class PlayerEvents implements Listener {
 	@EventHandler
 	public void onPlayerDeconnectEvent(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		FileWriter writer = null;
 		Game tmpGame;
 		
 		if (!km.gameStarted || !km.games.containsKey(player.getName())) {
@@ -98,13 +97,7 @@ public class PlayerEvents implements Listener {
 		
 		tmpGame = km.games.remove(player.getName());
 
-		try {
-			if (dataFolder.getPath().contains("\\")) {
-				writer = new FileWriter(dataFolder.getPath() + "\\" + player.getName() + ".ki");
-			} else {
-				writer = new FileWriter(dataFolder.getPath() + "/" + player.getName() + ".ki");
-			}
-			
+		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + player.getName() + ".ki")) {			
 			Inventory newInv = Bukkit.createInventory(null, 54, "§8Players");
 			
 			for (ItemStack item : km.playersHeads.getContents()) {
@@ -118,14 +111,14 @@ public class PlayerEvents implements Listener {
 			km.playersHeads = newInv;
 			
 			writer.write(tmpGame.save());
-			writer.close();
 			
 			tmpGame.stop();
 			
 			for (String playerName : km.games.keySet()) {
-				km.games.get(playerName).getPlayer().sendMessage("[KuffleItems] : <" + player.getName() + "> game is saved.");
+				km.games.get(playerName).getPlayer().sendMessage("[" + km.getName() + "] : <" + player.getName() + "> game is saved.");
 			}
-			km.logs.logBroadcastMsg("[KuffleItems] : <" + player.getName() + "> game is saved.");
+			
+			km.logs.logBroadcastMsg("[" + km.getName() + "] : <" + player.getName() + "> game is saved.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

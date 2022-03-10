@@ -44,20 +44,11 @@ public class FilesConformity {
 	
 	private static String getFromFile(KuffleMain km, String file) {
 		if (fileExists(km, km.getDataFolder().getPath(), file)) {
-			try {
-				FileReader fr;
-				
-				if (km.getDataFolder().getPath().contains("\\")) {
-					fr = new FileReader(km.getDataFolder().getPath() + "\\" + km.getDescription().getVersion() + "\\"  + file);
-				} else {
-					fr = new FileReader(km.getDataFolder().getPath() + "/" + km.getDescription().getVersion() + "/" + file);
-				}
-				
+			try (FileReader reader = new FileReader(km.getDataFolder().getPath() + File.separator + km.getDescription().getVersion() + File.separator  + file)) {
 				JSONParser parser = new JSONParser();
 				
-				String result = ((JSONObject) parser.parse(fr)).toString();
-				
-				fr.close();
+				String result = ((JSONObject) parser.parse(reader)).toString();
+
 				return result;
 			} catch (IOException | ParseException e) {
 				e.printStackTrace();
@@ -70,24 +61,13 @@ public class FilesConformity {
 	}
 	
 	private static void createFromResource(KuffleMain km, String fileName) {
-		try {
-			FileWriter file;
-			String path;
-			
-			if (km.getDataFolder().getPath().contains("\\")) {
-				path = km.getDataFolder().getPath() + "\\" + km.getDescription().getVersion();
-				directoryExists(path);
-				file = new FileWriter(path + "\\"  + fileName);
-			} else {
-				path = km.getDataFolder().getPath() + "/" + km.getDescription().getVersion();
-				directoryExists(path);
-				file = new FileWriter(path + "/" + fileName);
-			}
-			
+		String path = km.getDataFolder().getPath() + File.separator + km.getDescription().getVersion();
+		directoryExists(path);		
+		
+		try (FileWriter writer = new FileWriter(path + File.separator + fileName)) {
 			InputStream in = km.getResource(fileName);
 
-			file.write(Utils.readFileContent(in));
-			file.close();
+			writer.write(Utils.readFileContent(in));
 			in.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -243,7 +223,10 @@ public class FilesConformity {
 				materialObj.clear();
 			}
 			
-			langs.clear();
+			if (langs != null) {
+				langs.clear();
+			}
+			
 			jsonObj.clear();
 			
 			return true;
@@ -285,7 +268,10 @@ public class FilesConformity {
 				phraseObj.clear();
 			}
 			
-			langs.clear();
+			if (langs != null) {
+				langs.clear();
+			}
+			
 			jsonObj.clear();
 			
 			return true;
@@ -477,9 +463,11 @@ public class FilesConformity {
 				if (!lose.equalsIgnoreCase("true") && !lose.equalsIgnoreCase("false")) {
 					return false;
 				}
-				
-				return true;
 			}
+			
+			jsonObj.clear();
+			
+			return true;
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -488,13 +476,7 @@ public class FilesConformity {
 	}
 	
 	public static boolean fileExists(KuffleMain km, String path, String fileName) {
-		File tmp = null;
-		
-		if (path.contains("\\")) {
-			tmp = new File(path + "\\" + km.getDescription().getVersion() + "\\" + fileName);
-		} else {
-			tmp = new File(path + "/" + km.getDescription().getVersion() + "/" + fileName);
-		}
+		File tmp = new File(path + File.separator + km.getDescription().getVersion() + File.separator + fileName);
 		
 		return tmp.exists();
 	}

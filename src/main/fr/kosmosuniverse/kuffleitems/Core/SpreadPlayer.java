@@ -12,6 +12,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class SpreadPlayer {
+	private SpreadPlayer() {
+		throw new IllegalStateException("Utility class");
+	}
+	
     public static ArrayList<Location> spreadPlayers(KuffleMain km, Player sender, double distance, long min_radius, ArrayList<Team> teams, ArrayList<Player> players) {
         if (distance < 0.0D) {
             sender.sendMessage(ChatColor.RED + Utils.getLangString(km, null, "TOO_SHORT"));
@@ -39,9 +43,8 @@ public class SpreadPlayer {
         
         ArrayList<Location> locations = getSpreadLocations(radius, angle, spreadSize, world, sender.getLocation());
         
-        if (teams != null && locations.size() != teams.size()) {
-        	return null;
-        } else if (teams == null && players != null && locations.size() != players.size()) {
+        if ((teams != null && locations.size() != teams.size()) ||
+        		(teams == null && players != null && locations.size() != players.size())) {
         	return null;
         }
         

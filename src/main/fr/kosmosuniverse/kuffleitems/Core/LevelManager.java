@@ -7,6 +7,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class LevelManager {
+	private LevelManager() {
+		throw new IllegalStateException("Utility class");
+	}
+	
 	public static ArrayList<Level> getLevels(String content) {
 		ArrayList<Level> finalList = new ArrayList<Level>();
 

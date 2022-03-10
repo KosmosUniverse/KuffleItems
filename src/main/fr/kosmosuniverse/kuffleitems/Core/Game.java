@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -149,9 +149,7 @@ public class Game {
 
 		JSONObject saveTimes = new JSONObject();
 
-		for (String time : times.keySet()) {
-			saveTimes.put(time, times.get(time));
-		}
+		times.forEach((k, v) -> saveTimes.put(k, v));
 
 		saveTimes.put("interval", System.currentTimeMillis() - timeBase);
 
@@ -243,7 +241,7 @@ public class Game {
 	public void nextAge() {
 		if (km.config.getRewards()) {
 			if (age > 0) {
-				RewardManager.managePreviousEffects(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age - 1).name), player, AgeManager.getAgeByNumber(km.ages, age - 1).name);
+				RewardManager.managePreviousEffects(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age - 1).name), player);
 			}
 
 			RewardManager.givePlayerReward(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age).name), player, km.ages,  AgeManager.getAgeByNumber(km.ages, age).number);
@@ -330,7 +328,9 @@ public class Game {
 	}
 
 	public void randomBarColor() {
-		ageDisplay.setColor(getRandomColor());
+		BarColor[] colors = BarColor.values();
+		
+		ageDisplay.setColor(colors[ThreadLocalRandom.current().nextInt(colors.length)]);
 	}
 
 	public boolean skip(boolean malus) {
@@ -380,7 +380,7 @@ public class Game {
 			if (tmp < 0)
 				return;
 
-			RewardManager.givePlayerRewardEffect(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, tmp).name), player, AgeManager.getAgeByNumber(km.ages, tmp).name);
+			RewardManager.givePlayerRewardEffect(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, tmp).name), player);
 		}
 	}
 
@@ -646,10 +646,10 @@ public class Game {
 		timeBase = System.currentTimeMillis() - (Long) _times.get("interval");
 
 		for (int i = 0; i < km.config.getMaxAges(); i++) {
-			Age age = AgeManager.getAgeByNumber(km.ages, i);
+			Age ageTime = AgeManager.getAgeByNumber(km.ages, i);
 
-			if (_times.containsKey(age.name)) {
-				times.put(age.name, (Long) _times.get(age.name));
+			if (_times.containsKey(ageTime.name)) {
+				times.put(ageTime.name, (Long) _times.get(ageTime.name));
 			}
 		}
 	}
@@ -664,11 +664,5 @@ public class Game {
 
 	public void resetList() {
 		alreadyGot.clear();
-	}
-
-	private BarColor getRandomColor() {
-		Random r = new Random();
-
-		return (BarColor.values()[r.nextInt(BarColor.values().length)]);
 	}
 }

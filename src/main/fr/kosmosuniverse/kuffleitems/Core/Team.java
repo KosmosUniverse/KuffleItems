@@ -1,20 +1,21 @@
 package main.fr.kosmosuniverse.kuffleitems.Core;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class Team {
 	public ArrayList<Player> players = new ArrayList<Player>();
-	private Random random = new Random();
 	public String name;
 	public ChatColor color;
 	
 	public Team(String _name) {
+		ChatColor[] colors = ChatColor.values();
+		
 		name = _name;
-		color = ChatColor.values()[random.nextInt(ChatColor.values().length)];
+		color = colors[ThreadLocalRandom.current().nextInt(colors.length)];
 	}
 	
 	public Team(String _name, ChatColor _color) {

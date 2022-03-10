@@ -1,7 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.Commands;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -59,10 +59,11 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 		
 		int cnt = 0;
 		ArrayList<Player> players = Utils.getPlayerList(km.games);
-		Random r = new Random();
+		
+		final ThreadLocalRandom random = ThreadLocalRandom.current();
 		
 		while (players.size() > 0) {
-			int idx = r.nextInt(players.size());
+			int idx = random.nextInt(players.size());
 			
 			km.teams.affectPlayer(km.teams.getTeams().get(cnt).name, players.get(idx));
 			

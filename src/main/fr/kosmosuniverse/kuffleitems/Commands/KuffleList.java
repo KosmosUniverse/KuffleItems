@@ -15,6 +15,7 @@ import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleList implements CommandExecutor {
 	private KuffleMain km;
+	private static final String noPlayers = "NO_PLAYERS";
 
 	public KuffleList(KuffleMain _km) {
 		km = _km;
@@ -37,7 +38,7 @@ public class KuffleList implements CommandExecutor {
 
 		if (args.length == 0) {
 			if (km.games.size() == 0) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NO_PLAYERS"));
+				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), noPlayers));
 			} else {
 				StringBuilder sb = new StringBuilder();
 				int i = 0;
@@ -59,7 +60,7 @@ public class KuffleList implements CommandExecutor {
 		} else if (args.length == 1) {
 			if (args[0].equals("reset")) {
 				if (km.games.size() == 0) {
-					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NO_PLAYERS"));
+					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), noPlayers));
 
 					return false;
 				}
@@ -105,7 +106,7 @@ public class KuffleList implements CommandExecutor {
 				}
 			} else if (args[0].equals("remove")) {
 				if (km.games.size() == 0) {
-					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NO_PLAYERS"));
+					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), noPlayers));
 
 					return false;
 				}

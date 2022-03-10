@@ -1,6 +1,6 @@
 package main.fr.kosmosuniverse.kuffleitems.Core;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,6 +20,8 @@ public class GameLoop {
 	}
 
 	public void startRunnable() {
+		final ThreadLocalRandom random = ThreadLocalRandom.current();
+		
 		runnable = new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -81,10 +83,9 @@ public class GameLoop {
 								tmpGame.addToAlreadyGot(currentTmp);
 								tmpGame.setCurrentItem(tmpGame.getCurrentItem() + "/" + currentTmp);
 							} else if (!km.config.getDouble() && tmpGame.getCurrentItem().contains("/")) {
-								Random r = new Random();
 								String[] array = tmpGame.getCurrentItem().split("/");
 
-								tmpGame.setCurrentItem(array[r.nextInt(2)]);
+								tmpGame.setCurrentItem(array[random.nextInt(2)]);
 								tmpGame.removeFromList(array);
 							}
 						}

@@ -7,6 +7,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class AgeManager {
+	private AgeManager() {
+		throw new IllegalStateException("Utility class");
+    }
+	
 	public static ArrayList<Age> getAges(String ageContent) {
 		ArrayList<Age> finalList = new ArrayList<Age>();
 

@@ -43,21 +43,11 @@ public class KuffleSave implements CommandExecutor {
 			return false;
 		}
 		
-		FileWriter writer = null;
-		
 		km.paused = true;
 		
 		for (String playerName : km.games.keySet()) {
-			try {
-				if (dataFolder.getPath().contains("\\")) {
-					writer = new FileWriter(dataFolder.getPath() + "\\" + playerName + ".ki");
-				} else {
-					writer = new FileWriter(dataFolder.getPath() + "/" + playerName + ".ki");
-				}
-				
+			try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + playerName + ".ki");) {				
 				writer.write(km.games.get(playerName).save());
-				writer.close();
-				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -66,28 +56,14 @@ public class KuffleSave implements CommandExecutor {
 		}
 		
 		if (km.config.getTeam()) {
-			try {
-				if (dataFolder.getPath().contains("\\")) {
-					writer = new FileWriter(dataFolder.getPath() + "\\" + "Teams.ki");
-				} else {
-					writer = new FileWriter(dataFolder.getPath() + "/" + "Teams.ki");
-				}
-				
+			try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "Teams.ki");) {				
 				writer.write(km.teams.saveTeams());
-				writer.close();
-							
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		
-		try {
-			if (dataFolder.getPath().contains("\\")) {
-				writer = new FileWriter(dataFolder.getPath() + "\\" + "Game.ki");
-			} else {
-				writer = new FileWriter(dataFolder.getPath() + "/" + "Game.ki");
-			}
-			
+		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "Games.ki");) {				
 			JSONObject global = new JSONObject();
 
 			global.put("config", km.config.saveConfig());

@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,59 +20,50 @@ import org.json.simple.parser.ParseException;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Pair;
 
 public class ItemManager {
+	private ItemManager() {
+		throw new IllegalStateException("Utility class");
+	}
+	
 	public static HashMap<String, ArrayList<String>> getAllItems(ArrayList<Age> ages, String itemsContent, File dataFolder) {
 		HashMap<String, ArrayList<String>> finalMap = new HashMap<String, ArrayList<String>>();
 		
 		int max = AgeManager.getAgeMaxNumber(ages);
-		
-		for (int ageCnt = 0; ageCnt <= max; ageCnt++) {
-			finalMap.put(AgeManager.getAgeByNumber(ages, ageCnt).name, getAgeItems(AgeManager.getAgeByNumber(ages, ageCnt).name, itemsContent, dataFolder));
+
+		try {
+			for (int ageCnt = 0; ageCnt <= max; ageCnt++) {
+				finalMap.put(AgeManager.getAgeByNumber(ages, ageCnt).name, getAgeItems(AgeManager.getAgeByNumber(ages, ageCnt).name, itemsContent, dataFolder));
+			}
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+			finalMap = null;
 		}
 		
 		return finalMap;
 	}
 	
-	public static synchronized ArrayList<String> getAgeItems(String age, String itemsContent, File dataFolder) {
+	public static synchronized ArrayList<String> getAgeItems(String age, String itemsContent, File dataFolder) throws IOException, ParseException {
 		ArrayList<String> finalList = new ArrayList<String>();
 		JSONObject items = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
-		FileWriter writer = null;
-		
-		try {
-			if (dataFolder.getPath().contains("\\")) {
-				writer = new FileWriter(dataFolder.getPath() + "\\logs.txt");
-			} else {
-				writer = new FileWriter(dataFolder.getPath() + "/logs.txt");
-			}
-			
+
+		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "logs.txt")) {
 			items = (JSONObject) jsonParser.parse(itemsContent);
-		} catch (IOException | ParseException e) {
-			e.printStackTrace();
-		}
-		
-		JSONObject ageObject = new JSONObject();
-		JSONArray agePart = new JSONArray();
-		
-		ageObject = (JSONObject) items.get(age);
-					
-		for (Object k : ageObject.keySet()) {
-			agePart = (JSONArray) ageObject.get(k);
-			for (int j = 0; j < agePart.size(); j++) {
-				finalList.add((String) agePart.get(j));
-				if (Material.matchMaterial((String) agePart.get(j)) == null) {
-					try {
+			
+			JSONObject ageObject = new JSONObject();
+			JSONArray agePart = new JSONArray();
+			
+			ageObject = (JSONObject) items.get(age);
+						
+			for (Object k : ageObject.keySet()) {
+				agePart = (JSONArray) ageObject.get(k);
+				for (int j = 0; j < agePart.size(); j++) {
+					finalList.add((String) agePart.get(j));
+					if (Material.matchMaterial((String) agePart.get(j)) == null) {
 						writer.append((String) agePart.get(j));
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 			}
-		}
 		
-		try {
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		
 		return finalList;
@@ -95,9 +86,7 @@ public class ItemManager {
 			return finalList.get(0);
 		}
 		
-		Random r = new Random();
-		
-		return finalList.get(r.nextInt(finalList.size()));
+		return finalList.get(ThreadLocalRandom.current().nextInt(finalList.size()));
 	}
 	
 	public static synchronized Pair nextItem(ArrayList<String> done, ArrayList<String> allAgeItems, int sameIdx) {	
@@ -114,10 +103,8 @@ public class ItemManager {
 	public static HashMap<String, ArrayList<Inventory>> getItemsInvs(HashMap<String, ArrayList<String>> allItems) {
 		HashMap<String, ArrayList<Inventory>> invs = new HashMap<String, ArrayList<Inventory>>();
 
-		for (String age : allItems.keySet()) {
-			invs.put(age, getAgeInvs(age, allItems.get(age)));
-		}
-		
+		allItems.forEach((k, v) -> invs.put(k, getAgeInvs(k, v)));
+
 		return invs;
 	}
 
@@ -130,9 +117,8 @@ public class ItemManager {
 		ItemStack limePane = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
 		ItemStack redPane = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 		ItemStack bluePane = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
-		ItemMeta itM =  limePane.getItemMeta();
+		ItemMeta itM = limePane.getItemMeta();
 		
-		itM = limePane.getItemMeta();
 		itM.setDisplayName(" ");
 		limePane.setItemMeta(itM);
 		itM = redPane.getItemMeta();

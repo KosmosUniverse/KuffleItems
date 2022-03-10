@@ -46,19 +46,10 @@ public class EndTeleporter extends ACrafts {
 	@Override
 	public Inventory getInventoryRecipe() {
 		Inventory inv = Bukkit.createInventory(null,  27, "§8" + name);
-		ItemStack limePane = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-		ItemStack redPane = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-		ItemMeta itM = limePane.getItemMeta();
-		
-		itM.setDisplayName(" ");
-		limePane.setItemMeta(itM);
-		itM = redPane.getItemMeta();
-		itM.setDisplayName("<- Back");
-		redPane.setItemMeta(itM);
 		
 		for (int i = 0; i < 27; i++) {
 			if (i == 0) {
-				inv.setItem(i, new ItemStack(redPane));
+				inv.setItem(i, redPane);
 			} else if (i == 3) {
 				inv.setItem(i, new ItemStack(Material.GOLD_BLOCK));
 			} else if (i == 4) {
@@ -76,7 +67,7 @@ public class EndTeleporter extends ACrafts {
 			} else if (i == 16) {
 				inv.setItem(i, item);
 			} else {
-				inv.setItem(i, new ItemStack(limePane));
+				inv.setItem(i, limePane);
 			}
 		}
 		

@@ -22,6 +22,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class RewardManager {
+	private RewardManager() {
+		throw new IllegalStateException("Utility class");
+	}
+	
 	public static synchronized HashMap<String, HashMap<String, RewardElem>> getAllRewards(ArrayList<Age> ages, String rewardsContent, File dataFolder) {
 		HashMap<String, HashMap<String, RewardElem>> finalMap = new HashMap<String, HashMap<String, RewardElem>>();
 		
@@ -38,31 +42,20 @@ public class RewardManager {
 		HashMap<String, RewardElem> ageRewards = new HashMap<String, RewardElem>();
 		JSONObject rewards = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
-		FileWriter writer = null;
 		
-		try {
-			if (dataFolder.getPath().contains("\\")) {
-				writer = new FileWriter(dataFolder.getPath() + "\\logs.txt", true);
-			} else {
-				writer = new FileWriter(dataFolder.getPath() + "/logs.txt", true);
-			}
-			
+		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "logs.txt", true)) {
 			rewards = (JSONObject) jsonParser.parse(rewardsContent);
-		} catch (IOException | ParseException e) {
-			e.printStackTrace();
-		}
 		
-		JSONObject ageObject = new JSONObject();
+			JSONObject ageObject = new JSONObject();
+			
+			ageObject = (JSONObject) rewards.get(age);
+			
+			for (Iterator<?> it = ageObject.keySet().iterator(); it.hasNext();) {
+				String key = (String) it.next();
+				JSONObject tmp = (JSONObject) ageObject.get(key);
+				ageRewards.put(key, new RewardElem(key, Integer.parseInt(((Long) tmp.get("Amount")).toString()), (String) tmp.get("Enchant"), Integer.parseInt(((Long) tmp.get("Level")).toString()), (String) tmp.get("Effect")));
+			}
 		
-		ageObject = (JSONObject) rewards.get(age);
-		
-		for (Iterator<?> it = ageObject.keySet().iterator(); it.hasNext();) {
-			String key = (String) it.next();
-			JSONObject tmp = (JSONObject) ageObject.get(key);
-			ageRewards.put(key, new RewardElem(key, Integer.parseInt(((Long) tmp.get("Amount")).toString()), (String) tmp.get("Enchant"), Integer.parseInt(((Long) tmp.get("Level")).toString()), (String) tmp.get("Effect")));
-		}
-		
-		try {
 			StringBuilder sb = new StringBuilder();
 
 			for (String key : ageRewards.keySet()) {
@@ -70,19 +63,17 @@ public class RewardManager {
 			}
 			
 			writer.append(sb.toString());
-			
-			writer.close();
-		} catch (IOException e) {
+		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
 		
 		return ageRewards;
 	}
 	
-	public static synchronized void givePlayerRewardEffect(HashMap<String, RewardElem> ageReward, Player p, String age) {
+	public static synchronized void givePlayerRewardEffect(HashMap<String, RewardElem> ageReward, Player player) {
 		for (String k : ageReward.keySet()) {
 			if (k.contains("potion")) {				
-				p.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
+				player.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
 			}
 		}
 	}
@@ -156,10 +147,10 @@ public class RewardManager {
 		}
 	}
 	
-	public static void managePreviousEffects(HashMap<String, RewardElem> ageReward, Player p, String age) {
+	public static void managePreviousEffects(HashMap<String, RewardElem> ageReward, Player player) {
 		for (String key : ageReward.keySet()) {
 			if (key.contains("potion")) {
-				p.removePotionEffect(findEffect(ageReward.get(key).getEffect()));
+				player.removePotionEffect(findEffect(ageReward.get(key).getEffect()));
 			}
 		}
 	}

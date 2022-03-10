@@ -12,29 +12,24 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class LangManager {
+	private LangManager() {
+		throw new IllegalStateException("Utility class");
+	}
+	
 	public static HashMap<String, HashMap<String, String>> getAllItemsLang(String JSONContent, File dataFolder) {
 		HashMap<String, HashMap<String, String>> finalMap = new HashMap<String, HashMap<String, String>>();
 		JSONObject langages = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
-		FileWriter writer = null;
 		
-		try {
-			if (dataFolder.getPath().contains("\\")) {
-				writer = new FileWriter(dataFolder.getPath() + "\\logs.txt", true);
-			} else {
-				writer = new FileWriter(dataFolder.getPath() + "/logs.txt", true);
-			}
-			
+		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "logs.txt", true)) {
 			langages = (JSONObject) jsonParser.parse(JSONContent);
 
 			for (Iterator<?> itItem = langages.keySet().iterator(); itItem.hasNext();) {
 				String keyItem = (String) itItem.next();
 				JSONObject item = (JSONObject) langages.get(keyItem);
-				
-				
+
 				writer.append(keyItem);
-				
-				
+
 				HashMap<String, String> itemLangs = new HashMap<String, String>();
 				
 				for (Iterator<?> itLang = item.keySet().iterator(); itLang.hasNext();) {
@@ -47,8 +42,6 @@ public class LangManager {
 				
 				finalMap.put(keyItem, itemLangs);
 			}
-			
-			writer.close();
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
@@ -62,7 +55,7 @@ public class LangManager {
 		if (allLangs.containsKey(item)) {
 			HashMap<String, String> langs = allLangs.get(item);
 			
-			if (langs.containsKey(lang) && langs.get(lang) != "") {
+			if (langs.containsKey(lang) && !langs.get(lang).isEmpty()) {
 				return langs.get(lang);
 			} else {
 				return item;

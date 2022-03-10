@@ -12,20 +12,13 @@ import java.time.format.DateTimeFormatter;
 import org.bukkit.entity.Player;
 
 public class Logs {
-	public String path;
+	private String path = "";
+	private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	
 	public Logs(File dataFolder) {
-		String s_path;
-		Path p_path;
-		
-		if (dataFolder.getPath().contains("\\")) {
-			s_path = dataFolder.getPath() + "\\KuffleItemsGamelogs.txt";
-		} else {
-			s_path = dataFolder.getPath() + "/KuffleItemsGamelogs.txt";
-		}
-		
+		String s_path = dataFolder.getPath() + File.separator + "KuffleItemsGamelogs.txt";
 		path = s_path;
-		p_path = Paths.get(s_path);
+		Path p_path = Paths.get(s_path);
 		
 		try {
 			if (!Files.exists(p_path)) {
@@ -37,29 +30,20 @@ public class Logs {
 	}
 	
 	public void logBroadcastMsg(String msg) {		
-		try {
-			FileWriter writer = new FileWriter(path, true);
-			
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
+		try (FileWriter writer = new FileWriter(path, true)) { 
 			LocalDateTime now = LocalDateTime.now();  
 			
 			writer.write(dtf.format(now) + " : [SYSTEM] -> " + msg + "\n");
-			
-			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
 	}
 	
 	public void logMsg(Player to, String msg) {
-		try {
-			FileWriter writer = new FileWriter(path, true);
-			
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
+		try (FileWriter writer = new FileWriter(path, true)) {
 			LocalDateTime now = LocalDateTime.now();  
 			
 			writer.write(dtf.format(now) + " : [" + to.getName() + "] -> " + msg + "\n");
-			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
@@ -68,14 +52,10 @@ public class Logs {
 	public void writeMsg(Player to, String msg) {
 		to.sendMessage(msg);
 		
-		try {
-			FileWriter writer = new FileWriter(path, true);
-			
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");  
+		try (FileWriter writer = new FileWriter(path, true)) {
 			LocalDateTime now = LocalDateTime.now();  
 			
 			writer.write(dtf.format(now) + " : [" + to.getName() + "] -> " + msg + "\n");
-			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		

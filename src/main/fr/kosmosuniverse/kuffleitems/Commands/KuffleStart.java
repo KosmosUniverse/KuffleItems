@@ -109,7 +109,9 @@ public class KuffleStart implements CommandExecutor {
 				km.games.get(playerName).setSpawnLoc(spawn);
 			}
 
-			spawn.add(0, -1, 0).getBlock().setType(Material.BEDROCK);
+			if (spawn != null) {
+				spawn.subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
+			}
 		}
 
 		int invCnt = 0;
@@ -130,71 +132,56 @@ public class KuffleStart implements CommandExecutor {
 
 		km.paused = true;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, km.games.get(playerName).getPlayer());
+			}
 
-				if (km.config.getSBTT()) {
-					Utils.setupTemplates(km);
-				}
+			if (km.config.getSBTT()) {
+				Utils.setupTemplates(km);
 			}
 		}, 20 + spread);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GOLD + "4" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GOLD + "4" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 			}
 		}, 40 + spread);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "3" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "3" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 			}
 		}, 60 + spread);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "2" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "2" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 			}
 		}, 80 + spread);
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.BLUE + "1" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-					km.games.get(playerName).setup();
-				}
-
-				km.scores.setupPlayerScores();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.BLUE + "1" + ChatColor.RESET, km.games.get(playerName).getPlayer());
+				km.games.get(playerName).setup();
 			}
+
+			km.scores.setupPlayerScores();
 		}, 100 + spread);
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				ItemStack box = getStartBox();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			ItemStack box = getStartBox();
 
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-					km.games.get(playerName).getPlayer().getInventory().addItem(box);
-				}
-
-				km.playerInteract.setXpSub(10);
-				km.loop = new GameLoop(km);
-				km.loop.startRunnable();
-				km.gameStarted = true;
-				km.paused = false;
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, km.games.get(playerName).getPlayer());
+				km.games.get(playerName).getPlayer().getInventory().addItem(box);
 			}
+
+			km.playerInteract.setXpSub(10);
+			km.loop = new GameLoop(km);
+			km.loop.startRunnable();
+			km.gameStarted = true;
+			km.paused = false;
 		}, 120 + spread);
 
 		return true;

@@ -12,6 +12,9 @@ import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleConfig implements CommandExecutor {
 	private KuffleMain km;
+	private static final String configClass = "main.fr.kosmosuniverse.kuffleitems.Core.Config";
+	private static final String configSet = "CONFIG_SET";
+	private static final String configNotSet = "CONFIG_NOT_SET";
 	
 	public KuffleConfig(KuffleMain _km) {
 		km = _km;
@@ -42,20 +45,16 @@ public class KuffleConfig implements CommandExecutor {
 			
 			for (int i = 0; i < args.length; i++) {
 				if (i % 2 == 0) {
-					if (before != "") {
-						before = "";
-					}
-					
 					before = args[i].toUpperCase();
 				} else {
 					if (km.config.stringElems.containsKey(before)) {
 						try {
-							boolean ret = (boolean) Class.forName("main.fr.kosmosuniverse.kuffleitems.Core.Config").getMethod(km.config.stringElems.get(before), String.class).invoke(km.config, args[i]);
+							boolean ret = (boolean) Class.forName(configClass).getMethod(km.config.stringElems.get(before), String.class).invoke(km.config, args[i]);
 							
 							if (ret) {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CONFIG_SET").replace("[#]", before).replace("[##]", "[" + args[i] + "]"));	
+								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configSet).replace("[#]", before).replace("[##]", "[" + args[i] + "]"));	
 							} else {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CONFIG_NOT_SET").replace("[#]", before).replace("[##]", "[" + args[i] + "]"));
+								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configNotSet).replace("[#]", before).replace("[##]", "[" + args[i] + "]"));
 							}
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 								| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
@@ -72,12 +71,12 @@ public class KuffleConfig implements CommandExecutor {
 							
 							boolean boolValue = Boolean.parseBoolean(tmp);
 							
-							boolean ret = (boolean) Class.forName("main.fr.kosmosuniverse.kuffleitems.Core.Config").getMethod(km.config.booleanElems.get(before), boolean.class).invoke(km.config, boolValue);
+							boolean ret = (boolean) Class.forName(configClass).getMethod(km.config.booleanElems.get(before), boolean.class).invoke(km.config, boolValue);
 							
 							if (ret) {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CONFIG_SET").replace("[#]", before).replace("[##]", "[" + boolValue + "]"));	
+								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configSet).replace("[#]", before).replace("[##]", "[" + boolValue + "]"));	
 							} else {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CONFIG_NOT_SET").replace("[#]", before).replace("[##]", "[" + boolValue + "]"));
+								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configNotSet).replace("[#]", before).replace("[##]", "[" + boolValue + "]"));
 							}
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 								| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
@@ -87,12 +86,12 @@ public class KuffleConfig implements CommandExecutor {
 						try {
 							int intValue = Integer.parseInt(args[i]);
 							
-							boolean ret = (boolean) Class.forName("main.fr.kosmosuniverse.kuffleitems.Core.Config").getMethod(km.config.intElems.get(before), int.class).invoke(km.config, intValue);
+							boolean ret = (boolean) Class.forName(configClass).getMethod(km.config.intElems.get(before), int.class).invoke(km.config, intValue);
 
 							if (ret) {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CONFIG_SET").replace("[#]", before).replace("[##]", "[" + intValue + "]"));	
+								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configSet).replace("[#]", before).replace("[##]", "[" + intValue + "]"));	
 							} else {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CONFIG_NOT_SET").replace("[#]", before).replace("[##]", "[" + intValue + "]"));
+								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configNotSet).replace("[#]", before).replace("[##]", "[" + intValue + "]"));
 							}
 							
 						} catch (NumberFormatException e) {

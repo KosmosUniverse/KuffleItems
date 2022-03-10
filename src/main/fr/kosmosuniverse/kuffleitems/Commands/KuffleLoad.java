@@ -26,6 +26,7 @@ import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 public class KuffleLoad implements CommandExecutor {
 	private KuffleMain km;
 	private File dataFolder;
+	private static final String gameFile = "Game.ki";
 	
 	public KuffleLoad(KuffleMain _km, File _dataFolder) {
 		km = _km;
@@ -56,29 +57,15 @@ public class KuffleLoad implements CommandExecutor {
 			return false;
 		}
 		
-		FileReader reader = null;
 		JSONParser parser = new JSONParser();
 		JSONObject mainObject = new JSONObject();
 		
-		if (Utils.fileExists(dataFolder.getPath(), "Game.ki")) {
-			try {
-				if (dataFolder.getPath().contains("\\")) {
-					reader = new FileReader(dataFolder.getPath() + "\\" + "Game.ki");
-				} else {
-					reader = new FileReader(dataFolder.getPath() + "/" + "Game.ki");
-				}
-				
-				try {
-					mainObject = (JSONObject) parser.parse(reader);
-					km.config.loadConfig((JSONObject) mainObject.get("config"));
-					loadRanks((JSONObject) mainObject.get("ranks"));
-					
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				
-				reader.close();
-			} catch (IOException e) {
+		if (Utils.fileExists(dataFolder.getPath(), gameFile)) {
+			try (FileReader reader = new FileReader(dataFolder.getPath() + File.separator + gameFile)) {
+				mainObject = (JSONObject) parser.parse(reader);
+				km.config.loadConfig((JSONObject) mainObject.get("config"));
+				loadRanks((JSONObject) mainObject.get("ranks"));
+			} catch (IOException | ParseException e) {
 				e.printStackTrace();
 			}
 			
@@ -116,90 +103,62 @@ public class KuffleLoad implements CommandExecutor {
 		}
 		
 		if (km.config.getTeam()) {
-			try {
-				if (dataFolder.getPath().contains("\\")) {
-					reader = new FileReader(dataFolder.getPath() + "\\" + "Teams.ki");
-				} else {
-					reader = new FileReader(dataFolder.getPath() + "/" + "Teams.ki");
-				}
-				
-				try {
-					mainObject = (JSONObject) parser.parse(reader);
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				
+			try (FileReader reader = new FileReader(dataFolder.getPath() + File.separator + "Teams.ki")) {
+				mainObject = (JSONObject) parser.parse(reader);
 				km.teams.loadTeams(km, mainObject, km.games);
-				
-				reader.close();
-			} catch (IOException e) {
+			} catch (IOException | ParseException e) {
 				e.printStackTrace();
 			}
 		}
 		
 		km.paused = true;
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
-				
-				if (km.config.getSBTT()) {
-					Utils.setupTemplates(km);
-				}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, km.games.get(playerName).getPlayer());
+			}
+			
+			if (km.config.getSBTT()) {
+				Utils.setupTemplates(km);
 			}
 		}, 20);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GOLD + "4" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GOLD + "4" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 			}
 		}, 40);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "3" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "3" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 			}
 		}, 60);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "2" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "2" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 			}
 		}, 80);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				km.scores.setupPlayerScores();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			km.scores.setupPlayerScores();
 				
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.BLUE + "1" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-					km.games.get(playerName).load();
-				}
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.BLUE + "1" + ChatColor.RESET, km.games.get(playerName).getPlayer());
+				km.games.get(playerName).load();
 			}
 		}, 100);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				}
-				
-				km.loop = new GameLoop(km);
-				km.loop.startRunnable();
-				km.gameStarted = true;
-				km.paused = false;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			for (String playerName : km.games.keySet()) {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, km.games.get(playerName).getPlayer());
 			}
+			
+			km.loop = new GameLoop(km);
+			km.loop.startRunnable();
+			km.gameStarted = true;
+			km.paused = false;
 		}, 120);
 		
 		return true;
