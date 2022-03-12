@@ -12,13 +12,13 @@ public class LevelManager {
 	}
 	
 	public static ArrayList<Level> getLevels(String content) {
-		ArrayList<Level> finalList = new ArrayList<Level>();
+		ArrayList<Level> finalList = new ArrayList<>();
 
 		if (content == null) {
 			return null;
 		}
 		
-		JSONObject jsonObj = new JSONObject();
+		JSONObject jsonObj;
 		JSONParser parser = new JSONParser();
 		
 		try {

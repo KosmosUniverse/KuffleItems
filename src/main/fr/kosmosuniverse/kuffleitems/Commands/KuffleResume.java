@@ -26,49 +26,49 @@ public class KuffleResume implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-resume>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-resume>"));
 		
 		if (!player.hasPermission("ki-resume")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (!km.gameStarted) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
 		if (!km.paused) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_RUNNING"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_RUNNING"));
 			return false;
 		}
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			for (String playerName : km.games.keySet()) {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "3" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-			}
+			km.games.forEach((playerName, game) -> {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "3" + ChatColor.RESET, game.getPlayer());
+			});
 		}, 20);
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			for (String playerName : km.games.keySet()) {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "2" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-			}
+			km.games.forEach((playerName, game) -> {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "2" + ChatColor.RESET, game.getPlayer());
+			});
 		}, 40);
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			for (String playerName : km.games.keySet()) {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "1" + ChatColor.RESET, km.games.get(playerName).getPlayer());
-			}
+			km.games.forEach((playerName, game) -> {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "1" + ChatColor.RESET, game.getPlayer());
+			});
 		}, 60);
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
 			km.paused = false;
 			
-			for (String playerName : km.games.keySet()) {
-				km.games.get(playerName).resume();
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + Utils.getLangString(km, player.getName(), "GAME_RESUMED") + ChatColor.RESET, km.games.get(playerName).getPlayer());
-				km.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
-			}
+			km.games.forEach((playerName, game) -> {
+				game.resume();
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + Utils.getLangString(km, player.getName(), "GAME_RESUMED") + ChatColor.RESET, game.getPlayer());
+				game.getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+			});
 		}, 80);
 
 		return true;

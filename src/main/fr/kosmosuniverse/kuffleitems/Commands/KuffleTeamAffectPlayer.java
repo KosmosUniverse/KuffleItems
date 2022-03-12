@@ -22,15 +22,15 @@ public class KuffleTeamAffectPlayer implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-affect-player>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-affect-player>"));
 		
 		if (!player.hasPermission("ki-team-affect-player")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() > 0 && km.gameStarted) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_LAUNCHED"));
 			return true;
 		}
 		
@@ -39,29 +39,22 @@ public class KuffleTeamAffectPlayer implements CommandExecutor {
 		}
 		
 		if (!km.teams.hasTeam(args[0])) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
 			return true;
 		}
 		
 		if (km.teams.getTeam(args[0]).players.size() == km.config.getTeamSize()) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_FULL"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_FULL"));
 			return true;
 		}
 		
-		if (!Utils.getPlayerNames(km.games).contains(args[1])) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "PLAYER_NOT_IN_GAME"));
+		if (!km.games.containsKey(args[1])) {
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "PLAYER_NOT_IN_GAME"));
 			return true;
 		}
 		
-		for (String playerName : km.games.keySet()) {
-			if (km.games.get(playerName).getPlayer().getName().equals(args[1])) {
-				km.teams.affectPlayer(args[0], km.games.get(playerName).getPlayer());
-				
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_ADD_PLAYER").replace("<#>", "<" + args[1] + ">").replace("<##>", "<" + args[0] + ">"));
-				
-				return true;
-			}
-		}
+		km.teams.affectPlayer(args[0], km.games.get(args[1]).getPlayer());
+		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_ADD_PLAYER").replace("<#>", "<" + args[1] + ">").replace("<##>", "<" + args[0] + ">"));
 		
 		return true;
 	}

@@ -67,7 +67,7 @@ public class SpreadPlayer {
     }
     
     private static ArrayList<Location> getSpreadLocations(long radius, double angleInc, int size, World world, Location center) {
-    	ArrayList<Location> locations = new ArrayList<Location>();
+    	ArrayList<Location> locations = new ArrayList<>();
     	
     	double angle = 0;
     	double x;

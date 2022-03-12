@@ -22,32 +22,30 @@ public class KuffleTeamAffectPlayerTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-team-affect-player")) {
-			if (args.length == 1) {				
-				ArrayList<Team> teams = km.teams.getTeams();
-				ArrayList<String> ret = new ArrayList<String>();
-				
-				for (Team item : teams) {
-					ret.add(item.name);
-				}
-				
-				return ret;
-			} else if (args.length == 2) {
-				ArrayList<String> ret = new ArrayList<String>();
-				
-				for (String item : Utils.getPlayerNames(km.games)) {
-					if (!km.teams.isInTeam(item)) {
-						ret.add(item);
-					}
-				}
-				
-				return ret;
+		if (args.length == 1) {				
+			ArrayList<Team> teams = km.teams.getTeams();
+			ArrayList<String> ret = new ArrayList<>();
+			
+			for (Team item : teams) {
+				ret.add(item.name);
 			}
+			
+			return ret;
+		} else if (args.length == 2) {
+			ArrayList<String> ret = new ArrayList<>();
+			
+			for (String item : Utils.getPlayerNames(km.games)) {
+				if (!km.teams.isInTeam(item)) {
+					ret.add(item);
+				}
+			}
+			
+			return ret;
 		}
 
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

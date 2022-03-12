@@ -22,15 +22,15 @@ public class KuffleTeamResetPlayers implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-reset-players>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-reset-players>"));
 		
 		if (!player.hasPermission("ki-team-reset-players")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() > 0 && km.gameStarted) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 				
@@ -39,11 +39,12 @@ public class KuffleTeamResetPlayers implements CommandExecutor {
 		}
 		
 		if (!km.teams.hasTeam(args[0])) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
-		} else {
-			km.teams.getTeam(args[0]).players.clear();
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_RESETED").replace("<#>", "<" + args[0] + ">"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+			return true;
 		}
+		
+		km.teams.getTeam(args[0]).players.clear();
+		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_RESETED").replace("<#>", "<" + args[0] + ">"));
 		
 		return true;
 	}

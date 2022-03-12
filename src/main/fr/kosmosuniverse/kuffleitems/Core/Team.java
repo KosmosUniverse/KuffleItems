@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class Team {
-	public ArrayList<Player> players = new ArrayList<Player>();
+	public ArrayList<Player> players = new ArrayList<>();
 	public String name;
 	public ChatColor color;
 	
@@ -25,7 +25,7 @@ public class Team {
 	
 	public boolean hasPlayer(String player)	{
 		for (Player item : players) {
-			if (item.getDisplayName().equals(player)) {
+			if (item.getName().equals(player)) {
 				return true;
 			}
 		}
@@ -37,7 +37,7 @@ public class Team {
 		ArrayList<String> names = new ArrayList<String>();
 		
 		for (Player item : players) {
-			names.add(item.getDisplayName());
+			names.add(item.getName());
 		}
 		
 		return names;
@@ -53,7 +53,7 @@ public class Team {
 			sb.append(" NONE.");
 		} else {
 			for (Player item : players) {
-				sb.append("\n    - " + item.getDisplayName());
+				sb.append("\n    - " + item.getName());
 			}
 		}
 		

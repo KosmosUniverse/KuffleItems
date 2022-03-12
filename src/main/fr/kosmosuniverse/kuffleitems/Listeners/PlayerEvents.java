@@ -39,7 +39,7 @@ public class PlayerEvents implements Listener {
 		km = _km;
 		dataFolder = _dataFolder;
 
-		exceptions = new ArrayList<Material>();
+		exceptions = new ArrayList<>();
 		
 		for (Material m : Material.values()) {
 			if (m.name().contains("SHULKER_BOX")) {
@@ -65,11 +65,11 @@ public class PlayerEvents implements Listener {
 			return;
 		}
 		
-		if (Utils.fileExists(dataFolder.getPath(), player.getName() + ".ki")) {
-			Utils.loadGame(km, player);
-		} else {
+		if (!Utils.fileExists(dataFolder.getPath(), player.getName() + ".ki")) {
 			return;
-		}
+		}		
+
+		Utils.loadGame(km, player);
 		
 		tmpGame = km.games.get(player.getName());
 		km.updatePlayersHead();
@@ -81,7 +81,7 @@ public class PlayerEvents implements Listener {
 			km.games.get(playerName).getPlayer().sendMessage("[" + km.getName() + "] : <" + player.getName() + "> game is reloaded !");
 		}
 		
-		km.logs.logBroadcastMsg("[" + km.getName() + "] : <" + player.getName() + "> game is reloaded !");
+		km.systemLogs.logMsg(km.getName(), "<" + player.getName() + "> game is reloaded !");
 		
 		return;
 	}
@@ -101,10 +101,8 @@ public class PlayerEvents implements Listener {
 			Inventory newInv = Bukkit.createInventory(null, 54, "§8Players");
 			
 			for (ItemStack item : km.playersHeads.getContents()) {
-				if (item != null) {
-					if (!item.getItemMeta().getDisplayName().equals(player.getName())) {
-						newInv.addItem(item);
-					}
+				if (item != null && !item.getItemMeta().getDisplayName().equals(player.getName())) {
+					newInv.addItem(item);
 				}
 			}
 			
@@ -118,7 +116,7 @@ public class PlayerEvents implements Listener {
 				km.games.get(playerName).getPlayer().sendMessage("[" + km.getName() + "] : <" + player.getName() + "> game is saved.");
 			}
 			
-			km.logs.logBroadcastMsg("[" + km.getName() + "] : <" + player.getName() + "> game is saved.");
+			km.systemLogs.logMsg(km.getName(), "<" + player.getName() + "> game is saved.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -138,7 +136,7 @@ public class PlayerEvents implements Listener {
 			event.getDrops().clear();
 		}
 		
-		km.logs.logMsg(player, "just died.");
+		km.gameLogs.logMsg(player.getName(), "just died.");
 		
 		for (String playerName : km.games.keySet()) {
 			if (playerName.equals(player.getName())) {
@@ -163,7 +161,7 @@ public class PlayerEvents implements Listener {
 		
 		Player player = event.getPlayer();
 		
-		km.logs.logMsg(player, "just respawned.");
+		km.gameLogs.logMsg(player.getName(), "just respawned.");
 		
 		for (String playerName : km.games.keySet()) {
 			if (playerName.equals(player.getName())) {
@@ -172,22 +170,13 @@ public class PlayerEvents implements Listener {
 			}
 		}
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				for (String playerName : km.games.keySet()) {
-					if (playerName.equals(player.getName())) {
-						if (km.config.getLevel().losable) {
-							player.sendMessage(ChatColor.RED + "YOU LOSE !");
-						} else {
-							teleportAutoBack(km.games.get(playerName));
-							km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 1));
-							km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 999999, 10));
-						}
-						
-						return;
-					}
-				}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			if (km.config.getLevel().losable) {
+				player.sendMessage(ChatColor.RED + "YOU LOSE !");
+			} else {
+				teleportAutoBack(km.games.get(player.getName()));
+				km.games.get(player.getName()).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 1));
+				km.games.get(player.getName()).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 999999, 10));
 			}
 		}, 20);
 	}
@@ -195,66 +184,63 @@ public class PlayerEvents implements Listener {
 	public void teleportAutoBack(Game tmpGame) {
 		tmpGame.getPlayer().sendMessage("You will be tp back to your death spot in " + km.config.getLevel().seconds + " seconds.");
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, new Runnable() {
-			@Override
-			public void run() {
-				Location loc = tmpGame.getDeathLoc();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+			Location loc = tmpGame.getDeathLoc();
 				
-				if (loc.getWorld().getName().contains("the_end") && loc.getY() < 0) {
-					int tmp = loc.getWorld().getHighestBlockYAt(loc);
+			if (loc.getWorld().getName().contains("the_end") && loc.getY() < 0) {
+				int tmp = loc.getWorld().getHighestBlockYAt(loc);
+				
+				if (tmp == -1) {
+					loc.setY(59);
 					
-					if (tmp == -1) {
-						loc.setY(59);
-						
-						for (double cntX = -2; cntX <= 2; cntX++) {
-							for (double cntZ = -2; cntZ <= 2; cntZ++) {
-								Location platform = loc.clone();
-								
-								platform.add(cntX, 0, cntZ);
-								
-								platform.getBlock().setType(Material.COBBLESTONE);
-							}
+					for (double cntX = -2; cntX <= 2; cntX++) {
+						for (double cntZ = -2; cntZ <= 2; cntZ++) {
+							Location platform = loc.clone();
+							
+							platform.add(cntX, 0, cntZ);
+							
+							platform.getBlock().setType(Material.COBBLESTONE);
 						}
-						
-						loc.setY(61);
-					} else {
-						loc.setY(loc.getWorld().getHighestBlockYAt(loc) + 1);
 					}
+					
+					loc.setY(61);
 				} else {
-					Location wall;
-					
-					for (double x = -2; x <= 2; x++) {
-						for (double y = -2; y <= 2; y++) {
-							for (double z = -2; z <= 2; z++) {
-								wall = loc.clone();
-								wall.add(x, y, z);
-								
-								if (x == 0 && y == -1 && z == 0) {
-									setSign(wall, tmpGame.getPlayer().getName());
-								} else if (x <= 1 && x >= -1 && y <= 1 && y >= -1 && z <= 1 && z >= -1) {
-									replaceExeption(wall, Material.AIR);
-								} else {
-									replaceExeption(wall, Material.DIRT);
-								}
+					loc.setY(loc.getWorld().getHighestBlockYAt(loc) + 1);
+				}
+			} else {
+				Location wall;
+				
+				for (double x = -2; x <= 2; x++) {
+					for (double y = -2; y <= 2; y++) {
+						for (double z = -2; z <= 2; z++) {
+							wall = loc.clone();
+							wall.add(x, y, z);
+							
+							if (x == 0 && y == -1 && z == 0) {
+								setSign(wall, tmpGame.getPlayer().getName());
+							} else if (x <= 1 && x >= -1 && y <= 1 && y >= -1 && z <= 1 && z >= -1) {
+								replaceExeption(wall, Material.AIR);
+							} else {
+								replaceExeption(wall, Material.DIRT);
 							}
 						}
 					}
 				}
-				
-				tmpGame.getPlayer().teleport(loc);
-				
-				for (Entity e : tmpGame.getPlayer().getNearbyEntities(3.0, 3.0, 3.0)) {
-					e.remove();
-				}
-				
-				tmpGame.restorePlayerInv();
-
-				for (PotionEffect p : tmpGame.getPlayer().getActivePotionEffects()) {
-					tmpGame.getPlayer().removePotionEffect(p.getType());
-				}
-				
-				tmpGame.reloadEffects();
 			}
+			
+			tmpGame.getPlayer().teleport(loc);
+			
+			for (Entity e : tmpGame.getPlayer().getNearbyEntities(3.0, 3.0, 3.0)) {
+				e.remove();
+			}
+			
+			tmpGame.restorePlayerInv();
+
+			for (PotionEffect p : tmpGame.getPlayer().getActivePotionEffects()) {
+				tmpGame.getPlayer().removePotionEffect(p.getType());
+			}
+			
+			tmpGame.reloadEffects();
 		}, (km.config.getLevel().seconds * 20));
 	}
 	

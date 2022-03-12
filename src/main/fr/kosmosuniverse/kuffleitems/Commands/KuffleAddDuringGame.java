@@ -26,10 +26,10 @@ public class KuffleAddDuringGame implements CommandExecutor {
 
 		Player player = (Player) sender;
 
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-abandon>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-abandon>"));
 
 		if (!player.hasPermission("ki-add-during-game")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 
@@ -46,10 +46,10 @@ public class KuffleAddDuringGame implements CommandExecutor {
 
 			if (km.config.getTeam() && args.length == 2) {
 				if (!km.teams.hasTeam(args[1])) {
-					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[1] + ">"));
+					km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[1] + ">"));
 					return true;
 				} else if (km.teams.getTeam(args[1]).players.size() == km.config.getTeamSize()) {
-					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_FULL"));
+					km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_FULL"));
 					return true;
 				}
 
@@ -60,7 +60,7 @@ public class KuffleAddDuringGame implements CommandExecutor {
 				return false;
 			}
 		} else {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 		}
 
 		return true;
@@ -70,11 +70,11 @@ public class KuffleAddDuringGame implements CommandExecutor {
 		km.paused = true;
 
 		km.games.put(player.getName(), new Game(km, player));
-		km.logs.writeMsg(sender, Utils.getLangString(km, sender.getName(), "ADDED_ONE_LIST"));
+		km.systemLogs.writeMsg(sender, Utils.getLangString(km, sender.getName(), "ADDED_ONE_LIST"));
 
 		if (team != null) {
 			km.teams.affectPlayer(team, player);
-			km.logs.writeMsg(sender, Utils.getLangString(km, sender.getName(), "TEAM_ADD_PLAYER").replace("<#>", "<" + team + ">").replace("<##>", "<" + player.getName() + ">"));
+			km.systemLogs.writeMsg(sender, Utils.getLangString(km, sender.getName(), "TEAM_ADD_PLAYER").replace("<#>", "<" + team + ">").replace("<##>", "<" + player.getName() + ">"));
 			km.games.get(player.getName()).setTeamName(km.teams.findTeamByPlayer(player.getName()));
 			km.games.get(player.getName()).setSpawnLoc(km.games.get(km.teams.getTeam(team).getPlayersName().get(0)).getSpawnLoc());
 			km.playerRank.put(km.games.get(player.getName()).getTeamName(), 0);

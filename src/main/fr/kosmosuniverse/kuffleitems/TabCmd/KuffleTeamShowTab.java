@@ -21,22 +21,22 @@ public class KuffleTeamShowTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-team-show")) {
-			if (args.length == 1) {				
-				ArrayList<Team> teams = km.teams.getTeams();
-				ArrayList<String> ret = new ArrayList<String>();
-				
-				for (Team item : teams) {
-					ret.add(item.name);
-				}
-				
-				return ret;
+		if (args.length == 1) {				
+			ArrayList<Team> teams = km.teams.getTeams();
+			ArrayList<String> ret = new ArrayList<>();
+			
+			for (Team item : teams) {
+				ret.add(item.name);
 			}
+			
+			teams.clear();
+			
+			return ret;
 		}
 
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

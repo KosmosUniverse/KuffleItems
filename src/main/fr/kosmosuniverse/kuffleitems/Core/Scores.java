@@ -16,7 +16,7 @@ public class Scores {
 	private Scoreboard scoreboard;
 	private Objective age = null;
 	private Objective items;
-	private ArrayList<Score> S_ages = new ArrayList<Score>();
+	private ArrayList<Score> S_ages = new ArrayList<>();
 	
 	public Scores(KuffleMain _km) {
 		km = _km;

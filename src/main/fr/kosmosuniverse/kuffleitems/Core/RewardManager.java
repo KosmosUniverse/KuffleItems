@@ -27,7 +27,7 @@ public class RewardManager {
 	}
 	
 	public static synchronized HashMap<String, HashMap<String, RewardElem>> getAllRewards(ArrayList<Age> ages, String rewardsContent, File dataFolder) {
-		HashMap<String, HashMap<String, RewardElem>> finalMap = new HashMap<String, HashMap<String, RewardElem>>();
+		HashMap<String, HashMap<String, RewardElem>> finalMap = new HashMap<>();
 		
 		int max = AgeManager.getAgeMaxNumber(ages);
 		
@@ -39,8 +39,8 @@ public class RewardManager {
 	}
 	
 	public static synchronized HashMap<String, RewardElem> getAgeRewards(String age, String rewardsContent, File dataFolder) {
-		HashMap<String, RewardElem> ageRewards = new HashMap<String, RewardElem>();
-		JSONObject rewards = new JSONObject();
+		HashMap<String, RewardElem> ageRewards = new HashMap<>();
+		JSONObject rewards;
 		JSONParser jsonParser = new JSONParser();
 		
 		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "logs.txt", true)) {
@@ -79,7 +79,7 @@ public class RewardManager {
 	}
 	
 	public static synchronized void givePlayerReward(HashMap<String, RewardElem> ageReward, Player p, ArrayList<Age> ages, int age) {
-		ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+		ArrayList<ItemStack> items = new ArrayList<>();
 		
 		ItemStack container = new ItemStack(AgeManager.getAgeByNumber(ages, age).box);
 		

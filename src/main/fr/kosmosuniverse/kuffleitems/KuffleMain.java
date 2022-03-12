@@ -55,14 +55,15 @@ public class KuffleMain extends JavaPlugin {
 
 	public GameLoop loop;
 	public Config config;
-	public Logs logs;
+	public Logs gameLogs;
+	public Logs systemLogs;
 	public ManageTeams teams = new ManageTeams();
 	public CraftsManager crafts = null;
 	public Scores scores;
 	public Inventory playersHeads;
 	public PlayerInteract playerInteract;
 	public PlayerEvents playerEvents;
-
+	
 	public boolean paused = false;
 	public boolean loaded = false;
 
@@ -81,6 +82,9 @@ public class KuffleMain extends JavaPlugin {
 		saveDefaultConfig();
 		reloadConfig();
 
+		gameLogs = new Logs(this.getDataFolder().getPath() + File.separator + "KuffleItemsGamelogs.txt");
+		systemLogs = new Logs(this.getDataFolder().getPath() + File.separator + "KuffleItemsSystemlogs.txt");
+		
 		if (((versions = Utils.loadVersions(this, "versions.json")) == null) ||
 				((ages = AgeManager.getAges(FilesConformity.getContent(this, "ages.json"))) == null) ||
 				((allItems = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "items_%v.json"), this.getDataFolder())) == null) ||
@@ -109,7 +113,6 @@ public class KuffleMain extends JavaPlugin {
 			return ;
 		}
 
-		logs = new Logs(this.getDataFolder());
 		langs = LangManager.findAllLangs(allItemsLangs);
 
 		config = new Config(this);
@@ -126,7 +129,7 @@ public class KuffleMain extends JavaPlugin {
 			cnt++;
 		}
 
-		System.out.println("[" + this.getName() + "] " + Utils.getLangString(this, null, "ADD_CRAFTS").replace("%i", "" + cnt));
+		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ADD_CRAFTS").replace("%i", "" + cnt));
 
 		playerInteract = new PlayerInteract(this);
 		playerEvents = new PlayerEvents(this, this.getDataFolder());
@@ -135,7 +138,7 @@ public class KuffleMain extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(playerInteract, this);
 		getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
 		getServer().getPluginManager().registerEvents(new ItemEvent(this), this);
-		System.out.println("[" + this.getName() + "] " + Utils.getLangString(this, null, "ADD_LISTENERS").replace("%i", "4"));
+		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ADD_LISTENERS").replace("%i", "4"));
 
 		getCommand("ki-config").setExecutor(new KuffleConfig(this));
 		getCommand("ki-list").setExecutor(new KuffleList(this));
@@ -164,7 +167,7 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-remove-player").setExecutor(new KuffleTeamRemovePlayer(this));
 		getCommand("ki-team-reset-players").setExecutor(new KuffleTeamResetPlayers(this));
 		getCommand("ki-team-random-player").setExecutor(new KuffleTeamRandomPlayer(this));
-		System.out.println("[" + this.getName() + "] " + Utils.getLangString(this, null, "ADD_CMD").replace("%i", "25"));
+		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ADD_CMD").replace("%i", "25"));
 
 		getCommand("ki-config").setTabCompleter(new KuffleConfigTab(this));
 		getCommand("ki-list").setTabCompleter(new KuffleListTab(this));
@@ -181,11 +184,11 @@ public class KuffleMain extends JavaPlugin {
 		getCommand("ki-team-affect-player").setTabCompleter(new KuffleTeamAffectPlayerTab(this));
 		getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab(this));
 		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
-		System.out.println("[" + this.getName() + "] " + Utils.getLangString(this, null, "ADD_TAB").replace("%i", "13"));
+		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ADD_TAB").replace("%i", "13"));
 
 		loaded = true;
 
-		System.out.println("[" + this.getName() + "] " + Utils.getLangString(this, null, "ON"));
+		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ON"));
 	}
 
 	@Override
@@ -194,7 +197,7 @@ public class KuffleMain extends JavaPlugin {
 			killAll();
 		}
 
-		System.out.println("[" + this.getName() + "] " + Utils.getLangString(this, null, "OFF"));
+		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "OFF"));
 	}
 
 	public void addRecipe(Recipe recipe) {

@@ -22,15 +22,15 @@ public class KuffleTeamDelete implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-delete>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-delete>"));
 		
 		if (!player.hasPermission("ki-team-delete")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() > 0 && km.gameStarted) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 				
@@ -39,12 +39,13 @@ public class KuffleTeamDelete implements CommandExecutor {
 		}
 		
 		if (!km.teams.hasTeam(args[0])) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
-		} else {
-			km.teams.deleteTeam(args[0]);
-			
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_DELETED").replace("<#>", "<" + args[0] + ">"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+			return true;
 		}
+		
+		km.teams.deleteTeam(args[0]);
+		
+		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_DELETED").replace("<#>", "<" + args[0] + ">"));
 		
 		return true;
 	}

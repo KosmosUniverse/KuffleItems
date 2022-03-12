@@ -21,24 +21,24 @@ public class KuffleTeamResetPlayersTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-team-reset-players")) {
-			if (args.length == 1) {				
-				ArrayList<Team> teams = km.teams.getTeams();
-				ArrayList<String> ret = new ArrayList<String>();
-				
-				for (Team item : teams) {
-					if (item.players.size() != 0) {
-						ret.add(item.name);	
-					}
+		if (args.length == 1) {
+			ArrayList<Team> teams = km.teams.getTeams();
+			ArrayList<String> ret = new ArrayList<>();
+			
+			for (Team item : teams) {
+				if (item.players.size() != 0) {
+					ret.add(item.name);	
 				}
-				
-				return ret;
 			}
+			
+			teams.clear();
+			
+			return ret;
 		}
 
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

@@ -26,41 +26,36 @@ public class KuffleLang implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-lang>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-lang>"));
 		
 		if (!player.hasPermission("ki-lang")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (km.gameStarted) {
-			for (String playerName : km.games.keySet()) {
-				if (km.games.get(playerName).getPlayer().equals(player)) {
-					if (args.length == 0) {
-						km.logs.writeMsg(player, km.games.get(playerName).getLang());
+		if (!km.gameStarted) {
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
+			return true;
+		}
+		
+		km.games.forEach((playerName, game) -> {
+			if (km.games.get(playerName).getPlayer().equals(player)) {
+				if (args.length == 0) {
+					km.systemLogs.writeMsg(player, km.games.get(playerName).getLang());
+				} else if (args.length == 1) {
+					String lang = args[0].toLowerCase();
+					
+					if (km.langs.contains(lang)) {
+						km.games.get(playerName).setLang(lang);
 						
-						return true;
-					} else if (args.length == 1) {
-						String lang = args[0].toLowerCase();
-						
-						if (km.langs.contains(lang)) {
-							km.games.get(playerName).setLang(lang);
-							
-							km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "LANG_SET").replace("[#]", " [" + lang + "]"));
-						} else {
-							km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "REQ_LANG_NOT_AVAIL"));
-						}
-						
-						return true;
+						km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "LANG_SET").replace("[#]", " [" + lang + "]"));
+					} else {
+						km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "REQ_LANG_NOT_AVAIL"));
 					}
 				}
 			}
-		} else {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
-			return false;
-		}
-
-		km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+		});
+		
 		return true;
 	}
 

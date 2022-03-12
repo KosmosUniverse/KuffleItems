@@ -60,7 +60,7 @@ public class GameLoop {
 									if ((tmpGame.getAge() + 1) == km.config.getMaxAges()) {
 										tmpGame.finish(bestRank);
 										bestRank = getBestRank();
-										km.logs.logBroadcastMsg(tmpGame.getPlayer().getName() + " complete this game !");
+										km.gameLogs.logSystemMsg(tmpGame.getPlayer().getName() + " complete this game !");
 
 										for (String toSend : km.games.keySet()) {
 											km.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(km, toSend, "GAME_COMPLETE").replace("<#>", ChatColor.GOLD + "" + ChatColor.BOLD + tmpGame.getPlayer().getName() + ChatColor.BLUE));
@@ -75,7 +75,7 @@ public class GameLoop {
 						} else {
 							if (System.currentTimeMillis() - tmpGame.getTimeShuffle() > (tmpGame.getTime() * 60000)) {
 								tmpGame.getPlayer().sendMessage(ChatColor.RED + Utils.getLangString(km, tmpGame.getPlayer().getName(), "ITEM_NOT_FOUND"));
-								km.logs.logBroadcastMsg("Player : " + tmpGame.getPlayer().getName() + " did not found item : " + tmpGame.getCurrentItem());
+								km.gameLogs.logSystemMsg("Player : " + tmpGame.getPlayer().getName() + " did not found item : " + tmpGame.getCurrentItem());
 								newItem(tmpGame);
 							} else if (km.config.getDouble() && !tmpGame.getCurrentItem().contains("/")) {
 								String currentTmp = ItemManager.newItem(tmpGame.getAlreadyGot(), km.allItems.get(AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name));

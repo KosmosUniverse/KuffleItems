@@ -22,22 +22,22 @@ public class KuffleAbandon implements CommandExecutor  {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-abandon>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-abandon>"));
 		
 		if (!player.hasPermission("ki-abandon")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.gameStarted) {
 			if (!km.games.containsKey(player.getName())) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
+				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
 				return true;
 			}
 			
 			km.games.get(player.getName()).setLose(true);
 		} else {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 		}
 
 		return true;

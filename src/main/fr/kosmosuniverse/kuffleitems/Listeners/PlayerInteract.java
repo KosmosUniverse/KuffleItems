@@ -31,7 +31,7 @@ import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 public class PlayerInteract implements Listener {
 	private KuffleMain km;
 	private int xpSub;
-	private HashMap<Location, String> shulkers = new HashMap<Location, String>();
+	private HashMap<Location, String> shulkers = new HashMap<>();
 	
 	public PlayerInteract(KuffleMain _km) {
 		km = _km;
@@ -89,7 +89,7 @@ public class PlayerInteract implements Listener {
 
 				if (Utils.compareItems(item, km.crafts.findItemByName(name), true, true, true)) {
 					tmpGame.foundSBTT();
-					km.logs.logMsg(tmpGame.getPlayer(), " just used " + name + " !");
+					km.gameLogs.logMsg(tmpGame.getPlayer().getName(), "just used " + name + " !");
 					
 					event.setCancelled(true);
 					
@@ -105,13 +105,13 @@ public class PlayerInteract implements Listener {
 			
 			if (tmpGame != null && tmpGame.getCurrentItem() != null) {
 				if (!km.config.getDouble() && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {
-					km.logs.logMsg(tmpGame.getPlayer(), " validate his item [" + tmpGame.getCurrentItem() + "] !");
+					km.gameLogs.logMsg(tmpGame.getPlayer().getName(), " validate his item [" + tmpGame.getCurrentItem() + "] !");
 					tmpGame.found();
 				} else if (km.config.getDouble() &&
 						(tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ||
 						tmpGame.getCurrentItem().split("/")[1].equals(item.getType().name().toLowerCase()))) {
 					String tmp = tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ? tmpGame.getCurrentItem().split("/")[0] : tmpGame.getCurrentItem().split("/")[1];
-					km.logs.logMsg(tmpGame.getPlayer(), " validate his item [" + tmp + "] !");
+					km.gameLogs.logMsg(tmpGame.getPlayer().getName(), " validate his item [" + tmp + "] !");
 					tmpGame.found();
 				}
 			}
@@ -190,14 +190,11 @@ public class PlayerInteract implements Listener {
 		Action action = event.getAction();
 		Block block = event.getClickedBlock();
 		
-		if (action == Action.RIGHT_CLICK_BLOCK && block != null) {
-			if (block.getType().name().toLowerCase().contains("shulker_box")) {
-				if (!shulkers.containsValue(player.getName()) &&
-						(!km.config.getTeam() ||
-								!km.games.get(player.getName()).getTeamName().equals(km.games.get(shulkers.get(block.getLocation())).getTeamName()))) {
-					event.setCancelled(true);
-				}
-			}
+		if (action == Action.RIGHT_CLICK_BLOCK && block != null &&
+				block.getType().name().toLowerCase().contains("shulker_box") &&
+				!shulkers.containsValue(player.getName()) &&
+				(!km.config.getTeam() || !km.games.get(player.getName()).getTeamName().equals(km.games.get(shulkers.get(block.getLocation())).getTeamName()))) {
+			event.setCancelled(true);
 		}
 	}
 	
@@ -216,7 +213,7 @@ public class PlayerInteract implements Listener {
 				player.sendMessage("You need 5 xp levels to craft this item.");
 			} else {
 				player.setLevel(player.getLevel() - 5);
-				km.logs.logMsg(player, "Crafted EndTeleporter.");
+				km.gameLogs.logMsg(player.getName(), "Crafted EndTeleporter.");
 			}
 		} else if (Utils.compareItems(item, km.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
 			if (player.getLevel() < xpSub) {
@@ -224,7 +221,7 @@ public class PlayerInteract implements Listener {
 				player.sendMessage("You need " + xpSub + " xp levels to craft this item.");
 			} else {
 				player.setLevel(player.getLevel() - xpSub);
-				km.logs.logMsg(player, "Crafted OverworldTeleporter.");
+				km.gameLogs.logMsg(player.getName(), "Crafted OverworldTeleporter.");
 			}
 		} else if (item.hasItemMeta() &&
 				item.getItemMeta().hasDisplayName() &&
@@ -239,7 +236,7 @@ public class PlayerInteract implements Listener {
 			for (String playerName : km.games.keySet()) {
 				km.games.get(playerName).getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.RESET + "" + ChatColor.BLUE + " just crafted Template !");
 			}
-			km.logs.logBroadcastMsg(player.getName() + " just crafted Template !");
+			km.gameLogs.logMsg(player.getName(), "just crafted Template !");
 		}
 	}
 	
@@ -269,11 +266,11 @@ public class PlayerInteract implements Listener {
 			return ;
 		}
 		
-		if (km.config.getTeam()) {
-			if (km.games.get(damager.getName()).getTeamName().equals(km.games.get(damagee.getName()).getTeamName())) {
-				event.setCancelled(true);
-				return;
-			}
+		if (km.config.getTeam() &&
+				km.games.get(damager.getName()).getTeamName().equals(km.games.get(damagee.getName()).getTeamName())) {
+			event.setCancelled(true);
+
+			return;
 		}
 	}
 	
@@ -321,32 +318,19 @@ public class PlayerInteract implements Listener {
 			tmp.add(10, 0, 10);
 		}
 		
-		tmp.setY((double) tmp.getWorld().getHighestBlockAt(tmp).getY());
-
-		if (km.config.getTeam()) {
-			String teamName = km.games.get(player.getName()).getTeamName();
-			
-			for (String playerName : km.games.keySet()) {
-				if (km.games.get(playerName).getTeamName().equals(teamName)) {
-					km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
-					km.games.get(playerName).getPlayer().teleport(tmp);
-					km.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-					
-					km.logs.logMsg(km.games.get(playerName).getPlayer(), "Teleported to the End.");
-				}
-			}
-		} else {
-			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
-			player.teleport(tmp);
-			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-			km.logs.logMsg(player, "Teleported to the End.");
-		}
+		teleport(tmp, player, "Teleported to the End.");
 	}
 	
 	private void overworldTeleporter(Player player) {
 		Location tmp = new Location(Bukkit.getWorld(Utils.findNormalWorld().getName()), player.getLocation().getX() - 1000, 80.0, player.getLocation().getZ() - 1000);
 		
-		tmp.setY((double) tmp.getWorld().getHighestBlockAt(tmp).getY());
+		teleport(tmp, player, "Teleported to the Overworld.");
+		
+		xpSub = (xpSub - 2) < 2 ? 2 : (xpSub - 2);
+	}
+	
+	private void teleport(Location loc, Player player, String msg) {
+		loc.setY((double) loc.getWorld().getHighestBlockAt(loc).getY());
 		
 		if (km.config.getTeam()) {
 			String teamName = km.games.get(player.getName()).getTeamName();
@@ -354,18 +338,16 @@ public class PlayerInteract implements Listener {
 			for (String playerName : km.games.keySet()) {
 				if (km.games.get(playerName).getTeamName().equals(teamName)) {
 					km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
-					km.games.get(playerName).getPlayer().teleport(tmp);
+					km.games.get(playerName).getPlayer().teleport(loc);
 					km.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-					km.logs.logMsg(km.games.get(playerName).getPlayer(), "Teleported to the Overworld.");
+					km.gameLogs.logMsg(playerName, msg);
 				}
 			}
 		} else {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
-			player.teleport(tmp);
+			player.teleport(loc);
 			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-			km.logs.logMsg(player, "Teleported to the Overworld.");
+			km.gameLogs.logMsg(player.getName(), msg);
 		}
-		
-		xpSub = (xpSub - 2) < 2 ? 2 : (xpSub - 2);
 	}
 }

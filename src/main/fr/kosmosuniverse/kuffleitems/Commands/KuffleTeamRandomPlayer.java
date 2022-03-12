@@ -26,15 +26,15 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-random-player>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-random-player>"));
 		
 		if (!player.hasPermission("ki-team-random-player")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() > 0 && km.gameStarted) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 		
@@ -43,17 +43,17 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 		}
 		
 		if (km.games.size() == 0) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "LIST_EMPTY"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "LIST_EMPTY"));
 			return true;
 		}
 		
 		if (calcMAxPlayers() < Utils.getPlayerList(km.games).size()) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_TOO_MANY_PLAYERS"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_TOO_MANY_PLAYERS"));
 			return true;
 		}
 		
 		if (!checkEmptyTeams()) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_ALREADY_PLAYERS"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_ALREADY_PLAYERS"));
 			return true;
 		}
 		
@@ -76,7 +76,7 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 			}
 		}
 		
-		km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "RANDOM").replace("%i", "" + Utils.getPlayerNames(km.games).size()).replace("%j", "" + km.teams.getTeams().size()));
+		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "RANDOM").replace("%i", "" + Utils.getPlayerNames(km.games).size()).replace("%j", "" + km.teams.getTeams().size()));
 
 		return true;
 	}

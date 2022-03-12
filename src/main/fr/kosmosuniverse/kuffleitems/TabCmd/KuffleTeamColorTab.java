@@ -22,33 +22,35 @@ public class KuffleTeamColorTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-team-color")) {
-			if (args.length == 1) {
-				ArrayList<Team> teams = km.teams.getTeams();
-				ArrayList<String> ret = new ArrayList<String>();
-				
-				for (Team item : teams) {
-					ret.add(item.name);
-				}
-				
-				return ret;
-			} else if (args.length == 2) {
-				ArrayList<String> colorList = new ArrayList<String>();
-				ArrayList<String> colorUsed = km.teams.getTeamColors();
-				
-				for (ChatColor item : ChatColor.values()) {
-					if (!colorUsed.contains(item.name())) {
-						colorList.add(item.name());	
-					}
-				}
-				
-				return colorList;
+		if (args.length == 1) {
+			ArrayList<Team> teams = km.teams.getTeams();
+			ArrayList<String> ret = new ArrayList<>();
+			
+			for (Team item : teams) {
+				ret.add(item.name);
 			}
+			
+			teams.clear();
+			
+			return ret;
+		} else if (args.length == 2) {
+			ArrayList<String> colorList = new ArrayList<>();
+			ArrayList<String> colorUsed = km.teams.getTeamColors();
+			
+			for (ChatColor item : ChatColor.values()) {
+				if (!colorUsed.contains(item.name())) {
+					colorList.add(item.name());	
+				}
+			}
+			
+			colorUsed.clear();
+			
+			return colorList;
 		}
 
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

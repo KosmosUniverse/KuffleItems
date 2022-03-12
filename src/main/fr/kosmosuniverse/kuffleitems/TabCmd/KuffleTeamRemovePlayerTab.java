@@ -21,28 +21,26 @@ public class KuffleTeamRemovePlayerTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-team-remove-player")) {
-			if (args.length == 1) {				
-				ArrayList<Team> teams = km.teams.getTeams();
-				ArrayList<String> ret = new ArrayList<String>();
-				
-				for (Team item : teams) {
-					if (item.players.size() != 0) {
-						ret.add(item.name);
-					}
-				}
-				
-				return ret;
-			} else if (args.length == 2) {
-				if (km.teams.hasTeam(args[0])) {
-					return km.teams.getTeam(args[0]).getPlayersName();
+		if (args.length == 1) {				
+			ArrayList<Team> teams = km.teams.getTeams();
+			ArrayList<String> ret = new ArrayList<>();
+			
+			for (Team item : teams) {
+				if (item.players.size() != 0) {
+					ret.add(item.name);
 				}
 			}
+			
+			teams.clear();
+			
+			return ret;
+		} else if (args.length == 2 && km.teams.hasTeam(args[0])) {
+			return km.teams.getTeam(args[0]).getPlayersName();
 		}
 
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

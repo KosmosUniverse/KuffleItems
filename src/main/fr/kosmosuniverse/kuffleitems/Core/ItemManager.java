@@ -11,12 +11,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import main.fr.kosmosuniverse.kuffleitems.Utils.ItemUtils;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Pair;
 
 public class ItemManager {
@@ -25,7 +25,7 @@ public class ItemManager {
 	}
 	
 	public static HashMap<String, ArrayList<String>> getAllItems(ArrayList<Age> ages, String itemsContent, File dataFolder) {
-		HashMap<String, ArrayList<String>> finalMap = new HashMap<String, ArrayList<String>>();
+		HashMap<String, ArrayList<String>> finalMap = new HashMap<>();
 		
 		int max = AgeManager.getAgeMaxNumber(ages);
 
@@ -42,7 +42,7 @@ public class ItemManager {
 	}
 	
 	public static synchronized ArrayList<String> getAgeItems(String age, String itemsContent, File dataFolder) throws IOException, ParseException {
-		ArrayList<String> finalList = new ArrayList<String>();
+		ArrayList<String> finalList = new ArrayList<>();
 		JSONObject items = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
 
@@ -70,7 +70,7 @@ public class ItemManager {
 	}
 
 	public static synchronized String newItem(ArrayList<String> done, ArrayList<String> allAgeItems) {	
-		ArrayList<String> finalList = new ArrayList<String>();
+		ArrayList<String> finalList = new ArrayList<>();
 		
 		if (allAgeItems == null) {
 			return null;
@@ -101,7 +101,7 @@ public class ItemManager {
 	}
 	
 	public static HashMap<String, ArrayList<Inventory>> getItemsInvs(HashMap<String, ArrayList<String>> allItems) {
-		HashMap<String, ArrayList<Inventory>> invs = new HashMap<String, ArrayList<Inventory>>();
+		HashMap<String, ArrayList<Inventory>> invs = new HashMap<>();
 
 		allItems.forEach((k, v) -> invs.put(k, getAgeInvs(k, v)));
 
@@ -109,24 +109,14 @@ public class ItemManager {
 	}
 
 	public static ArrayList<Inventory> getAgeInvs(String age, ArrayList<String> ageItems) {
-		ArrayList<Inventory> invs = new ArrayList<Inventory>();
+		ArrayList<Inventory> invs = new ArrayList<>();
 		Inventory inv;
 		int invCnt = 0;
 		int nbInv = 1;
 		
-		ItemStack limePane = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-		ItemStack redPane = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-		ItemStack bluePane = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
-		ItemMeta itM = limePane.getItemMeta();
-		
-		itM.setDisplayName(" ");
-		limePane.setItemMeta(itM);
-		itM = redPane.getItemMeta();
-		itM.setDisplayName("<- Previous");
-		redPane.setItemMeta(itM);
-		itM = bluePane.getItemMeta();
-		itM.setDisplayName("Next ->");
-		bluePane.setItemMeta(itM);
+		ItemStack bluePane = ItemUtils.itemMakerName(Material.BLUE_STAINED_GLASS_PANE, 1, "Next ->");
+		ItemStack limePane = ItemUtils.itemMakerName(Material.LIME_STAINED_GLASS_PANE, 1, " ");
+		ItemStack redPane = ItemUtils.itemMakerName(Material.RED_STAINED_GLASS_PANE, 1, "<- Previous");
 		
 		if (ageItems.size() > 45) {
 			inv = Bukkit.createInventory(null, 54, "§8" + age + " Items Tab 1");
@@ -187,26 +177,16 @@ public class ItemManager {
 		
 		for (Material mat : Material.values()) {
 			if (mat.getKey().toString().split(":")[1].contains(item) && mat.isItem()) {
-				retItem = new ItemStack(mat);
+				retItem = ItemUtils.itemMakerName(mat, 1, item);
 
-				ItemMeta itM = retItem.getItemMeta();
-				
-				itM.setDisplayName(item);
-				retItem.setItemMeta(itM);
-				
 				return retItem;
 			}
 		}
 		
 		for (Material mat : Material.values()) {
 			if (item.contains(mat.getKey().toString().split(":")[1]) && mat.isItem()) {
-				retItem = new ItemStack(mat);
+				retItem = ItemUtils.itemMakerName(mat, 1, item);
 
-				ItemMeta itM = retItem.getItemMeta();
-				
-				itM.setDisplayName(item);
-				retItem.setItemMeta(itM);
-				
 				return retItem;
 			}
 		}

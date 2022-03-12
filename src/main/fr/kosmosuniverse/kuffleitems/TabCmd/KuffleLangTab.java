@@ -20,15 +20,13 @@ public class KuffleLangTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-lang")) {
-			if (args.length == 1) {
-				return km.langs;	
-			}
+		if (args.length == 1) {
+			return km.langs;
 		}
 
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

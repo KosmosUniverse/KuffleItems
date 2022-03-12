@@ -338,13 +338,13 @@ public class Game {
 
 		if (malus) {
 			if ((age + 1) < km.config.getSkipAge()) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CANT_SKIP_AGE"));
+				km.gameLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "CANT_SKIP_AGE"));
 
 				return false;
 			}
 
 			if (itemCount == 1) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "CANT_SKIP_FIRST"));
+				km.gameLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "CANT_SKIP_FIRST"));
 
 				return false;
 			}
@@ -352,9 +352,9 @@ public class Game {
 			itemCount--;
 
 			if (currentItem.contains("/")) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEMS_SKIP").replace("[#]", "[" + currentItem.split("/")[0] + "]").replace("[##]", "[" + currentItem.split("/")[1] + "]"));
+				km.gameLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEMS_SKIP").replace("[#]", "[" + currentItem.split("/")[0] + "]").replace("[##]", "[" + currentItem.split("/")[1] + "]"));
 			} else {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEM_SKIP").replace("[#]", "[" + currentItem + "]"));
+				km.gameLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEM_SKIP").replace("[#]", "[" + currentItem + "]"));
 			}
 
 			itemScore.setScore(itemCount);

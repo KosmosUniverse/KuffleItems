@@ -21,24 +21,24 @@ public class KuffleTeamCreateTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-team-create")) {
-			if (args.length == 2) {
-				ArrayList<String> colorList = new ArrayList<String>();
-				ArrayList<String> colorUsed = km.teams.getTeamColors();
-				
-				for (ChatColor item : ChatColor.values()) {
-					if (!colorUsed.contains(item.name())) {
-						colorList.add(item.name());	
-					}
+		if (args.length == 2) {
+			ArrayList<String> colorList = new ArrayList<>();
+			ArrayList<String> colorUsed = km.teams.getTeamColors();
+			
+			for (ChatColor item : ChatColor.values()) {
+				if (!colorUsed.contains(item.name())) {
+					colorList.add(item.name());	
 				}
-				
-				return colorList;
 			}
+			
+			colorUsed.clear();
+			
+			return colorList;
 		}
 
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

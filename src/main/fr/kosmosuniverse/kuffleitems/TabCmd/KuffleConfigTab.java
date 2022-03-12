@@ -12,7 +12,7 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class KuffleConfigTab implements TabCompleter {
 	private KuffleMain km;
-	private ArrayList<String> all = new ArrayList<String>();
+	private ArrayList<String> all = new ArrayList<>();
 	
 	public KuffleConfigTab(KuffleMain _km) {
 		km = _km;
@@ -25,36 +25,32 @@ public class KuffleConfigTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-config")) {
-			if (args.length == 0) {
-				return all;
-			} else if (args.length % 2 == 1) {
-				ArrayList<String> ret = new ArrayList<String>();
-				ret.addAll(all);
-				
-				for (String arg : args) {
-					if (ret.contains(arg)) {
-						ret.remove(arg);
-					}
-				}
-				
-				return ret;
-			} else {
-				if (km.config.booleanElems.keySet().contains(args[args.length - 2])) {
-					return km.config.booleanRet.get(args[args.length - 2]);
-				} else if (km.config.intElems.keySet().contains(args[args.length - 2])) {
-					return km.config.intRet.get(args[args.length - 2]);
-				} else if (km.config.stringElems.keySet().contains(args[args.length - 2])) {
-					return km.config.stringRet.get(args[args.length - 2]);
-				} else {
-					return new ArrayList<String>();	
+		if (args.length == 0) {
+			return all;
+		} else if (args.length % 2 == 1) {
+			ArrayList<String> ret = new ArrayList<>();
+			ret.addAll(all);
+			
+			for (String arg : args) {
+				if (ret.contains(arg)) {
+					ret.remove(arg);
 				}
 			}
+			
+			return ret;
+		} else {
+			if (km.config.booleanElems.keySet().contains(args[args.length - 2])) {
+				return km.config.booleanRet.get(args[args.length - 2]);
+			} else if (km.config.intElems.keySet().contains(args[args.length - 2])) {
+				return km.config.intRet.get(args[args.length - 2]);
+			} else if (km.config.stringElems.keySet().contains(args[args.length - 2])) {
+				return km.config.stringRet.get(args[args.length - 2]);
+			} else {
+				return new ArrayList<>();	
+			}
 		}
-		
-		return null;
 	}
 }

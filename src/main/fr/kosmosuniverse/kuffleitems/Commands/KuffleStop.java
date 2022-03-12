@@ -23,25 +23,25 @@ public class KuffleStop implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-stop>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-stop>"));
 		
 		if (!player.hasPermission("ki-stop")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (!km.gameStarted) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
-		for (String playerName : km.games.keySet()) {
-			for (PotionEffect pe : km.games.get(playerName).getPlayer().getActivePotionEffects()) {
-				km.games.get(playerName).getPlayer().removePotionEffect(pe.getType());
+		km.games.forEach((playerName, game) -> {
+			for (PotionEffect pe : game.getPlayer().getActivePotionEffects()) {
+				game.getPlayer().removePotionEffect(pe.getType());
 			}
 			
-			km.games.get(playerName).resetBar();
-		}
+			game.resetBar();
+		});
 
 		Utils.removeTemplates(km);
 		km.scores.clear();
@@ -53,7 +53,7 @@ public class KuffleStop implements CommandExecutor {
 		
 		km.gameStarted = false;
 		km.paused = false;
-		km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_STOPPED"));
+		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_STOPPED"));
 		
 		return true;
 	}

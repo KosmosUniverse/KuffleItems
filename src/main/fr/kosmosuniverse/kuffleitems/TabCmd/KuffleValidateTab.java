@@ -21,38 +21,22 @@ public class KuffleValidateTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender,  Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
-			return null;
+			return new ArrayList<>();
 		
-		if (cmd.getName().equalsIgnoreCase("ki-validate")) {
-			if (args.length == 1) {
-				ArrayList<String> list = new ArrayList<String>();
+		if (args.length == 1) {
+			ArrayList<String> list = new ArrayList<>();
+			
+			for (String playerName : km.games.keySet()) {
+				Game tmpGame = km.games.get(playerName);
 				
-				for (String playerName : km.games.keySet()) {
-					Game tmpGame = km.games.get(playerName);
-					
-					if (!tmpGame.getLose() && !tmpGame.getFinished()) {
-						list.add(playerName);	
-					}
+				if (!tmpGame.getLose() && !tmpGame.getFinished()) {
+					list.add(playerName);	
 				}
-				
-				return list;
 			}
-		} else if (cmd.getName().equalsIgnoreCase("ki-validate-age")) {
-			if (args.length == 1) {
-				ArrayList<String> list = new ArrayList<String>();
-				
-				for (String playerName : km.games.keySet()) {
-					Game tmpGame = km.games.get(playerName);
-					
-					if (!tmpGame.getLose() && !tmpGame.getFinished()) {
-						list.add(playerName);	
-					}
-				}
-				
-				return list;
-			}
+			
+			return list;
 		}
 		
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

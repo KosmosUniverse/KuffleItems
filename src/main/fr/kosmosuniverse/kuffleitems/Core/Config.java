@@ -11,7 +11,7 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class Config {
-	private static final String configDefault = "CONFIG_DEFAULT";
+	private static final String CONFIG_DEFAULT = "CONFIG_DEFAULT";
 	
 	private KuffleMain km;
 	private boolean saturation;
@@ -175,7 +175,7 @@ public class Config {
 	public void setupConfig(KuffleMain km, FileConfiguration configFile) {
 		if (!configFile.contains("game_settings.lang")
 				|| !km.langs.contains(configFile.getString("game_settings.lang"))) {
-			System.out.println("Config Lang parameter is not correct, use of default value.");
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "lang"));
 			configFile.set("game_settings.lang", "en");
 		} else {
 			lang = configFile.getString("game_settings.lang");
@@ -183,77 +183,77 @@ public class Config {
 		
 		if (!configFile.contains("game_settings.item_per_age")
 				|| configFile.getInt("game_settings.item_per_age") < 1) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "item per age"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "item per age"));
 			configFile.set("game_settings.item_per_age", 5);
 		}
 
 		if (!configFile.contains("game_settings.spreadplayers.minimum_distance")
 				|| configFile.getInt("game_settings.spreadplayers.minimum_distance") < 1) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "spreadplayers minimum distance"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "spreadplayers minimum distance"));
 			configFile.set("game_settings.spreadplayers.minimum_distance", 500);
 		}
 
 		if (!configFile.contains("game_settings.spreadplayers.minimum_radius")
 				|| configFile.getInt("game_settings.spreadplayers.minimum_radius") < configFile
 						.getInt("game_settings.spreadplayers.minimum_distance")) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "spreadplayers minimum radius"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "spreadplayers minimum radius"));
 			configFile.set("game_settings.spreadplayers.minimum_radius", 1000);
 		}
 
 		if (!configFile.contains("game_settings.start_time") || configFile.getInt("game_settings.start_time") < 1) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "start time"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "start time"));
 			configFile.set("game_settings.start_time", 4);
 		}
 
 		if (!configFile.contains("game_settings.time_added") || configFile.getInt("game_settings.time_added") < 1) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "time added"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "time added"));
 			configFile.set("game_settings.time_added", 2);
 		}
 
 		if (!configFile.contains("game_settings.max_age") || configFile.getInt("game_settings.max_age") < 1 || configFile.getInt("game_settings.max_age") > (AgeManager.getAgeMaxNumber(km.ages) + 1)) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "max ages"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "max ages"));
 			configFile.set("game_settings.max_age", AgeManager.getAgeMaxNumber(km.ages) + 1);
 		}
 
 		if (!configFile.contains("game_settings.level") || configFile.getInt("game_settings.level") < 0
 				|| configFile.getInt("game_settings.level") > 3) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "level"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "level"));
 			configFile.set("game_settings.level", 1);
 		}
 
 		if (!configFile.contains("game_settings.skip.enable")) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "enabling skip"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling skip"));
 			configFile.set("game_settings.skip.enable", true);
 		}
 
 		if (!configFile.contains("game_settings.skip.age") || configFile.getInt("game_settings.skip.age") < 1) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "skip age"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "skip age"));
 			configFile.set("game_settings.skip.age", 2);
 		}
 
 		if (!configFile.contains("game_settings.custom_crafts")) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "enabling custom crafts"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling custom crafts"));
 			configFile.set("game_settings.custom_crafts", true);
 		}
 
 		if (!configFile.contains("game_settings.team.enable")) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "enabling team"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling team"));
 			configFile.set("game_settings.team.enable", false);
 		}
 
 		if (!configFile.contains("game_settings.team.size") || configFile.getInt("game_settings.team.size") < 2
 				|| configFile.getInt("game_settings.team.size") > 10) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "max team size"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "max team size"));
 			configFile.set("game_settings.team.size", 2);
 		}
 		
 		if (!configFile.contains("game_settings.same_mode")) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "enabling same mode"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling same mode"));
 			configFile.set("game_settings.same_mode", false);
 		}
 		
 		if (!configFile.contains("game_settings.auto_detect_game_end.enable")) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "enabling auto detect game end"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling auto detect game end"));
 			configFile.set("game_settings.auto_detect_game_end.enable", false);
 		}
 		
@@ -261,24 +261,24 @@ public class Config {
 		
 		if (!configFile.contains("game_settings.auto_detect_game_end.end_when_one") ||
 				(!gameEnd && configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one"))) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "game end when one"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "game end when one"));
 			configFile.set("game_settings.auto_detect_game_end.end_when_one", false);
 		}
 		
 		if (!configFile.contains("game_settings.sbtt_mode.enable")) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "SBTT mode"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "SBTT mode"));
 			configFile.set("game_settings.sbtt_mode.enable", false);
 		}
 		
 		if (!configFile.contains("game_settings.passive")) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "passive mode"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "passive mode"));
 			configFile.set("game_settings.passive", true);
 		}
 		
 		if (!configFile.contains("game_settings.sbtt_mode.amount") ||
 				configFile.getInt("game_settings.sbtt_mode.amount") < 1 ||
 				configFile.getInt("game_settings.sbtt_mode.amount") > 9) {
-			System.out.println(Utils.getLangString(km, null, configDefault).replace("<#>", "SBTT item amount"));
+			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "SBTT item amount"));
 			configFile.set("game_settings.sbtt_mode.amount", 4);
 		}
 

@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,7 +34,11 @@ import main.fr.kosmosuniverse.kuffleitems.Core.ItemManager;
 import main.fr.kosmosuniverse.kuffleitems.Core.LangManager;
 import main.fr.kosmosuniverse.kuffleitems.Crafts.Template;
 
-public class Utils {
+public final class Utils {
+	private Utils() {
+		throw new IllegalStateException("Utility class");
+	}
+	
 	public static String readFileContent(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         StringBuilder sb = new StringBuilder();
@@ -46,35 +52,26 @@ public class Utils {
 	}
 
 	public static boolean fileExists(String path, String fileName) {
-		File tmp = null;
-
-		if (path.contains("\\")) {
-			tmp = new File(path + "\\" + fileName);
-		} else {
-			tmp = new File(path + "/" + fileName);
-		}
+		File tmp = new File(path + File.separator + fileName);
 
 		return tmp.exists();
 	}
 
 	public static boolean fileExists(String fileName) {
-		File tmp = null;
-
-		tmp = new File(fileName);
+		File tmp = new File(fileName);;
 
 		return tmp.exists();
 	}
 
 	public static boolean fileDelete(String path, String fileName) {
-		File tmp = null;
-
-		if (path.contains("\\")) {
-			tmp = new File(path + "\\" + fileName);
-		} else {
-			tmp = new File(path + "/" + fileName);
+		try {
+			Files.delete(Paths.get(path + File.separator + fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
 		}
-
-		return tmp.delete();
+		
+		return true;
 	}
 
 	public static String findFileExistVersion(KuffleMain km, String fileName) {
@@ -120,19 +117,12 @@ public class Utils {
 	}
 
 	public static void loadGame(KuffleMain _km, Player player) {
-		FileReader reader = null;
 		JSONParser parser = new JSONParser();
 		Game tmpGame = new Game(_km, player);
 
 		tmpGame.setup();
 
-		try {
-			if (_km.getDataFolder().getPath().contains("\\")) {
-				reader = new FileReader(_km.getDataFolder().getPath() + "\\" + player.getName() + ".ki");
-			} else {
-				reader = new FileReader(_km.getDataFolder().getPath() + "/" + player.getName() + ".ki");
-			}
-
+		try (FileReader reader = new FileReader(_km.getDataFolder().getPath() + File.separator + player.getName() + ".ki")) {
 			JSONObject mainObject = (JSONObject) parser.parse(reader);
 
 			tmpGame.setAge(Integer.parseInt(((Long) mainObject.get("age")).toString()));
@@ -329,9 +319,9 @@ public class Utils {
 		km.crafts.addCraft(t);
 		km.addRecipe(t.getRecipe());
 
-		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).getPlayer().discoverRecipe(new NamespacedKey(km, t.getName()));
-		}
+		km.games.forEach((playerName, game) -> {
+			game.getPlayer().discoverRecipe(new NamespacedKey(km, t.getName()));
+		});
 	}
 
 	public static String getTimeFromSec(long sec) {
@@ -456,13 +446,13 @@ public class Utils {
 	}
 
 	public static void printGameEnd(KuffleMain km) {
-		for (String playerName : km.games.keySet()) {
+		km.games.forEach((playerName, game) -> {
 			logPlayer(km, playerName);
 
-			for (String toSend : km.games.keySet()) {
-				printPlayer(km, playerName, toSend);
-			}
-		}
+			km.games.forEach((playerToSend, gameToSend) -> {
+				printPlayer(km, playerName, playerToSend);
+			});
+		});
 	}
 
 	public static void printPlayer(KuffleMain km, String playerName, String toSend) {
@@ -515,6 +505,6 @@ public class Utils {
 
 		sb.append(ChatColor.BLUE + Utils.getLangString(km, playerName, "FINISH_TOTAL").replace("%t", ChatColor.RESET + Utils.getTimeFromSec(total)) + "\n");
 
-		km.logs.logBroadcastMsg(sb.toString());
+		km.gameLogs.logSystemMsg(sb.toString());
 	}
 }

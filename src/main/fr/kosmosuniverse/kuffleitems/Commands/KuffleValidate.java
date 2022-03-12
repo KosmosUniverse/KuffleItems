@@ -24,71 +24,55 @@ public class KuffleValidate implements CommandExecutor {
 		Player player = (Player) sender;
 		
 		if (!km.gameStarted) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
 			return true;
 		}
 		
-		if (msg.equalsIgnoreCase("ki-validate")) {
-			
-			if (args.length != 1) {
-				return false;
-			}
-			
-			km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-validate>"));
-			
-			if (!player.hasPermission("ki-validate")) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
-				return false;
-			}
-			
-			for (String playerName : km.games.keySet()) {
-				if (playerName.equals(args[0])) {
-					String tmp = km.games.get(playerName).getCurrentItem();
-					
-					km.games.get(playerName).found();
-					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEM_VALIDATED").replace("[#]", " [" + tmp + "] ").replace("<#>", "<" + playerName + ">"));
-					
-					return true;
-				}
-			}
-			
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "VALIDATE_PLAYER_ITEM"));
-	
+		if (args.length != 1) {
 			return false;
 		}
 		
-		if (msg.equalsIgnoreCase("ki-validate-age")) {
+		if (msg.equalsIgnoreCase("ki-validate")) {
+			km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-validate>"));
 			
-			if (args.length != 1) {
+			if (!player.hasPermission("ki-validate")) {
+				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 				return false;
 			}
 			
-			km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-validate-age>"));
+			if (!km.games.containsKey(args[0])) {
+				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "VALIDATE_PLAYER_ITEM"));	
+			}
+
+			String tmp = km.games.get(args[0]).getCurrentItem();
+			
+			km.games.get(args[0]).found();
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEM_VALIDATED").replace("[#]", " [" + tmp + "] ").replace("<#>", "<" + args[0] + ">"));			
+		}
+		
+		if (msg.equalsIgnoreCase("ki-validate-age")) {
+			km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-validate-age>"));
 			
 			if (!player.hasPermission("ki-validate-age")) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 				return false;
 			}
 			
-			for (String playerName : km.games.keySet()) {
-				if (playerName.equals(args[0])) {
-					if (km.games.get(playerName).getAge() == -1) {
-						km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_FINISHED").replace("<#>", "<" + playerName + ">"));
-						
-						return true;
-					}
-					
-					String tmp = AgeManager.getAgeByNumber(km.ages, km.games.get(playerName).getAge()).name;
-					
-					km.games.get(playerName).setItemCount(km.config.getItemPerAge() + 1);
-					km.games.get(playerName).setCurrentItem(null);
-					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "AGE_VALIDATED").replace("[#]", "[" + tmp + "]").replace("<#>", "<" + playerName + ">"));
-					
-					return true;
-				}
+			if (!km.games.containsKey(args[0])) {
+				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "VALIDATE_PLAYER_AGE"));	
 			}
 			
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "VALIDATE_PLAYER_AGE"));
+			if (km.games.get(args[0]).getAge() == -1) {
+				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_FINISHED").replace("<#>", "<" + args[0] + ">"));
+				
+				return true;
+			}
+			
+			String tmp = AgeManager.getAgeByNumber(km.ages, km.games.get(args[0]).getAge()).name;
+			
+			km.games.get(args[0]).setItemCount(km.config.getItemPerAge() + 1);
+			km.games.get(args[0]).setCurrentItem(null);
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "AGE_VALIDATED").replace("[#]", "[" + tmp + "]").replace("<#>", "<" + args[0] + ">"));
 		}
 		
 		return false;

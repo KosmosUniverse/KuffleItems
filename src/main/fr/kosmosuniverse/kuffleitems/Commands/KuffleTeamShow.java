@@ -22,10 +22,10 @@ public class KuffleTeamShow implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-show>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-show>"));
 		
 		if (!player.hasPermission("ki-team-show")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
@@ -34,12 +34,12 @@ public class KuffleTeamShow implements CommandExecutor {
 		}
 		
 		if (args.length == 0) {
-			km.logs.writeMsg(player, km.teams.toString(km));
+			km.systemLogs.writeMsg(player, km.teams.toString(km));
 		} else if (args.length == 1) {
 			if (km.teams.hasTeam(args[0])) {
-				km.logs.writeMsg(player, km.teams.printTeam(args[0]));
+				km.systemLogs.writeMsg(player, km.teams.printTeam(args[0]));
 			} else {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
 			}
 		}
 		

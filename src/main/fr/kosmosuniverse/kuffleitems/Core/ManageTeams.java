@@ -12,7 +12,7 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class ManageTeams {
-	private ArrayList<Team> teams = new ArrayList<Team>();
+	private ArrayList<Team> teams = new ArrayList<>();
 
 	public void createTeam(String name) {
 		teams.add(new Team(name));
@@ -184,7 +184,7 @@ public class ManageTeams {
 					Game tmpPlayer = games.get((String) obj);
 					
 					if (tmpPlayer == null) {
-						System.out.println(Utils.getLangString(km, null, "PLAYER_NOT_EXISTS").replace("<#>", "<" + (String) obj + ">"));
+						km.systemLogs.logSystemMsg(Utils.getLangString(km, null, "PLAYER_NOT_EXISTS").replace("<#>", "<" + (String) obj + ">"));
 					} else {
 						Player p = tmpPlayer.getPlayer();
 						affectPlayer(name, p);	

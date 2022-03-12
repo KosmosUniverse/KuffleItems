@@ -1,6 +1,5 @@
 package main.fr.kosmosuniverse.kuffleitems.Core;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,10 +14,9 @@ public class Logs {
 	private String path = "";
 	private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	
-	public Logs(File dataFolder) {
-		String s_path = dataFolder.getPath() + File.separator + "KuffleItemsGamelogs.txt";
-		path = s_path;
-		Path p_path = Paths.get(s_path);
+	public Logs(String pathFile) {
+		path = pathFile;
+		Path p_path = Paths.get(pathFile);
 		
 		try {
 			if (!Files.exists(p_path)) {
@@ -29,7 +27,7 @@ public class Logs {
 		}
 	}
 	
-	public void logBroadcastMsg(String msg) {		
+	public void logSystemMsg(String msg) {		
 		try (FileWriter writer = new FileWriter(path, true)) { 
 			LocalDateTime now = LocalDateTime.now();  
 			
@@ -39,11 +37,11 @@ public class Logs {
 		}		
 	}
 	
-	public void logMsg(Player to, String msg) {
+	public void logMsg(String name, String msg) {
 		try (FileWriter writer = new FileWriter(path, true)) {
 			LocalDateTime now = LocalDateTime.now();  
 			
-			writer.write(dtf.format(now) + " : [" + to.getName() + "] -> " + msg + "\n");
+			writer.write(dtf.format(now) + " : [" + name + "] -> " + msg + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		

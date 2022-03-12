@@ -13,7 +13,7 @@ import main.fr.kosmosuniverse.kuffleitems.Core.AgeManager;
 
 public class KuffleAgeItemsTab implements TabCompleter  {
 	private KuffleMain km;
-	private ArrayList<String> ages = new ArrayList<String>();
+	private ArrayList<String> ages = new ArrayList<>();
 
 	public KuffleAgeItemsTab(KuffleMain _km) {
 		km = _km;
@@ -30,15 +30,13 @@ public class KuffleAgeItemsTab implements TabCompleter  {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (cmd.getName().equalsIgnoreCase("ki-ageitems")) {
-			if (args.length == 1) {
-				return ages;
-			}
+		if (args.length == 1) {
+			return ages;
 		}
 		
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

@@ -25,15 +25,15 @@ public class KuffleTeamColor implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-color>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-color>"));
 		
 		if (!player.hasPermission("ki-team-color")) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
 		if (km.games.size() > 0 && km.gameStarted) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 		
@@ -42,31 +42,35 @@ public class KuffleTeamColor implements CommandExecutor {
 		}
 		
 		if (!km.teams.hasTeam(args[0])) {
-			km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
-		} else {
-			if (km.teams.getTeam(args[0]).hasPlayer(args[1])) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_PLAYER"));
-				return true;
-			}
-			
-			ChatColor tmp;
-			
-			if ((tmp = Utils.findChatColor(args[1])) == null) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "COLOR_NOT_EXISTS").replace("[#]", "[" + args[1] + "]"));
-			} else {
-				ArrayList<String> colorUsed = km.teams.getTeamColors();
-				
-				if (!colorUsed.contains(tmp.name())) {
-					String tmpColor = km.teams.getTeam(args[0]).color.name();
-					
-					km.teams.changeTeamColor(args[0], tmp);	
-					
-					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "COLOR_CHANGED").replace("[#]", "[" + tmpColor + "]").replace("[##]", "[" + tmp.name() + "]").replace("<#>",	"<" + args[0] + ">"));
-				} else {
-					km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "COLOR_ALREADY_USED").replace("[#]", "[" + tmp.name() + "]"));
-				}
-			}
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+			return true;
 		}
+		if (km.teams.getTeam(args[0]).hasPlayer(args[1])) {
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_PLAYER"));
+			return true;
+		}
+		
+		ChatColor tmp;
+		
+		if ((tmp = Utils.findChatColor(args[1])) == null) {
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "COLOR_NOT_EXISTS").replace("[#]", "[" + args[1] + "]"));
+			return true;
+		}
+		
+		ArrayList<String> colorUsed = km.teams.getTeamColors();
+		
+		if (colorUsed.contains(tmp.name())) {
+			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "COLOR_ALREADY_USED").replace("[#]", "[" + tmp.name() + "]"));
+			colorUsed.clear();
+			return true;
+		}
+		
+		colorUsed.clear();
+
+		String tmpColor = km.teams.getTeam(args[0]).color.name();
+		
+		km.teams.changeTeamColor(args[0], tmp);	
+		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "COLOR_CHANGED").replace("[#]", "[" + tmpColor + "]").replace("[##]", "[" + tmp.name() + "]").replace("<#>",	"<" + args[0] + ">"));
 		
 		return true;
 	}

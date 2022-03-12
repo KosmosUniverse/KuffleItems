@@ -36,12 +36,11 @@ public class InventoryListeners implements Listener {
 		
 		if (event.getView().getTitle() == "§8AllCustomCrafts") {
 			event.setCancelled(true);
-			if ((craft = km.crafts.findCraftInventoryByItem(item)) != null) {
-				if ((inv = craft.getInventoryRecipe()) != null) {
-					player.openInventory(inv);
-				}
+			if ((craft = km.crafts.findCraftInventoryByItem(item)) != null &&
+					(inv = craft.getInventoryRecipe()) != null) {
+				player.openInventory(inv);
 			}
-		} else if ((craft = km.crafts.findCraftByInventoryName(event.getView().getTitle())) != null) {
+		} else if (km.crafts.findCraftByInventoryName(event.getView().getTitle()) != null) {
 			event.setCancelled(true);
 			
 			if (item.getItemMeta().getDisplayName().equals("<- Back")) {
@@ -50,16 +49,15 @@ public class InventoryListeners implements Listener {
 		} else if (event.getView().getTitle() == "§8Players") {
 			event.setCancelled(true);
 			
-			if (item.getType() == Material.PLAYER_HEAD) {
-				if (!item.getItemMeta().getDisplayName().equals(player.getDisplayName())) {
-					Game tmpGame = km.games.get(item.getItemMeta().getDisplayName());
-					
-					if (tmpGame != null && km.games.get(player.getName()).getFinished()) {
-						if (player.getGameMode() != GameMode.SPECTATOR) {
-							player.setGameMode(GameMode.SPECTATOR);
-						}
-						player.teleport(tmpGame.getPlayer());	
+			if (item.getType() == Material.PLAYER_HEAD &&
+					!item.getItemMeta().getDisplayName().equals(player.getName())) {
+				Game tmpGame = km.games.get(item.getItemMeta().getDisplayName());
+				
+				if (tmpGame != null && km.games.get(player.getName()).getFinished()) {
+					if (player.getGameMode() != GameMode.SPECTATOR) {
+						player.setGameMode(GameMode.SPECTATOR);
 					}
+					player.teleport(tmpGame.getPlayer());	
 				}
 			}
 		} else if (event.getView().getTitle().contains(" Items ")) {

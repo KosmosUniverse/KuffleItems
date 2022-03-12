@@ -17,8 +17,8 @@ public class LangManager {
 	}
 	
 	public static HashMap<String, HashMap<String, String>> getAllItemsLang(String JSONContent, File dataFolder) {
-		HashMap<String, HashMap<String, String>> finalMap = new HashMap<String, HashMap<String, String>>();
-		JSONObject langages = new JSONObject();
+		HashMap<String, HashMap<String, String>> finalMap = new HashMap<>();
+		JSONObject langages;
 		JSONParser jsonParser = new JSONParser();
 		
 		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "logs.txt", true)) {
@@ -30,7 +30,7 @@ public class LangManager {
 
 				writer.append(keyItem);
 
-				HashMap<String, String> itemLangs = new HashMap<String, String>();
+				HashMap<String, String> itemLangs = new HashMap<>();
 				
 				for (Iterator<?> itLang = item.keySet().iterator(); itLang.hasNext();) {
 					String keyLang = (String) itLang.next();
@@ -68,7 +68,7 @@ public class LangManager {
 	}
 	
 	public static ArrayList<String> findAllLangs(HashMap<String, HashMap<String, String>> allitemsLangs) {
-		ArrayList<String> allLangs = new ArrayList<String>();
+		ArrayList<String> allLangs = new ArrayList<>();
 		
 		HashMap<String, String> first = allitemsLangs.get(allitemsLangs.keySet().toArray()[0]);
 		

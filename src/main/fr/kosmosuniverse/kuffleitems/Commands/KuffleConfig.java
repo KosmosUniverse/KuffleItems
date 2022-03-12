@@ -12,9 +12,9 @@ import main.fr.kosmosuniverse.kuffleitems.Utils.Utils;
 
 public class KuffleConfig implements CommandExecutor {
 	private KuffleMain km;
-	private static final String configClass = "main.fr.kosmosuniverse.kuffleitems.Core.Config";
-	private static final String configSet = "CONFIG_SET";
-	private static final String configNotSet = "CONFIG_NOT_SET";
+	private static final String CONFIG_CLASS = "main.fr.kosmosuniverse.kuffleitems.Core.Config";
+	private static final String CONFIG_SET = "CONFIG_SET";
+	private static final String CONFIG_NOT_SET = "CONFIG_NOT_SET";
 	
 	public KuffleConfig(KuffleMain _km) {
 		km = _km;
@@ -31,13 +31,13 @@ public class KuffleConfig implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.logs.logMsg(player, Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-config>"));
+		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-config>"));
 		
 		if (args.length == 0) {
 			player.sendMessage(km.config.displayConfig());
 		} else {
 			if (!player.hasPermission("ki-op")) {
-				km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
 				return false;
 			}
 			
@@ -49,12 +49,12 @@ public class KuffleConfig implements CommandExecutor {
 				} else {
 					if (km.config.stringElems.containsKey(before)) {
 						try {
-							boolean ret = (boolean) Class.forName(configClass).getMethod(km.config.stringElems.get(before), String.class).invoke(km.config, args[i]);
+							boolean ret = (boolean) Class.forName(CONFIG_CLASS).getMethod(km.config.stringElems.get(before), String.class).invoke(km.config, args[i]);
 							
 							if (ret) {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configSet).replace("[#]", before).replace("[##]", "[" + args[i] + "]"));	
+								km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), CONFIG_SET).replace("[#]", before).replace("[##]", "[" + args[i] + "]"));	
 							} else {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configNotSet).replace("[#]", before).replace("[##]", "[" + args[i] + "]"));
+								km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), CONFIG_NOT_SET).replace("[#]", before).replace("[##]", "[" + args[i] + "]"));
 							}
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 								| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
@@ -65,18 +65,18 @@ public class KuffleConfig implements CommandExecutor {
 							String tmp = args[i].toLowerCase();
 							
 							if (!tmp.equals("true") && !tmp.equals("false")) {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "INVALID_BOOLEAN"));
+								km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "INVALID_BOOLEAN"));
 								return true;
 							}
 							
 							boolean boolValue = Boolean.parseBoolean(tmp);
 							
-							boolean ret = (boolean) Class.forName(configClass).getMethod(km.config.booleanElems.get(before), boolean.class).invoke(km.config, boolValue);
+							boolean ret = (boolean) Class.forName(CONFIG_CLASS).getMethod(km.config.booleanElems.get(before), boolean.class).invoke(km.config, boolValue);
 							
 							if (ret) {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configSet).replace("[#]", before).replace("[##]", "[" + boolValue + "]"));	
+								km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), CONFIG_SET).replace("[#]", before).replace("[##]", "[" + boolValue + "]"));	
 							} else {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configNotSet).replace("[#]", before).replace("[##]", "[" + boolValue + "]"));
+								km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), CONFIG_NOT_SET).replace("[#]", before).replace("[##]", "[" + boolValue + "]"));
 							}
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 								| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
@@ -86,22 +86,22 @@ public class KuffleConfig implements CommandExecutor {
 						try {
 							int intValue = Integer.parseInt(args[i]);
 							
-							boolean ret = (boolean) Class.forName(configClass).getMethod(km.config.intElems.get(before), int.class).invoke(km.config, intValue);
+							boolean ret = (boolean) Class.forName(CONFIG_CLASS).getMethod(km.config.intElems.get(before), int.class).invoke(km.config, intValue);
 
 							if (ret) {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configSet).replace("[#]", before).replace("[##]", "[" + intValue + "]"));	
+								km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), CONFIG_SET).replace("[#]", before).replace("[##]", "[" + intValue + "]"));	
 							} else {
-								km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), configNotSet).replace("[#]", before).replace("[##]", "[" + intValue + "]"));
+								km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), CONFIG_NOT_SET).replace("[#]", before).replace("[##]", "[" + intValue + "]"));
 							}
 							
 						} catch (NumberFormatException e) {
-							km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "INVALID_INT"));
+							km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "INVALID_INT"));
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 								| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 							e.printStackTrace();
 						} 
 					} else {
-						km.logs.writeMsg(player, Utils.getLangString(km, player.getName(), "KEY_NOT_REC").replace("[#]", "[" + before + "]"));
+						km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "KEY_NOT_REC").replace("[#]", "[" + before + "]"));
 					}
 				}
 			}

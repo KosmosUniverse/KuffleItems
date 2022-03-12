@@ -22,26 +22,18 @@ public class KuffleAddDuringGameTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
-			return null;
+			return new ArrayList<>();
 		}
 		
-		if (!cmd.getName().equalsIgnoreCase("ki-add-during-game")) {
-			return null;
-		}
-
-		List<String> ret = null;
+		List<String> ret = new ArrayList<>();
 		
 		if (args.length == 1) {
-			ret = new ArrayList<String>();
-			
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (!km.games.containsKey(player.getName())) {
 					ret.add(player.getName());
 				}
 			}
 		} else if (args.length == 2 && km.config.getTeam()) {
-			ret = new ArrayList<String>();
-			
 			for (Team team : km.teams.getTeams()) {
 				if (km.config.getTeamSize() > team.players.size()) {
 					ret.add(team.name);
