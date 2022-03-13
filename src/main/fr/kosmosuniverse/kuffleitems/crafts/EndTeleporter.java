@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.crafts;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class EndTeleporter extends ACrafts {
-	public EndTeleporter(KuffleMain _km) {
+	public EndTeleporter() {
 		name = "EndTeleporter";
 		
 		item = new ItemStack(Material.EMERALD);
@@ -22,7 +23,7 @@ public class EndTeleporter extends ACrafts {
 		ItemMeta itM = item.getItemMeta();
 		itM.setDisplayName(ChatColor.DARK_GREEN + name);
 		
-		ArrayList<String> lore = new ArrayList<String>();
+		List<String> lore = new ArrayList<>();
 		
 		lore.add("Single Use Teleporter.");
 		lore.add("Right click to teleport to The End.");
@@ -31,7 +32,7 @@ public class EndTeleporter extends ACrafts {
 		
 		item.setItemMeta(itM);
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), item);
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), item);
 		
 		((ShapedRecipe) recipe).shape("GWD", "RER", "QLQ");
 		((ShapedRecipe) recipe).setIngredient('G', Material.GOLD_BLOCK);

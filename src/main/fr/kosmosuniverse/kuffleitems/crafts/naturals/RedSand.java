@@ -12,9 +12,9 @@ import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class RedSand extends ACrafts {
 	
-	public RedSand(KuffleMain _km) {
+	public RedSand() {
 		name = "RedSand";
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.RED_SAND, 8));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.RED_SAND, 8));
 		
 		((ShapedRecipe) recipe).shape("SSS", "SRS", "SSS");
 		((ShapedRecipe) recipe).setIngredient('S', Material.SAND);

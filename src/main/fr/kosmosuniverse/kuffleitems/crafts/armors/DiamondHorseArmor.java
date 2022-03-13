@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.crafts.armors;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,12 +19,12 @@ import main.fr.kosmosuniverse.kuffleitems.utils.ItemUtils;
 public class DiamondHorseArmor extends ACrafts {
 	MaterialChoice mc;
 	
-	public DiamondHorseArmor(KuffleMain _km) {
+	public DiamondHorseArmor() {
 		name = "DiamondHorseArmor";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.DIAMOND_HORSE_ARMOR));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.DIAMOND_HORSE_ARMOR));
 		
-		ArrayList<Material> wools = new ArrayList<Material>();
+		List<Material> wools = new ArrayList<>();
 		
 		for (Material m : Material.values()) {
 			if (m.name().toLowerCase().contains("wool") && !m.name().toLowerCase().contains("legacy")) {

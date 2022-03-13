@@ -1,6 +1,6 @@
 package main.fr.kosmosuniverse.kuffleitems.listeners;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -16,12 +16,6 @@ import main.fr.kosmosuniverse.kuffleitems.core.Game;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class InventoryListeners implements Listener {
-	private KuffleMain km;
-	
-	public InventoryListeners(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@EventHandler
 	public void onItemClick(InventoryClickEvent event) {	
 		Player player = (Player) event.getWhoClicked();
@@ -36,24 +30,24 @@ public class InventoryListeners implements Listener {
 		
 		if (event.getView().getTitle() == "§8AllCustomCrafts") {
 			event.setCancelled(true);
-			if ((craft = km.crafts.findCraftInventoryByItem(item)) != null &&
+			if ((craft = KuffleMain.crafts.findCraftInventoryByItem(item)) != null &&
 					(inv = craft.getInventoryRecipe()) != null) {
 				player.openInventory(inv);
 			}
-		} else if (km.crafts.findCraftByInventoryName(event.getView().getTitle()) != null) {
+		} else if (KuffleMain.crafts.findCraftByInventoryName(event.getView().getTitle()) != null) {
 			event.setCancelled(true);
 			
 			if (item.getItemMeta().getDisplayName().equals("<- Back")) {
-				player.openInventory(km.crafts.getAllCraftsInventory());
+				player.openInventory(KuffleMain.crafts.getAllCraftsInventory());
 			}
 		} else if (event.getView().getTitle() == "§8Players") {
 			event.setCancelled(true);
 			
 			if (item.getType() == Material.PLAYER_HEAD &&
 					!item.getItemMeta().getDisplayName().equals(player.getName())) {
-				Game tmpGame = km.games.get(item.getItemMeta().getDisplayName());
+				Game tmpGame = KuffleMain.games.get(item.getItemMeta().getDisplayName());
 				
-				if (tmpGame != null && km.games.get(player.getName()).getFinished()) {
+				if (tmpGame != null && KuffleMain.games.get(player.getName()).getFinished()) {
 					if (player.getGameMode() != GameMode.SPECTATOR) {
 						player.setGameMode(GameMode.SPECTATOR);
 					}
@@ -61,11 +55,11 @@ public class InventoryListeners implements Listener {
 				}
 			}
 		} else if (event.getView().getTitle().contains(" Items ")) {
-			for (String age : km.itemsInvs.keySet()) {
+			for (String age : KuffleMain.itemsInvs.keySet()) {
 				if (event.getView().getTitle().contains(age)) {
 					event.setCancelled(true);
 
-					ArrayList<Inventory> tmpInvs = km.itemsInvs.get(age);
+					List<Inventory> tmpInvs = KuffleMain.itemsInvs.get(age);
 					
 					if (tmpInvs.size() > 1) {
 						int invIdx = tmpInvs.indexOf(current);

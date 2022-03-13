@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class MossyCobblestone extends ACrafts {
-	public MossyCobblestone(KuffleMain _km) {
+	public MossyCobblestone() {
 		name = "MossyCobblestone";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.MOSSY_COBBLESTONE));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.MOSSY_COBBLESTONE));
 		
 		((ShapelessRecipe) recipe).addIngredient(Material.COBBLESTONE);
 		((ShapelessRecipe) recipe).addIngredient(Material.GRASS);

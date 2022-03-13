@@ -19,16 +19,16 @@ import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 public class Emerald extends ACrafts {
 	MaterialChoice mc;
 	
-	public Emerald(KuffleMain _km) {
+	public Emerald() {
 		name = "Emerald";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.EMERALD, 2));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.EMERALD, 2));
 		
-		ArrayList<Material> ores = new ArrayList<Material>();
+		ArrayList<Material> ores = new ArrayList<>();
 		
 		ores.add(Material.EMERALD_ORE);
 		
-		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.17")) {
+		if (Utils.findVersionNumber(Utils.getVersion()) >= Utils.findVersionNumber("1.17")) {
 			ores.add(Material.DEEPSLATE_EMERALD_ORE);
 		}
 		

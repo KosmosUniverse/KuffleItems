@@ -9,17 +9,17 @@ public class Age {
 	public ChatColor color;
 	public Material box;
 	
-	public Age(String _name, int _number, ChatColor _color, Material _box) {
-		name = _name;
-		number = _number;
-		color = _color;
-		box = _box;
+	public Age(String ageName, int ageNumber, ChatColor ageColor, Material ageBox) {
+		name = ageName;
+		number = ageNumber;
+		color = ageColor;
+		box = ageBox;
 	}
 	
-	public Age(String _name, int _number, String _color, String _box) {
-		name = _name;
-		number = _number;
-		color = ChatColor.valueOf(_color);
-		box = Material.matchMaterial(_box);
+	public Age(String ageName, int ageNumber, String ageColor, String ageBox) {
+		name = ageName;
+		number = ageNumber;
+		color = ChatColor.valueOf(ageColor);
+		box = Material.matchMaterial(ageBox);
 	}
 }

@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class ExposedCopper extends ACrafts {
-	public ExposedCopper(KuffleMain _km) {
+	public ExposedCopper() {
 		name = "ExposedCopper";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.EXPOSED_COPPER));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.EXPOSED_COPPER));
 		
 		((ShapelessRecipe) recipe).addIngredient(Material.COPPER_BLOCK);
 		((ShapelessRecipe) recipe).addIngredient(Material.WATER_BUCKET);

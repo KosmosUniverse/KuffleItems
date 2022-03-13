@@ -1,6 +1,6 @@
 package main.fr.kosmosuniverse.kuffleitems.commands;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,12 +13,6 @@ import main.fr.kosmosuniverse.kuffleitems.core.AgeManager;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleAgeItems implements CommandExecutor  {
-	private KuffleMain km;
-
-	public KuffleAgeItems(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cnd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -26,10 +20,10 @@ public class KuffleAgeItems implements CommandExecutor  {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-ageitems>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-ageitems>"));
 		
 		if (!player.hasPermission("ki-ageitems")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
@@ -37,30 +31,30 @@ public class KuffleAgeItems implements CommandExecutor  {
 			return false;
 		}
 		
-		if (km.gameStarted) {
-			if (!km.games.containsKey(player.getName())) {
-				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
+		if (KuffleMain.gameStarted) {
+			if (!KuffleMain.games.containsKey(player.getName())) {
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_PLAYING"));
 				return true;
 			}
 			
 			String age;
 			
 			if (args.length == 0) {
-				age = AgeManager.getAgeByNumber(km.ages, km.games.get(player.getName()).getAge()).name;	
+				age = AgeManager.getAgeByNumber(KuffleMain.ages, KuffleMain.games.get(player.getName()).getAge()).name;	
 			} else {
 				age = args[0];
 				
-				if (!AgeManager.ageExists(km.ages, age)) {
-					km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "AGE_NOT_EXISTS"));
+				if (!AgeManager.ageExists(KuffleMain.ages, age)) {
+					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "AGE_NOT_EXISTS"));
 					return false;
 				}
 			}
 			
-			ArrayList<Inventory> ageItems = km.itemsInvs.get(age);
+			List<Inventory> ageItems = KuffleMain.itemsInvs.get(age);
 			
 			player.openInventory(ageItems.get(0));
 		} else {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));			
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));			
 		}
 
 		return true;

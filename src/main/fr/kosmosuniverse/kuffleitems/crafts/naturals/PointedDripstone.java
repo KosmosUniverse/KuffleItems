@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class PointedDripstone extends ACrafts {
-	public PointedDripstone(KuffleMain _km) {
+	public PointedDripstone() {
 		name = "PointedDripstone";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.POINTED_DRIPSTONE, 4));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.POINTED_DRIPSTONE, 4));
 		
 		((ShapelessRecipe) recipe).addIngredient(Material.DRIPSTONE_BLOCK);
 		

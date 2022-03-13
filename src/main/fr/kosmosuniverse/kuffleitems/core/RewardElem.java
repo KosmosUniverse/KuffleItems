@@ -3,24 +3,24 @@ package main.fr.kosmosuniverse.kuffleitems.core;
 public class RewardElem {
 	private String name;
 	private Integer amount;
-	private Boolean enchantOn = false;
+	private boolean enchantOn = false;
 	private String enchant = null;
 	private Integer level;
-	private Boolean effectOn = false;
+	private boolean effectOn = false;
 	private String effect = null;
 	
-	public RewardElem(String _name, Integer _amount, String _enchant, Integer _level, String _effect) {
-		name = _name;
-		amount = _amount;
-		if (_enchant != null && !_enchant.equals("")) {
+	public RewardElem(String rewardName, Integer rewardAmount, String rewardEnchant, Integer rewardLevel, String rewardEffect) {
+		name = rewardName;
+		amount = rewardAmount;
+		if (rewardEnchant != null && !rewardEnchant.equals("")) {
 			enchantOn = true;
-			enchant = _enchant;
-			level = _level;
+			enchant = rewardEnchant;
+			level = rewardLevel;
 		}
 		
-		if (_effect != null && !_effect.equals("")) {
+		if (rewardEffect != null && !rewardEffect.equals("")) {
 			effectOn = true;
-			effect = _effect;
+			effect = rewardEffect;
 		}
 	}
 	

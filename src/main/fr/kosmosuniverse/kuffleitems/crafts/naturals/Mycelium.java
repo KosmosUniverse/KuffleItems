@@ -1,14 +1,15 @@
 package main.fr.kosmosuniverse.kuffleitems.crafts.naturals;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.RecipeChoice.MaterialChoice;
+import org.bukkit.inventory.ShapelessRecipe;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
@@ -16,12 +17,12 @@ import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 public class Mycelium extends ACrafts {
 	MaterialChoice mc;
 	
-	public Mycelium(KuffleMain _km) {
+	public Mycelium() {
 		name = "Mycelium";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.MYCELIUM));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.MYCELIUM));
 		
-		ArrayList<Material> champs = new ArrayList<Material>();
+		List<Material> champs = new ArrayList<>();
 		
 		champs.add(Material.BROWN_MUSHROOM);
 		champs.add(Material.RED_MUSHROOM);

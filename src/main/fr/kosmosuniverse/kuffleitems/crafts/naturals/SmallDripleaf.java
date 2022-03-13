@@ -12,10 +12,10 @@ import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 
 public class SmallDripleaf extends ACrafts {
-	public SmallDripleaf(KuffleMain _km) {
+	public SmallDripleaf() {
 		name = "SmallDripleaf";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.SMALL_DRIPLEAF));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.SMALL_DRIPLEAF));
 		
 		
 		((ShapedRecipe) recipe).shape("RNR", "RVN", "NVR");

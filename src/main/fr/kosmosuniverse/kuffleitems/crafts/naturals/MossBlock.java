@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class MossBlock extends ACrafts {
-	public MossBlock(KuffleMain _km) {
+	public MossBlock() {
 		name = "MossBlock";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.MOSS_BLOCK));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.MOSS_BLOCK));
 		
 		((ShapedRecipe) recipe).shape("SSS", "SSS", "SSS");
 		((ShapedRecipe) recipe).setIngredient('S', Material.GRASS);

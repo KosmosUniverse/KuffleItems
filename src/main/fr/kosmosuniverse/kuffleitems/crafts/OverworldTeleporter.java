@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.crafts;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class OverworldTeleporter extends ACrafts {
-	public OverworldTeleporter(KuffleMain _km) {
+	public OverworldTeleporter() {
 		name = "OverworldTeleporter";
 		
 		item = new ItemStack(Material.EMERALD);
@@ -22,7 +23,7 @@ public class OverworldTeleporter extends ACrafts {
 		ItemMeta itM = item.getItemMeta();
 		itM.setDisplayName(ChatColor.DARK_BLUE + name);
 		
-		ArrayList<String> lore = new ArrayList<String>();
+		List<String> lore = new ArrayList<>();
 		
 		lore.add("Single Use Teleporter.");
 		lore.add("Right click to teleport to The Overworld.");
@@ -31,7 +32,7 @@ public class OverworldTeleporter extends ACrafts {
 		
 		item.setItemMeta(itM);
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), item);
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), item);
 		
 		((ShapedRecipe) recipe).shape("RER", "PSP", "BEB");
 		((ShapedRecipe) recipe).setIngredient('R', Material.END_ROD);

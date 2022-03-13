@@ -12,16 +12,13 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.core.AgeManager;
 
 public class KuffleAgeItemsTab implements TabCompleter  {
-	private KuffleMain km;
 	private ArrayList<String> ages = new ArrayList<>();
 
-	public KuffleAgeItemsTab(KuffleMain _km) {
-		km = _km;
-		
-		int max = AgeManager.getAgeMaxNumber(km.ages);
+	public KuffleAgeItemsTab() {
+		int max = AgeManager.getAgeMaxNumber(KuffleMain.ages);
 		
 		for (int cnt = 0; cnt <= max; cnt++) {
-			String age = AgeManager.getAgeByNumber(km.ages, cnt).name;
+			String age = AgeManager.getAgeByNumber(KuffleMain.ages, cnt).name;
 
 			ages.add(age);
 		}

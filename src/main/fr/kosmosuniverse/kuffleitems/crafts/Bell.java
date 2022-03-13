@@ -10,10 +10,10 @@ import org.bukkit.inventory.StonecuttingRecipe;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class Bell extends ACrafts {
-	public Bell(KuffleMain _km) {
+	public Bell() {
 		name = "Bell-StoneCutter";
 		
-		recipe = new StonecuttingRecipe(new NamespacedKey(_km, name), new ItemStack(Material.BELL), Material.GOLD_BLOCK);
+		recipe = new StonecuttingRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.BELL), Material.GOLD_BLOCK);
 		
 		item = new ItemStack(Material.BELL);
 	}

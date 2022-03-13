@@ -11,15 +11,12 @@ import org.bukkit.entity.Player;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class KuffleConfigTab implements TabCompleter {
-	private KuffleMain km;
 	private ArrayList<String> all = new ArrayList<>();
 	
-	public KuffleConfigTab(KuffleMain _km) {
-		km = _km;
-		
-		all.addAll(km.config.booleanElems.keySet());
-		all.addAll(km.config.intElems.keySet());
-		all.addAll(km.config.stringElems.keySet());
+	public KuffleConfigTab() {
+		all.addAll(KuffleMain.config.booleanElems.keySet());
+		all.addAll(KuffleMain.config.intElems.keySet());
+		all.addAll(KuffleMain.config.stringElems.keySet());
 	}
 
 	@Override
@@ -42,12 +39,12 @@ public class KuffleConfigTab implements TabCompleter {
 			
 			return ret;
 		} else {
-			if (km.config.booleanElems.keySet().contains(args[args.length - 2])) {
-				return km.config.booleanRet.get(args[args.length - 2]);
-			} else if (km.config.intElems.keySet().contains(args[args.length - 2])) {
-				return km.config.intRet.get(args[args.length - 2]);
-			} else if (km.config.stringElems.keySet().contains(args[args.length - 2])) {
-				return km.config.stringRet.get(args[args.length - 2]);
+			if (KuffleMain.config.booleanElems.keySet().contains(args[args.length - 2])) {
+				return KuffleMain.config.booleanRet.get(args[args.length - 2]);
+			} else if (KuffleMain.config.intElems.keySet().contains(args[args.length - 2])) {
+				return KuffleMain.config.intRet.get(args[args.length - 2]);
+			} else if (KuffleMain.config.stringElems.keySet().contains(args[args.length - 2])) {
+				return KuffleMain.config.stringRet.get(args[args.length - 2]);
 			} else {
 				return new ArrayList<>();	
 			}

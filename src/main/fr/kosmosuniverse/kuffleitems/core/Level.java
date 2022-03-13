@@ -6,10 +6,10 @@ public class Level {
 	public int seconds;
 	public boolean losable;
 	
-	public Level(String _name, int _number, int _seconds, boolean _losable) {
-		name = _name;
-		number = _number;
-		seconds = _seconds;
-		losable = _losable;
+	public Level(String levelName, int levelNumber, int levelSeconds, boolean levelLosable) {
+		name = levelName;
+		number = levelNumber;
+		seconds = levelSeconds;
+		losable = levelLosable;
 	}
 }

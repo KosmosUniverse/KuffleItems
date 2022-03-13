@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class ChainmailBoots extends ACrafts {
-	public ChainmailBoots(KuffleMain _km) {
+	public ChainmailBoots() {
 		name = "ChainmailBoots";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.CHAINMAIL_BOOTS));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.CHAINMAIL_BOOTS));
 		
 		((ShapedRecipe) recipe).shape("RRR", "CRC", "CRC");
 		((ShapedRecipe) recipe).setIngredient('C', Material.CHAIN);

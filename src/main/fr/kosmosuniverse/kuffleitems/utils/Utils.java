@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -58,7 +60,7 @@ public final class Utils {
 	}
 
 	public static boolean fileExists(String fileName) {
-		File tmp = new File(fileName);;
+		File tmp = new File(fileName);
 
 		return tmp.exists();
 	}
@@ -74,33 +76,33 @@ public final class Utils {
 		return true;
 	}
 
-	public static String findFileExistVersion(KuffleMain km, String fileName) {
+	public static String findFileExistVersion(String fileName) {
 		String version = getVersion();
 		String file = fileName.replace("%v", version);
-		int versionNb = findVersionNumber(km, version);
+		int versionNb = findVersionNumber(version);
 
 		if (versionNb == -1) {
 			return null;
 		}
 
-		while (km.getResource(file)  == null && versionNb > 0) {
+		while (KuffleMain.current.getResource(file)  == null && versionNb > 0) {
 			versionNb -= 1;
-			version = km.versions.get(versionNb);
+			version = KuffleMain.versions.get(versionNb);
 			file = fileName.replace("%v", version);
 		}
 
-		if (km.getResource(file)  == null) {
+		if (KuffleMain.current.getResource(file)  == null) {
 			return null;
 		}
 
 		return file;
 	}
 
-	public static int playerLasts(KuffleMain km) {
+	public static int playerLasts() {
 		int notEnded = 0;
 
-		for (String playerName : km.games.keySet()) {
-			if (!km.games.get(playerName).getFinished()) {
+		for (String playerName : KuffleMain.games.keySet()) {
+			if (!KuffleMain.games.get(playerName).getFinished()) {
 				notEnded++;
 			}
 		}
@@ -108,21 +110,21 @@ public final class Utils {
 		return notEnded;
 	}
 
-	public static void forceFinish(KuffleMain km, int gameRank) {
-		for (String playerName : km.games.keySet()) {
-			if (!km.games.get(playerName).getFinished()) {
-				km.games.get(playerName).finish(gameRank);
+	public static void forceFinish(int gameRank) {
+		for (String playerName : KuffleMain.games.keySet()) {
+			if (!KuffleMain.games.get(playerName).getFinished()) {
+				KuffleMain.games.get(playerName).finish(gameRank);
 			}
 		}
 	}
 
-	public static void loadGame(KuffleMain _km, Player player) {
+	public static void loadGame(Player player) {
 		JSONParser parser = new JSONParser();
-		Game tmpGame = new Game(_km, player);
+		Game tmpGame = new Game(player);
 
 		tmpGame.setup();
 
-		try (FileReader reader = new FileReader(_km.getDataFolder().getPath() + File.separator + player.getName() + ".ki")) {
+		try (FileReader reader = new FileReader(KuffleMain.current.getDataFolder().getPath() + File.separator + player.getName() + ".ki")) {
 			JSONObject mainObject = (JSONObject) parser.parse(reader);
 
 			tmpGame.setAge(Integer.parseInt(((Long) mainObject.get("age")).toString()));
@@ -142,21 +144,19 @@ public final class Utils {
 			tmpGame.setDeathCount(Integer.parseInt(mainObject.get("deathCount").toString()));
 			tmpGame.setSkipCount(Integer.parseInt(mainObject.get("skipCount").toString()));
 
-			if (fileExists(_km.getDataFolder().getPath(), player.getName() + ".yml")) {
+			if (fileExists(KuffleMain.current.getDataFolder().getPath(), player.getName() + ".yml")) {
 				tmpGame.loadInventory();
-				fileDelete(_km.getDataFolder().getPath(), player.getName() + ".yml");
+				fileDelete(KuffleMain.current.getDataFolder().getPath(), player.getName() + ".yml");
 			}
 
 			if (tmpGame.getDead()) {
-				_km.playerEvents.teleportAutoBack(tmpGame);
+				KuffleMain.playerEvents.teleportAutoBack(tmpGame);
 			}
 
-			_km.games.put(player.getName(), tmpGame);
+			KuffleMain.games.put(player.getName(), tmpGame);
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-
-		return ;
 	}
 	
 	public static int getNbInventoryRows(int quantity) {
@@ -188,7 +188,7 @@ public final class Utils {
         if (currentItem != null) {        
 	        ItemMeta itM = item.getItemMeta();
 	        
-	        ArrayList<String> lore = new ArrayList<>();
+	        List<String> lore = new ArrayList<>();
 	        lore.add(currentItem);
 	
 			itM.setLore(lore);
@@ -223,8 +223,8 @@ public final class Utils {
 		return null;
 	}
 
-	public static ArrayList<Player> getPlayerList(HashMap<String, Game> games) {
-		ArrayList<Player> players = new ArrayList<>();
+	public static List<Player> getPlayerList(Map<String, Game> games) {
+		List<Player> players = new ArrayList<>();
 
 		for (String playerName : games.keySet()) {
 			players.add(games.get(playerName).getPlayer());
@@ -233,8 +233,8 @@ public final class Utils {
 		return players;
 	}
 
-	public static ArrayList<String> getPlayerNames(HashMap<String, Game> games) {
-		ArrayList<String> players = new ArrayList<>();
+	public static List<String> getPlayerNames(Map<String, Game> games) {
+		List<String> players = new ArrayList<>();
 
 		for (String playerName : games.keySet()) {
 			players.add(playerName);
@@ -263,39 +263,40 @@ public final class Utils {
 		return false;
 	}
 
-	public static void setupTemplates(KuffleMain km) {
-		ArrayList<Template> templates = new ArrayList<>();
+	public static void setupTemplates() {
+		List<Template> templates = new ArrayList<>();
 
-		for (int i = 0; i < km.config.getMaxAges(); i++)  {
-			String name = AgeManager.getAgeByNumber(km.ages, i).name;
+		for (int i = 0; i < KuffleMain.config.getMaxAges(); i++)  {
+			String name = AgeManager.getAgeByNumber(KuffleMain.ages, i).name;
 
 			name = name.replace("_Age", "");
-			templates.add(new Template(km, name, getMaterials(AgeManager.getAgeByNumber(km.ages, i).name, km)));
+			templates.add(new Template(name, getMaterials(AgeManager.getAgeByNumber(KuffleMain.ages, i).name)));
 		}
 
 		for (Template t : templates) {
-			km.crafts.addCraft(t);
-			km.addRecipe(t.getRecipe());
+			KuffleMain.crafts.addCraft(t);
+			KuffleMain.addRecipe(t.getRecipe());
 		}
 	}
 
-	public static void removeTemplates(KuffleMain km) {
-		for (int i = 0; i < km.config.getMaxAges(); i++)  {
-			String name = AgeManager.getAgeByNumber(km.ages, i).name;
+	public static void removeTemplates() {
+		for (int i = 0; i < KuffleMain.config.getMaxAges(); i++)  {
+			String name = AgeManager.getAgeByNumber(KuffleMain.ages, i).name;
+			
 			name = name.replace("_Age", "");
 			name = name + "Template";
 
-			km.removeRecipe(name);
-			km.crafts.removeCraft(name);
+			KuffleMain.removeRecipe(name);
+			KuffleMain.crafts.removeCraft(name);
 		}
 	}
 
-	public static ArrayList<Material> getMaterials(String age, KuffleMain km) {
-		ArrayList<Material> compose = new ArrayList<>();
-		ArrayList<String> done = new ArrayList<>();
+	public static List<Material> getMaterials(String age) {
+		List<Material> compose = new ArrayList<>();
+		List<String> done = new ArrayList<>();
 
-		for (int cnt = 0; cnt < km.config.getSBTTAmount(); cnt++) {
-			done.add(ItemManager.newItem(done, km.allSbtts.get(age)));
+		for (int cnt = 0; cnt < KuffleMain.config.getSBTTAmount(); cnt++) {
+			done.add(ItemManager.newItem(done, KuffleMain.allSbtts.get(age)));
 		}
 
 		for (String item : done) {
@@ -306,22 +307,22 @@ public final class Utils {
 		return compose;
 	}
 
-	public static void reloadTemplate(KuffleMain km, String name, String age) {
-		km.crafts.removeCraft(name);
-		km.removeRecipe(name);
+	public static void reloadTemplate(String name, String age) {
+		KuffleMain.crafts.removeCraft(name);
+		KuffleMain.removeRecipe(name);
 
 		String tmp = age;
 
 		tmp = tmp.replace("_Age", "");
 
-		Template t = new Template(km, tmp, getMaterials(age, km));
+		Template t = new Template(tmp, getMaterials(age));
 
-		km.crafts.addCraft(t);
-		km.addRecipe(t.getRecipe());
+		KuffleMain.crafts.addCraft(t);
+		KuffleMain.addRecipe(t.getRecipe());
 
-		km.games.forEach((playerName, game) -> {
-			game.getPlayer().discoverRecipe(new NamespacedKey(km, t.getName()));
-		});
+		KuffleMain.games.forEach((playerName, game) ->
+			game.getPlayer().discoverRecipe(new NamespacedKey(KuffleMain.current, t.getName()))
+		);
 	}
 
 	public static String getTimeFromSec(long sec) {
@@ -387,8 +388,8 @@ public final class Utils {
 			return true;
 		}
 
-		ArrayList<String> firstLore = (ArrayList<String>) firstMeta.getLore();
-		ArrayList<String> secondLore = (ArrayList<String>) secondMeta.getLore();
+		List<String> firstLore = firstMeta.getLore();
+		List<String> secondLore = secondMeta.getLore();
 
 		if (firstLore.size() != secondLore.size()) {
 			return false;
@@ -403,19 +404,19 @@ public final class Utils {
 		return true;
 	}
 
-	public static String getLangString(KuffleMain km, String player, String tag) {
-		if (km.gameStarted && player != null && km.games.containsKey(player)) {
-			return (LangManager.findDisplay(km.allLangs, tag, km.games.get(player).getLang()));
+	public static String getLangString(String player, String tag) {
+		if (KuffleMain.gameStarted && player != null && KuffleMain.games.containsKey(player)) {
+			return (LangManager.findDisplay(KuffleMain.allLangs, tag, KuffleMain.games.get(player).getLang()));
 		} else {
-			return (LangManager.findDisplay(km.allLangs, tag, km.config.getLang()));
+			return (LangManager.findDisplay(KuffleMain.allLangs, tag, KuffleMain.config.getLang()));
 		}
 	}
 
-	public static HashMap<Integer, String> loadVersions(KuffleMain km, String file) {
-		HashMap<Integer, String> versions = null;
+	public static Map<Integer, String> loadVersions(String file) {
+		Map<Integer, String> versions = null;
 
 		try {
-			InputStream in = km.getResource(file);
+			InputStream in = KuffleMain.current.getResource(file);
 			String content = Utils.readFileContent(in);
 
 			JSONParser parser = new JSONParser();
@@ -435,9 +436,9 @@ public final class Utils {
 		return versions;
 	}
 
-	public static int findVersionNumber(KuffleMain km, String version) {
-		for (int key : km.versions.keySet()) {
-			if (km.versions.get(key).equals(version)) {
+	public static int findVersionNumber(String version) {
+		for (int key : KuffleMain.versions.keySet()) {
+			if (KuffleMain.versions.get(key).equals(version)) {
 				return key;
 			}
 		}
@@ -445,66 +446,66 @@ public final class Utils {
 		return -1;
 	}
 
-	public static void printGameEnd(KuffleMain km) {
-		km.games.forEach((playerName, game) -> {
-			logPlayer(km, playerName);
+	public static void printGameEnd() {
+		KuffleMain.games.forEach((playerName, game) -> {
+			logPlayer(playerName);
 
-			km.games.forEach((playerToSend, gameToSend) -> {
-				printPlayer(km, playerName, playerToSend);
-			});
+			KuffleMain.games.forEach((playerToSend, gameToSend) ->
+				printPlayer(playerName, playerToSend)
+			);
 		});
 	}
 
-	public static void printPlayer(KuffleMain km, String playerName, String toSend) {
+	public static void printPlayer(String playerName, String toSend) {
 		long total = 0;
-		Game game = km.games.get(playerName);
+		Game game = KuffleMain.games.get(playerName);
 
-		km.games.get(toSend).getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ChatColor.RESET + ":");
-		km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "DEATH_COUNT").replace("%i", "" + ChatColor.RESET + game.getDeathCount()));
-		km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "SKIP_COUNT").replace("%i", "" + ChatColor.RESET + game.getSkipCount()));
-		km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "TEMPLATE_COUNT").replace("%i", "" + ChatColor.RESET + game.getSbttCount()));
-		km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "TIME_TAB"));
+		KuffleMain.games.get(toSend).getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ChatColor.RESET + ":");
+		KuffleMain.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(toSend, "DEATH_COUNT").replace("%i", "" + ChatColor.RESET + game.getDeathCount()));
+		KuffleMain.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(toSend, "SKIP_COUNT").replace("%i", "" + ChatColor.RESET + game.getSkipCount()));
+		KuffleMain.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(toSend, "TEMPLATE_COUNT").replace("%i", "" + ChatColor.RESET + game.getSbttCount()));
+		KuffleMain.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(toSend, "TIME_TAB"));
 
-		for (int i = 0; i < km.config.getMaxAges(); i++) {
-			Age age = AgeManager.getAgeByNumber(km.ages, i);
+		for (int i = 0; i < KuffleMain.config.getMaxAges(); i++) {
+			Age age = AgeManager.getAgeByNumber(KuffleMain.ages, i);
 
 			if (game.getAgeTime(age.name) == -1) {
-				km.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(km, toSend, "FINISH_ABANDON").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.RESET));
+				KuffleMain.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(toSend, "FINISH_ABANDON").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.RESET));
 			} else {
-				km.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(km, toSend, "FINISH_TIME").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.BLUE).replace("%t", ChatColor.RESET + Utils.getTimeFromSec(game.getAgeTime(age.name) / 1000)));
+				KuffleMain.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(toSend, "FINISH_TIME").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.BLUE).replace("%t", ChatColor.RESET + Utils.getTimeFromSec(game.getAgeTime(age.name) / 1000)));
 				total += game.getAgeTime(age.name) / 1000;
 			}
 		}
 
-		km.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(km, toSend, "FINISH_TOTAL").replace("%t", ChatColor.RESET + Utils.getTimeFromSec(total)));
+		KuffleMain.games.get(toSend).getPlayer().sendMessage(ChatColor.BLUE + Utils.getLangString(toSend, "FINISH_TOTAL").replace("%t", ChatColor.RESET + Utils.getTimeFromSec(total)));
 
 	}
 
-	public static void logPlayer(KuffleMain km, String playerName) {
+	public static void logPlayer(String playerName) {
 		long total = 0;
-		Game game = km.games.get(playerName);
+		Game game = KuffleMain.games.get(playerName);
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("\n");
 		sb.append(ChatColor.GOLD + "" + ChatColor.BOLD + playerName + ChatColor.RESET + ":" + "\n");
-		sb.append(ChatColor.BLUE + Utils.getLangString(km, playerName, "DEATH_COUNT").replace("%i", "" + ChatColor.RESET + game.getDeathCount()) + "\n");
-		sb.append(ChatColor.BLUE + Utils.getLangString(km, playerName, "SKIP_COUNT").replace("%i", "" + ChatColor.RESET + game.getSkipCount()) + "\n");
-		sb.append(ChatColor.BLUE + Utils.getLangString(km, playerName, "TEMPLATE_COUNT").replace("%i", "" + ChatColor.RESET + game.getSbttCount()) + "\n");
-		sb.append(ChatColor.BLUE + Utils.getLangString(km, playerName, "TIME_TAB") + "\n");
+		sb.append(ChatColor.BLUE + Utils.getLangString(playerName, "DEATH_COUNT").replace("%i", "" + ChatColor.RESET + game.getDeathCount()) + "\n");
+		sb.append(ChatColor.BLUE + Utils.getLangString(playerName, "SKIP_COUNT").replace("%i", "" + ChatColor.RESET + game.getSkipCount()) + "\n");
+		sb.append(ChatColor.BLUE + Utils.getLangString(playerName, "TEMPLATE_COUNT").replace("%i", "" + ChatColor.RESET + game.getSbttCount()) + "\n");
+		sb.append(ChatColor.BLUE + Utils.getLangString(playerName, "TIME_TAB") + "\n");
 
-		for (int i = 0; i < km.config.getMaxAges(); i++) {
-			Age age = AgeManager.getAgeByNumber(km.ages, i);
+		for (int i = 0; i < KuffleMain.config.getMaxAges(); i++) {
+			Age age = AgeManager.getAgeByNumber(KuffleMain.ages, i);
 
 			if (game.getAgeTime(age.name) == -1) {
-				sb.append(Utils.getLangString(km, playerName, "FINISH_ABANDON").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.RESET) + "\n");
+				sb.append(Utils.getLangString(playerName, "FINISH_ABANDON").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.RESET) + "\n");
 			} else {
-				sb.append(Utils.getLangString(km, playerName, "FINISH_TIME").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.BLUE).replace("%t", ChatColor.RESET + Utils.getTimeFromSec(game.getAgeTime(age.name) / 1000)) + "\n");
+				sb.append(Utils.getLangString(playerName, "FINISH_TIME").replace("%s", age.color + age.name.replace("_Age", "") + ChatColor.BLUE).replace("%t", ChatColor.RESET + Utils.getTimeFromSec(game.getAgeTime(age.name) / 1000)) + "\n");
 				total += game.getAgeTime(age.name) / 1000;
 			}
 		}
 
-		sb.append(ChatColor.BLUE + Utils.getLangString(km, playerName, "FINISH_TOTAL").replace("%t", ChatColor.RESET + Utils.getTimeFromSec(total)) + "\n");
+		sb.append(ChatColor.BLUE + Utils.getLangString(playerName, "FINISH_TOTAL").replace("%t", ChatColor.RESET + Utils.getTimeFromSec(total)) + "\n");
 
-		km.gameLogs.logSystemMsg(sb.toString());
+		KuffleMain.gameLogs.logSystemMsg(sb.toString());
 	}
 }

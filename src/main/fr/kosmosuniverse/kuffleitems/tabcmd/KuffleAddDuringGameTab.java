@@ -13,12 +13,6 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.core.Team;
 
 public class KuffleAddDuringGameTab implements TabCompleter {
-	private KuffleMain km;
-	
-	public KuffleAddDuringGameTab(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
@@ -29,13 +23,13 @@ public class KuffleAddDuringGameTab implements TabCompleter {
 		
 		if (args.length == 1) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (!km.games.containsKey(player.getName())) {
+				if (!KuffleMain.games.containsKey(player.getName())) {
 					ret.add(player.getName());
 				}
 			}
-		} else if (args.length == 2 && km.config.getTeam()) {
-			for (Team team : km.teams.getTeams()) {
-				if (km.config.getTeamSize() > team.players.size()) {
+		} else if (args.length == 2 && KuffleMain.config.getTeam()) {
+			for (Team team : KuffleMain.teams.getTeams()) {
+				if (KuffleMain.config.getTeamSize() > team.players.size()) {
 					ret.add(team.name);
 				}
 			}

@@ -1,150 +1,103 @@
 package main.fr.kosmosuniverse.kuffleitems.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
-import main.fr.kosmosuniverse.kuffleitems.Crafts.ores.*;
-import main.fr.kosmosuniverse.kuffleitems.Crafts.resources.*;
-import main.fr.kosmosuniverse.kuffleitems.crafts.*;
-import main.fr.kosmosuniverse.kuffleitems.crafts.armors.ChainmailBoots;
-import main.fr.kosmosuniverse.kuffleitems.crafts.armors.ChainmailChestplate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.armors.ChainmailHelmet;
-import main.fr.kosmosuniverse.kuffleitems.crafts.armors.ChainmailLeggings;
-import main.fr.kosmosuniverse.kuffleitems.crafts.armors.DiamondHorseArmor;
-import main.fr.kosmosuniverse.kuffleitems.crafts.armors.GoldHorseArmor;
-import main.fr.kosmosuniverse.kuffleitems.crafts.armors.IronHorseArmor;
-import main.fr.kosmosuniverse.kuffleitems.crafts.armors.Saddle;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.BuddingAmethyst;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.MossBlock;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.MossyCobblestone;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.MossyStoneBrick;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.Mycelium;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.PointedDripstone;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.PowderSnowBucket;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.RedNetherBrick;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.RedSand;
-import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.SmallDripleaf;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.CoalOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.CoalOreDeepslate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.CopperOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.CopperOreDeepslate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.DiamondOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.DiamondOreDeepslate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.EmeraldOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.EmeraldOreDeepslate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.ExposedCopper;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.GoldOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.GoldOreDeepslate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.IronOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.IronOreDeepslate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.LapisOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.LapisOreDeepslate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.OxidizedCopper;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.QuartzOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.RedstoneOre;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.RedstoneOreDeepslate;
-import main.fr.kosmosuniverse.kuffleitems.crafts.ores.WeatheredCopper;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.BrainCoralBlock;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.BubbleCoralBlock;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.Coal;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.Diamond;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.Emerald;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.FireCoralBlock;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.HornCoralBlock;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.Lapis;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.Quartz;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.RawCopper;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.RawGold;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.RawIron;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.Redstone;
-import main.fr.kosmosuniverse.kuffleitems.crafts.resources.TubeCoralBlock;
+import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
+import main.fr.kosmosuniverse.kuffleitems.crafts.Bell;
+import main.fr.kosmosuniverse.kuffleitems.crafts.EndPortalFrame;
+import main.fr.kosmosuniverse.kuffleitems.crafts.EndTeleporter;
+import main.fr.kosmosuniverse.kuffleitems.crafts.OverworldTeleporter;
+import main.fr.kosmosuniverse.kuffleitems.crafts.armors.*;
+import main.fr.kosmosuniverse.kuffleitems.crafts.naturals.*;
+import main.fr.kosmosuniverse.kuffleitems.crafts.ores.*;
+import main.fr.kosmosuniverse.kuffleitems.crafts.resources.*;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
-import main.fr.kosmosuniverse.kuffleitems.Crafts.armors.*;
-import main.fr.kosmosuniverse.kuffleitems.Crafts.naturals.*;
 
 public class CraftsManager {
-	private ArrayList<ACrafts> recipes = new ArrayList<ACrafts>();
+	private List<ACrafts> recipes = new ArrayList<>();
 	
-	public CraftsManager(KuffleMain _km) {
-		recipes.add(new EndPortalFrame(_km));
-		recipes.add(new EndTeleporter(_km));
-		recipes.add(new OverworldTeleporter(_km));
+	public CraftsManager() {
+		recipes.add(new EndPortalFrame());
+		recipes.add(new EndTeleporter());
+		recipes.add(new OverworldTeleporter());
 		
-		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.16")) {
-			recipes.add(new ChainmailHelmet(_km));
-			recipes.add(new ChainmailChestplate(_km));
-			recipes.add(new ChainmailLeggings(_km));
-			recipes.add(new ChainmailBoots(_km));
+		if (Utils.findVersionNumber(Utils.getVersion()) >= Utils.findVersionNumber("1.16")) {
+			recipes.add(new ChainmailHelmet());
+			recipes.add(new ChainmailChestplate());
+			recipes.add(new ChainmailLeggings());
+			recipes.add(new ChainmailBoots());
 		}
 		
-		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.17")) {
-			recipes.add(new MossBlock(_km));
-			recipes.add(new SmallDripleaf(_km));
-			recipes.add(new PowderSnowBucket(_km));
-			recipes.add(new BuddingAmethyst(_km));
+		if (Utils.findVersionNumber(Utils.getVersion()) >= Utils.findVersionNumber("1.17")) {
+			recipes.add(new MossBlock());
+			recipes.add(new SmallDripleaf());
+			recipes.add(new PowderSnowBucket());
+			recipes.add(new BuddingAmethyst());
 		}
 		
-		if (!_km.config.getCrafts()) {
+		if (!KuffleMain.config.getCrafts()) {
 			return;
 		}
 		
-		recipes.add(new RedSand(_km));
-		recipes.add(new Mycelium(_km));
-		recipes.add(new MossyCobblestone(_km));
-		recipes.add(new MossyStoneBrick(_km));
+		recipes.add(new RedSand());
+		recipes.add(new Mycelium());
+		recipes.add(new MossyCobblestone());
+		recipes.add(new MossyStoneBrick());
 		
-		recipes.add(new TubeCoralBlock(_km));
-		recipes.add(new BubbleCoralBlock(_km));
-		recipes.add(new HornCoralBlock(_km));
-		recipes.add(new FireCoralBlock(_km));
-		recipes.add(new BrainCoralBlock(_km));
+		recipes.add(new TubeCoralBlock());
+		recipes.add(new BubbleCoralBlock());
+		recipes.add(new HornCoralBlock());
+		recipes.add(new FireCoralBlock());
+		recipes.add(new BrainCoralBlock());
 		
-		recipes.add(new Coal(_km));
-		recipes.add(new Lapis(_km));
-		recipes.add(new Redstone(_km));
-		recipes.add(new Diamond(_km));
-		recipes.add(new Emerald(_km));
-		recipes.add(new Quartz(_km));
+		recipes.add(new Coal());
+		recipes.add(new Lapis());
+		recipes.add(new Redstone());
+		recipes.add(new Diamond());
+		recipes.add(new Emerald());
+		recipes.add(new Quartz());
 		
-		recipes.add(new CoalOre(_km));
-		recipes.add(new LapisOre(_km));
-		recipes.add(new RedstoneOre(_km));
-		recipes.add(new DiamondOre(_km));
-		recipes.add(new EmeraldOre(_km));
-		recipes.add(new QuartzOre(_km));
+		recipes.add(new CoalOre());
+		recipes.add(new LapisOre());
+		recipes.add(new RedstoneOre());
+		recipes.add(new DiamondOre());
+		recipes.add(new EmeraldOre());
+		recipes.add(new QuartzOre());
 		
-		recipes.add(new RedNetherBrick(_km));
+		recipes.add(new RedNetherBrick());
 		
-		recipes.add(new Bell(_km));
+		recipes.add(new Bell());
 		
-		recipes.add(new Saddle(_km));
-		recipes.add(new IronHorseArmor(_km));
-		recipes.add(new GoldHorseArmor(_km));
-		recipes.add(new DiamondHorseArmor(_km));
+		recipes.add(new Saddle());
+		recipes.add(new IronHorseArmor());
+		recipes.add(new GoldHorseArmor());
+		recipes.add(new DiamondHorseArmor());
 		
-		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.17")) {
-			recipes.add(new CoalOreDeepslate(_km));
-			recipes.add(new CopperOreDeepslate(_km));
-			recipes.add(new DiamondOreDeepslate(_km));
-			recipes.add(new EmeraldOreDeepslate(_km));
-			recipes.add(new GoldOreDeepslate(_km));
-			recipes.add(new IronOreDeepslate(_km));
-			recipes.add(new LapisOreDeepslate(_km));
-			recipes.add(new RedstoneOreDeepslate(_km));
-			recipes.add(new CopperOre(_km));
-			recipes.add(new GoldOre(_km));
-			recipes.add(new IronOre(_km));
-			recipes.add(new RawCopper(_km));
-			recipes.add(new RawGold(_km));
-			recipes.add(new RawIron(_km));
-			recipes.add(new PointedDripstone(_km));
-			recipes.add(new ExposedCopper(_km));
-			recipes.add(new WeatheredCopper(_km));
-			recipes.add(new OxidizedCopper(_km));
+		if (Utils.findVersionNumber(Utils.getVersion()) >= Utils.findVersionNumber("1.17")) {
+			recipes.add(new CoalOreDeepslate());
+			recipes.add(new CopperOreDeepslate());
+			recipes.add(new DiamondOreDeepslate());
+			recipes.add(new EmeraldOreDeepslate());
+			recipes.add(new GoldOreDeepslate());
+			recipes.add(new IronOreDeepslate());
+			recipes.add(new LapisOreDeepslate());
+			recipes.add(new RedstoneOreDeepslate());
+			recipes.add(new CopperOre());
+			recipes.add(new GoldOre());
+			recipes.add(new IronOre());
+			recipes.add(new RawCopper());
+			recipes.add(new RawGold());
+			recipes.add(new RawIron());
+			recipes.add(new PointedDripstone());
+			recipes.add(new ExposedCopper());
+			recipes.add(new WeatheredCopper());
+			recipes.add(new OxidizedCopper());
 		}
 	}
 	
@@ -172,7 +125,7 @@ public class CraftsManager {
 		}
 	}
 	
-	public ArrayList<ACrafts> getRecipeList() {
+	public List<ACrafts> getRecipeList() {
 		return (recipes);
 	}
 	

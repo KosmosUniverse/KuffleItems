@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class BuddingAmethyst extends ACrafts {
-	public BuddingAmethyst(KuffleMain _km) {
+	public BuddingAmethyst() {
 		name = "BuddingAmethyst";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.BUDDING_AMETHYST));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.BUDDING_AMETHYST));
 		
 		
 		((ShapedRecipe) recipe).shape("ARA", "RAR", "ARA");

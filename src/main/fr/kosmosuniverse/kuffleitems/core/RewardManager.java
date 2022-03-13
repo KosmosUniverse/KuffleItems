@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.block.ShulkerBox;
@@ -26,8 +28,8 @@ public class RewardManager {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static synchronized HashMap<String, HashMap<String, RewardElem>> getAllRewards(ArrayList<Age> ages, String rewardsContent, File dataFolder) {
-		HashMap<String, HashMap<String, RewardElem>> finalMap = new HashMap<>();
+	public static synchronized Map<String, Map<String, RewardElem>> getAllRewards(List<Age> ages, String rewardsContent, File dataFolder) {
+		Map<String, Map<String, RewardElem>> finalMap = new HashMap<>();
 		
 		int max = AgeManager.getAgeMaxNumber(ages);
 		
@@ -38,8 +40,8 @@ public class RewardManager {
 		return finalMap;
 	}
 	
-	public static synchronized HashMap<String, RewardElem> getAgeRewards(String age, String rewardsContent, File dataFolder) {
-		HashMap<String, RewardElem> ageRewards = new HashMap<>();
+	public static synchronized Map<String, RewardElem> getAgeRewards(String age, String rewardsContent, File dataFolder) {
+		Map<String, RewardElem> ageRewards = new HashMap<>();
 		JSONObject rewards;
 		JSONParser jsonParser = new JSONParser();
 		
@@ -70,7 +72,7 @@ public class RewardManager {
 		return ageRewards;
 	}
 	
-	public static synchronized void givePlayerRewardEffect(HashMap<String, RewardElem> ageReward, Player player) {
+	public static synchronized void givePlayerRewardEffect(Map<String, RewardElem> ageReward, Player player) {
 		for (String k : ageReward.keySet()) {
 			if (k.contains("potion")) {				
 				player.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
@@ -78,8 +80,8 @@ public class RewardManager {
 		}
 	}
 	
-	public static synchronized void givePlayerReward(HashMap<String, RewardElem> ageReward, Player p, ArrayList<Age> ages, int age) {
-		ArrayList<ItemStack> items = new ArrayList<>();
+	public static synchronized void givePlayerReward(Map<String, RewardElem> ageReward, Player p, List<Age> ages, int age) {
+		List<ItemStack> items = new ArrayList<>();
 		
 		ItemStack container = new ItemStack(AgeManager.getAgeByNumber(ages, age).box);
 		
@@ -138,7 +140,7 @@ public class RewardManager {
 		itM.setDisplayName(AgeManager.getAgeByNumber(ages, age).name.replace("_", " "));
 		container.setItemMeta(itM);
 		
-		HashMap<Integer, ItemStack> ret = p.getInventory().addItem(container);
+		Map<Integer, ItemStack> ret = p.getInventory().addItem(container);
 		
 		if (ret != null) {
 			for (Integer i : ret.keySet()) {
@@ -147,7 +149,7 @@ public class RewardManager {
 		}
 	}
 	
-	public static void managePreviousEffects(HashMap<String, RewardElem> ageReward, Player player) {
+	public static void managePreviousEffects(Map<String, RewardElem> ageReward, Player player) {
 		for (String key : ageReward.keySet()) {
 			if (key.contains("potion")) {
 				player.removePotionEffect(findEffect(ageReward.get(key).getEffect()));

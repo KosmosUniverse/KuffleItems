@@ -16,11 +16,11 @@ public class Logs {
 	
 	public Logs(String pathFile) {
 		path = pathFile;
-		Path p_path = Paths.get(pathFile);
+		Path pPath = Paths.get(pathFile);
 		
 		try {
-			if (!Files.exists(p_path)) {
-				Files.createFile(p_path);
+			if (!Files.exists(pPath)) {
+				Files.createFile(pPath);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

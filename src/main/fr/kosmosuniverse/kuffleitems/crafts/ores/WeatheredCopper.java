@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class WeatheredCopper extends ACrafts {
-	public WeatheredCopper(KuffleMain _km) {
+	public WeatheredCopper() {
 		name = "WeatheredCopper";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.WEATHERED_COPPER));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.WEATHERED_COPPER));
 		
 		((ShapelessRecipe) recipe).addIngredient(Material.EXPOSED_COPPER);
 		((ShapelessRecipe) recipe).addIngredient(Material.WATER_BUCKET);

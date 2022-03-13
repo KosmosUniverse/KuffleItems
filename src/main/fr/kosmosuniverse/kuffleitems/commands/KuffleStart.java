@@ -17,17 +17,10 @@ import org.bukkit.potion.PotionEffectType;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.core.ActionBar;
-import main.fr.kosmosuniverse.kuffleitems.core.GameLoop;
 import main.fr.kosmosuniverse.kuffleitems.core.SpreadPlayer;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleStart implements CommandExecutor {
-	private KuffleMain km;
-
-	public KuffleStart(KuffleMain _km) {
-		km = _km;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -35,57 +28,57 @@ public class KuffleStart implements CommandExecutor {
 
 		Player player = (Player) sender;
 
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-start>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-start>"));
 
 		if (!player.hasPermission("ki-start")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 
-		if (km.games.size() == 0) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NO_PLAYERS"));
+		if (KuffleMain.games.size() == 0) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NO_PLAYERS"));
 
 			return false;
 		}
 
-		if (km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_LAUNCHED"));
+		if (KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
 			return false;
 		}
 
-		if (km.config.getSaturation()) {
-			km.games.forEach((playerName, game) -> {
-				game.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false));
-			});
+		if (KuffleMain.config.getSaturation()) {
+			KuffleMain.games.forEach((playerName, game) ->
+				game.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false))
+			);
 		}
 
 		int spread = 0;
 
-		if (km.config.getTeam() && !checkTeams()) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "PLAYER_NOT_IN_TEAM"));
+		if (KuffleMain.config.getTeam() && !checkTeams()) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_NOT_IN_TEAM"));
 			return true;
 		}
 
-		for (String key : km.allItems.keySet()) {
-			Collections.shuffle(km.allItems.get(key));
+		for (String key : KuffleMain.allItems.keySet()) {
+			Collections.shuffle(KuffleMain.allItems.get(key));
 		}
 
-		km.games.forEach((playerName, game) -> {
-			game.getPlayer().sendMessage(Utils.getLangString(km, player.getName(), "GAME_STARTED"));
-		});
+		KuffleMain.games.forEach((playerName, game) ->
+			game.getPlayer().sendMessage(Utils.getLangString(player.getName(), "GAME_STARTED"))
+		);
 
-		km.systemLogs.logSystemMsg(Utils.getLangString(km, player.getName(), "GAME_STARTED"));
+		KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(player.getName(), "GAME_STARTED"));
 
-		if (km.config.getSpread()) {
-			if (km.config.getTeam()) {
-				SpreadPlayer.spreadPlayers(km, player, km.config.getSpreadDistance(), km.config.getSpreadRadius(), km.teams.getTeams(), Utils.getPlayerList(km.games));
+		if (KuffleMain.config.getSpread()) {
+			if (KuffleMain.config.getTeam()) {
+				SpreadPlayer.spreadPlayers(player, KuffleMain.config.getSpreadDistance(), KuffleMain.config.getSpreadRadius(), KuffleMain.teams.getTeams(), Utils.getPlayerList(KuffleMain.games));
 			} else {
-				SpreadPlayer.spreadPlayers(km, player, km.config.getSpreadDistance(), km.config.getSpreadRadius(), null, Utils.getPlayerList(km.games));
+				SpreadPlayer.spreadPlayers(player, KuffleMain.config.getSpreadDistance(), KuffleMain.config.getSpreadRadius(), null, Utils.getPlayerList(KuffleMain.games));
 			}
 
-			km.games.forEach((playerName, game) -> {
-				if (km.config.getTeam()) {
-					game.setTeamName(km.teams.findTeamByPlayer(playerName));
+			KuffleMain.games.forEach((playerName, game) -> {
+				if (KuffleMain.config.getTeam()) {
+					game.setTeamName(KuffleMain.teams.findTeamByPlayer(playerName));
 				}
 
 				game.getPlayer().setBedSpawnLocation(game.getPlayer().getLocation(), true);
@@ -97,16 +90,16 @@ public class KuffleStart implements CommandExecutor {
 		} else {
 			Location spawn = null;
 
-			for (String playerName : km.games.keySet()) {
-				if (km.config.getTeam()) {
-					km.games.get(playerName).setTeamName(km.teams.findTeamByPlayer(playerName));
+			for (String playerName : KuffleMain.games.keySet()) {
+				if (KuffleMain.config.getTeam()) {
+					KuffleMain.games.get(playerName).setTeamName(KuffleMain.teams.findTeamByPlayer(playerName));
 				}
 
 				if (spawn == null) {
-					spawn = km.games.get(playerName).getPlayer().getLocation().getWorld().getSpawnLocation();
+					spawn = KuffleMain.games.get(playerName).getPlayer().getLocation().getWorld().getSpawnLocation();
 				}
 
-				km.games.get(playerName).setSpawnLoc(spawn);
+				KuffleMain.games.get(playerName).setSpawnLoc(spawn);
 			}
 
 			if (spawn != null) {
@@ -114,70 +107,69 @@ public class KuffleStart implements CommandExecutor {
 			}
 		}
 
-		km.playersHeads = Bukkit.createInventory(null, Utils.getNbInventoryRows(km.games.size()), "§8Players");
+		KuffleMain.playersHeads = Bukkit.createInventory(null, Utils.getNbInventoryRows(KuffleMain.games.size()), "§8Players");
 
-		km.games.forEach((playerName, game) -> {
-			km.playersHeads.addItem(Utils.getHead(game.getPlayer()));
+		KuffleMain.games.forEach((playerName, game) -> {
+			KuffleMain.playersHeads.addItem(Utils.getHead(game.getPlayer()));
 
-			if (km.config.getTeam() && !km.playerRank.containsKey(game.getTeamName())) {
-				km.playerRank.put(game.getTeamName(), 0);
+			if (KuffleMain.config.getTeam() && !KuffleMain.playerRank.containsKey(game.getTeamName())) {
+				KuffleMain.playerRank.put(game.getTeamName(), 0);
 			} else {
-				km.playerRank.put(playerName, 0);
+				KuffleMain.playerRank.put(playerName, 0);
 			}
 		});
 
-		km.paused = true;
+		KuffleMain.paused = true;
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, game.getPlayer());
-			});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, game.getPlayer())
+			);
 
-			if (km.config.getSBTT()) {
-				Utils.setupTemplates(km);
+			if (KuffleMain.config.getSBTT()) {
+				Utils.setupTemplates();
 			}
 		}, 20 + spread);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GOLD + "4" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 40 + spread);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GOLD + "4" + ChatColor.RESET, game.getPlayer())
+			)
+		, 40 + spread);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "3" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 60 + spread);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "3" + ChatColor.RESET, game.getPlayer())
+			)
+		, 60 + spread);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "2" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 80 + spread);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "2" + ChatColor.RESET, game.getPlayer())
+			)
+		, 80 + spread);
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
+			KuffleMain.games.forEach((playerName, game) -> {
 				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.BLUE + "1" + ChatColor.RESET, game.getPlayer());
 				game.setup();
 			});
 
-			km.scores.setupPlayerScores();
+			KuffleMain.scores.setupPlayerScores();
 		}, 100 + spread);
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
 			ItemStack box = getStartBox();
 
-			km.games.forEach((playerName, game) -> {
+			KuffleMain.games.forEach((playerName, game) -> {
 				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, game.getPlayer());
 				game.getPlayer().getInventory().addItem(box);
 			});
 
-			km.playerInteract.setXpSub(10);
-			km.loop = new GameLoop(km);
-			km.loop.startRunnable();
-			km.gameStarted = true;
-			km.paused = false;
+			KuffleMain.playerInteract.setXpSub(10);
+			KuffleMain.loop.startRunnable();
+			KuffleMain.gameStarted = true;
+			KuffleMain.paused = false;
 		}, 120 + spread);
 
 		return true;
@@ -194,8 +186,8 @@ public class KuffleStart implements CommandExecutor {
 	}
 
 	public boolean checkTeams() {
-		for (String playerName : km.games.keySet()) {
-			if (!km.teams.isInTeam(playerName)) {
+		for (String playerName : KuffleMain.games.keySet()) {
+			if (!KuffleMain.teams.isInTeam(playerName)) {
 				return false;
 			}
 		}

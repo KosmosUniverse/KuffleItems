@@ -20,17 +20,14 @@ import org.json.simple.parser.ParseException;
 
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.core.ActionBar;
-import main.fr.kosmosuniverse.kuffleitems.core.GameLoop;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleLoad implements CommandExecutor {
-	private KuffleMain km;
 	private File dataFolder;
 	private static final String GAME_FILE = "Game.ki";
 	
-	public KuffleLoad(KuffleMain _km, File _dataFolder) {
-		km = _km;
-		dataFolder = _dataFolder;
+	public KuffleLoad(File folder) {
+		dataFolder = folder;
 	}
 	
 	@Override
@@ -40,18 +37,18 @@ public class KuffleLoad implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-load>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-load>"));
 		
 		if (!player.hasPermission("ki-load")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (km.games.size() != 0) {
-			if (km.gameStarted) {
-				km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "GAME_LAUNCHED"));
+		if (KuffleMain.games.size() != 0) {
+			if (KuffleMain.gameStarted) {
+				KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
 			} else {
-				km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "LIST_NOT_EMPTY") + ".");
+				KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "LIST_NOT_EMPTY") + ".");
 			}
 			
 			return false;
@@ -63,7 +60,7 @@ public class KuffleLoad implements CommandExecutor {
 		if (Utils.fileExists(dataFolder.getPath(), GAME_FILE)) {
 			try (FileReader reader = new FileReader(dataFolder.getPath() + File.separator + GAME_FILE)) {
 				mainObject = (JSONObject) parser.parse(reader);
-				km.config.loadConfig((JSONObject) mainObject.get("config"));
+				KuffleMain.config.loadConfig((JSONObject) mainObject.get("config"));
 				loadRanks((JSONObject) mainObject.get("ranks"));
 			} catch (IOException | ParseException e) {
 				e.printStackTrace();
@@ -76,85 +73,84 @@ public class KuffleLoad implements CommandExecutor {
 		
 		for (Player p : players) {
 			if (Utils.fileExists(dataFolder.getPath(), player.getName() + ".ki")) {
-				Utils.loadGame(km, p);
+				Utils.loadGame(p);
 			}
 		}
 		
-		km.playersHeads = Bukkit.createInventory(null, Utils.getNbInventoryRows(km.games.size()), "§8Players");
+		KuffleMain.playersHeads = Bukkit.createInventory(null, Utils.getNbInventoryRows(KuffleMain.games.size()), "§8Players");
 		
-		km.games.forEach((playerName, game) -> {
-			km.playersHeads.addItem(Utils.getHead(game.getPlayer()));
+		KuffleMain.games.forEach((playerName, game) -> {
+			KuffleMain.playersHeads.addItem(Utils.getHead(game.getPlayer()));
 			
-			if (km.config.getTeam() && !km.playerRank.containsKey(game.getTeamName())) {
-				km.playerRank.put(game.getTeamName(), 0);
-			} else if (!km.playerRank.containsKey(playerName)) {
-				km.playerRank.put(playerName, 0);
+			if (KuffleMain.config.getTeam() && !KuffleMain.playerRank.containsKey(game.getTeamName())) {
+				KuffleMain.playerRank.put(game.getTeamName(), 0);
+			} else if (!KuffleMain.playerRank.containsKey(playerName)) {
+				KuffleMain.playerRank.put(playerName, 0);
 			}
 		});
 		
-		if (km.config.getSaturation()) {
-			km.games.forEach((playerName, game) -> {
-				game.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false));
-			});
+		if (KuffleMain.config.getSaturation()) {
+			KuffleMain.games.forEach((playerName, game) ->
+				game.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false))
+			);
 		}
 		
-		if (km.config.getTeam()) {
+		if (KuffleMain.config.getTeam()) {
 			try (FileReader reader = new FileReader(dataFolder.getPath() + File.separator + "Teams.ki")) {
 				mainObject = (JSONObject) parser.parse(reader);
-				km.teams.loadTeams(km, mainObject, km.games);
+				KuffleMain.teams.loadTeams(mainObject, KuffleMain.games);
 			} catch (IOException | ParseException e) {
 				e.printStackTrace();
 			}
 		}
 		
-		km.paused = true;
+		KuffleMain.paused = true;
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, game.getPlayer());
-			});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "5" + ChatColor.RESET, game.getPlayer())
+			);
 			
-			if (km.config.getSBTT()) {
-				Utils.setupTemplates(km);
+			if (KuffleMain.config.getSBTT()) {
+				Utils.setupTemplates();
 			}
 		}, 20);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GOLD + "4" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 40);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GOLD + "4" + ChatColor.RESET, game.getPlayer())
+			)
+		, 40);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "3" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 60);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "3" + ChatColor.RESET, game.getPlayer())
+			)
+		, 60);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "2" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 80);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "2" + ChatColor.RESET, game.getPlayer())
+			)
+		, 80);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.scores.setupPlayerScores();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
+			KuffleMain.scores.setupPlayerScores();
 				
-			km.games.forEach((playerName, game) -> {
+			KuffleMain.games.forEach((playerName, game) -> {
 				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.BLUE + "1" + ChatColor.RESET, game.getPlayer());
-				km.games.get(playerName).load();
+				KuffleMain.games.get(playerName).load();
 			});
 		}, 100);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, game.getPlayer());
-			});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, game.getPlayer())
+			);
 			
-			km.loop = new GameLoop(km);
-			km.loop.startRunnable();
-			km.gameStarted = true;
-			km.paused = false;
+			KuffleMain.loop.startRunnable();
+			KuffleMain.gameStarted = true;
+			KuffleMain.paused = false;
 		}, 120);
 		
 		return true;
@@ -165,7 +161,7 @@ public class KuffleLoad implements CommandExecutor {
 			String playerName = (String) key;
 			int rank = Integer.parseInt(ranksObj.get(key).toString());
 			
-			km.playerRank.put(playerName, rank);
+			KuffleMain.playerRank.put(playerName, rank);
 		}
 	}
 }

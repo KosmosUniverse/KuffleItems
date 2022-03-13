@@ -9,12 +9,6 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleTeamResetPlayers implements CommandExecutor {
-	private KuffleMain km;
-
-	public KuffleTeamResetPlayers(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -22,15 +16,15 @@ public class KuffleTeamResetPlayers implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-reset-players>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-team-reset-players>"));
 		
 		if (!player.hasPermission("ki-team-reset-players")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (km.games.size() > 0 && km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
+		if (KuffleMain.games.size() > 0 && KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 				
@@ -38,13 +32,13 @@ public class KuffleTeamResetPlayers implements CommandExecutor {
 			return false;
 		}
 		
-		if (!km.teams.hasTeam(args[0])) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+		if (!KuffleMain.teams.hasTeam(args[0])) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
 			return true;
 		}
 		
-		km.teams.getTeam(args[0]).players.clear();
-		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_RESETED").replace("<#>", "<" + args[0] + ">"));
+		KuffleMain.teams.getTeam(args[0]).players.clear();
+		KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_RESETED").replace("<#>", "<" + args[0] + ">"));
 		
 		return true;
 	}

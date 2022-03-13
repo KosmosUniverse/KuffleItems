@@ -13,12 +13,6 @@ import main.fr.kosmosuniverse.kuffleitems.core.Team;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleTeamAffectPlayerTab implements TabCompleter {
-	private KuffleMain km;
-	
-	public KuffleTeamAffectPlayerTab(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
@@ -26,8 +20,8 @@ public class KuffleTeamAffectPlayerTab implements TabCompleter {
 		}
 		
 		if (args.length == 1) {				
-			ArrayList<Team> teams = km.teams.getTeams();
-			ArrayList<String> ret = new ArrayList<>();
+			List<Team> teams = KuffleMain.teams.getTeams();
+			List<String> ret = new ArrayList<>();
 			
 			for (Team item : teams) {
 				ret.add(item.name);
@@ -35,10 +29,10 @@ public class KuffleTeamAffectPlayerTab implements TabCompleter {
 			
 			return ret;
 		} else if (args.length == 2) {
-			ArrayList<String> ret = new ArrayList<>();
+			List<String> ret = new ArrayList<>();
 			
-			for (String item : Utils.getPlayerNames(km.games)) {
-				if (!km.teams.isInTeam(item)) {
+			for (String item : Utils.getPlayerNames(KuffleMain.games)) {
+				if (!KuffleMain.teams.isInTeam(item)) {
 					ret.add(item);
 				}
 			}

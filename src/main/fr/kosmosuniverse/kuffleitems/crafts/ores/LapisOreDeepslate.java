@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class LapisOreDeepslate extends ACrafts {
-	public LapisOreDeepslate(KuffleMain _km) {
+	public LapisOreDeepslate() {
 		name = "LapisOreDeepslate";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.DEEPSLATE_LAPIS_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.DEEPSLATE_LAPIS_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("LDL", "LDL", "LDL");

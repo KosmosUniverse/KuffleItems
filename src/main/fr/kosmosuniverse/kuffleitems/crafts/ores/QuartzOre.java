@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class QuartzOre extends ACrafts {
-	public QuartzOre(KuffleMain _km) {
+	public QuartzOre() {
 		name = "QuartzOre";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.NETHER_QUARTZ_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.NETHER_QUARTZ_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("NQR", "QNR", "RRR");

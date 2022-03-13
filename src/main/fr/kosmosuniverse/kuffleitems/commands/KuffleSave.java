@@ -14,12 +14,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleSave implements CommandExecutor {
-	private KuffleMain km;
 	private File dataFolder;
 	
-	public KuffleSave(KuffleMain _km, File _dataFolder) {
-		km = _km;
-		dataFolder = _dataFolder;
+	public KuffleSave(File folder) {
+		dataFolder = folder;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -30,34 +28,34 @@ public class KuffleSave implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-save>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-save>"));
 		
 		if (!player.hasPermission("ki-save")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			
 			return false;
 		}
 		
-		if (!km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+		if (!KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
-		km.paused = true;
+		KuffleMain.paused = true;
 		
-		for (String playerName : km.games.keySet()) {
+		for (String playerName : KuffleMain.games.keySet()) {
 			try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + playerName + ".ki");) {				
-				writer.write(km.games.get(playerName).save());
+				writer.write(KuffleMain.games.get(playerName).save());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
-			km.games.get(playerName).stop();
+			KuffleMain.games.get(playerName).stop();
 		}
 		
-		if (km.config.getTeam()) {
+		if (KuffleMain.config.getTeam()) {
 			try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "Teams.ki");) {				
-				writer.write(km.teams.saveTeams());
+				writer.write(KuffleMain.teams.saveTeams());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -66,25 +64,23 @@ public class KuffleSave implements CommandExecutor {
 		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "Games.ki");) {				
 			JSONObject global = new JSONObject();
 
-			global.put("config", km.config.saveConfig());
+			global.put("config", KuffleMain.config.saveConfig());
 			global.put("ranks", saveRanks());
 			
 			writer.write(global.toJSONString());
-			writer.close();
 			
 			global.clear();
-						
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		Utils.removeTemplates(km);
-		km.scores.clear();
-		km.games.clear();
-		km.loop.kill();
-		km.paused = false;
-		km.gameStarted = false;
-		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_SAVED"));
+		Utils.removeTemplates();
+		KuffleMain.scores.clear();
+		KuffleMain.games.clear();
+		KuffleMain.loop.kill();
+		KuffleMain.paused = false;
+		KuffleMain.gameStarted = false;
+		KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_SAVED"));
 		
 		return true;
 	}
@@ -93,8 +89,8 @@ public class KuffleSave implements CommandExecutor {
 	private JSONObject saveRanks() {
 		JSONObject rankObj = new JSONObject();
 		
-		for (String playerName : km.playerRank.keySet()) {
-			rankObj.put(playerName, km.playerRank.get(playerName));
+		for (String playerName : KuffleMain.playerRank.keySet()) {
+			rankObj.put(playerName, KuffleMain.playerRank.get(playerName));
 		}
 		
 		return rankObj;

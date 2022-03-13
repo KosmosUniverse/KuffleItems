@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.crafts.resources;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,16 +20,16 @@ import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 public class RawCopper extends ACrafts {
 	MaterialChoice mc;
 	
-	public RawCopper(KuffleMain _km) {
+	public RawCopper() {
 		name = "RawCopper";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.RAW_COPPER, 4));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.RAW_COPPER, 4));
 		
-		ArrayList<Material> ores = new ArrayList<Material>();
+		List<Material> ores = new ArrayList<>();
 		
 		ores.add(Material.COPPER_ORE);
 		
-		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.17")) {
+		if (Utils.findVersionNumber(Utils.getVersion()) >= Utils.findVersionNumber("1.17")) {
 			ores.add(Material.DEEPSLATE_COPPER_ORE);
 		}
 		

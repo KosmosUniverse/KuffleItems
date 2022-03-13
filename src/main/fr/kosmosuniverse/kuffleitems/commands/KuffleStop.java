@@ -10,12 +10,6 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleStop implements CommandExecutor {
-	private KuffleMain km;
-
-	public KuffleStop(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -23,19 +17,19 @@ public class KuffleStop implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-stop>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-stop>"));
 		
 		if (!player.hasPermission("ki-stop")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (!km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+		if (!KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
-		km.games.forEach((playerName, game) -> {
+		KuffleMain.games.forEach((playerName, game) -> {
 			for (PotionEffect pe : game.getPlayer().getActivePotionEffects()) {
 				game.getPlayer().removePotionEffect(pe.getType());
 			}
@@ -43,17 +37,17 @@ public class KuffleStop implements CommandExecutor {
 			game.resetBar();
 		});
 
-		Utils.removeTemplates(km);
-		km.scores.clear();
+		Utils.removeTemplates();
+		KuffleMain.scores.clear();
 		
-		km.teams.resetAll();
+		KuffleMain.teams.resetAll();
 		
-		km.games.clear();
-		km.loop.kill();
+		KuffleMain.games.clear();
+		KuffleMain.loop.kill();
 		
-		km.gameStarted = false;
-		km.paused = false;
-		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_STOPPED"));
+		KuffleMain.gameStarted = false;
+		KuffleMain.paused = false;
+		KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_STOPPED"));
 		
 		return true;
 	}

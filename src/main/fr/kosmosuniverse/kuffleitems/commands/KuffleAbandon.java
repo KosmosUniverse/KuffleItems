@@ -9,12 +9,6 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleAbandon implements CommandExecutor  {
-	private KuffleMain km;
-
-	public KuffleAbandon(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cnd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -22,22 +16,22 @@ public class KuffleAbandon implements CommandExecutor  {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-abandon>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-abandon>"));
 		
 		if (!player.hasPermission("ki-abandon")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (km.gameStarted) {
-			if (!km.games.containsKey(player.getName())) {
-				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_PLAYING"));
+		if (KuffleMain.gameStarted) {
+			if (!KuffleMain.games.containsKey(player.getName())) {
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_PLAYING"));
 				return true;
 			}
 			
-			km.games.get(player.getName()).setLose(true);
+			KuffleMain.games.get(player.getName()).setLose(true);
 		} else {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));
 		}
 
 		return true;

@@ -10,10 +10,10 @@ import org.bukkit.inventory.ShapedRecipe;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class EndPortalFrame extends ACrafts {
-	public EndPortalFrame(KuffleMain _km) {
+	public EndPortalFrame() {
 		name = "EndPortalFrame";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.END_PORTAL_FRAME));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.END_PORTAL_FRAME));
 		
 		((ShapedRecipe) recipe).shape("EEE", "SOS", "SSS");
 		((ShapedRecipe) recipe).setIngredient('E', Material.ENDER_PEARL);

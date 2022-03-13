@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class GoldOre extends ACrafts{
-	public GoldOre(KuffleMain _km) {
+	public GoldOre() {
 		name = "GoldOre";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.GOLD_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.GOLD_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("SGR", "GSR", "RRR");

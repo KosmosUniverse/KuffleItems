@@ -9,12 +9,6 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleTeamAffectPlayer implements CommandExecutor {
-	private KuffleMain km;
-
-	public KuffleTeamAffectPlayer(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -22,15 +16,15 @@ public class KuffleTeamAffectPlayer implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-affect-player>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-team-affect-player>"));
 		
 		if (!player.hasPermission("ki-team-affect-player")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (km.games.size() > 0 && km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_LAUNCHED"));
+		if (KuffleMain.games.size() > 0 && KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
 			return true;
 		}
 		
@@ -38,23 +32,23 @@ public class KuffleTeamAffectPlayer implements CommandExecutor {
 			return false;
 		}
 		
-		if (!km.teams.hasTeam(args[0])) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+		if (!KuffleMain.teams.hasTeam(args[0])) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
 			return true;
 		}
 		
-		if (km.teams.getTeam(args[0]).players.size() == km.config.getTeamSize()) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_FULL"));
+		if (KuffleMain.teams.getTeam(args[0]).players.size() == KuffleMain.config.getTeamSize()) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_FULL"));
 			return true;
 		}
 		
-		if (!km.games.containsKey(args[1])) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "PLAYER_NOT_IN_GAME"));
+		if (!KuffleMain.games.containsKey(args[1])) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_NOT_IN_GAME"));
 			return true;
 		}
 		
-		km.teams.affectPlayer(args[0], km.games.get(args[1]).getPlayer());
-		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_ADD_PLAYER").replace("<#>", "<" + args[1] + ">").replace("<##>", "<" + args[0] + ">"));
+		KuffleMain.teams.affectPlayer(args[0], KuffleMain.games.get(args[1]).getPlayer());
+		KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_ADD_PLAYER").replace("<#>", "<" + args[1] + ">").replace("<##>", "<" + args[0] + ">"));
 		
 		return true;
 	}

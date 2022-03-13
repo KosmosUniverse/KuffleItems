@@ -13,12 +13,6 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.core.Team;
 
 public class KuffleTeamColorTab implements TabCompleter {
-	private KuffleMain km;
-	
-	public KuffleTeamColorTab(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
@@ -26,8 +20,8 @@ public class KuffleTeamColorTab implements TabCompleter {
 		}
 		
 		if (args.length == 1) {
-			ArrayList<Team> teams = km.teams.getTeams();
-			ArrayList<String> ret = new ArrayList<>();
+			List<Team> teams = KuffleMain.teams.getTeams();
+			List<String> ret = new ArrayList<>();
 			
 			for (Team item : teams) {
 				ret.add(item.name);
@@ -37,8 +31,8 @@ public class KuffleTeamColorTab implements TabCompleter {
 			
 			return ret;
 		} else if (args.length == 2) {
-			ArrayList<String> colorList = new ArrayList<>();
-			ArrayList<String> colorUsed = km.teams.getTeamColors();
+			List<String> colorList = new ArrayList<>();
+			List<String> colorUsed = KuffleMain.teams.getTeamColors();
 			
 			for (ChatColor item : ChatColor.values()) {
 				if (!colorUsed.contains(item.name())) {

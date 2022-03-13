@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.Bukkit;
@@ -24,8 +26,8 @@ public class ItemManager {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static HashMap<String, ArrayList<String>> getAllItems(ArrayList<Age> ages, String itemsContent, File dataFolder) {
-		HashMap<String, ArrayList<String>> finalMap = new HashMap<>();
+	public static Map<String, List<String>> getAllItems(List<Age> ages, String itemsContent, File dataFolder) {
+		Map<String, List<String>> finalMap = new HashMap<>();
 		
 		int max = AgeManager.getAgeMaxNumber(ages);
 
@@ -41,9 +43,9 @@ public class ItemManager {
 		return finalMap;
 	}
 	
-	public static synchronized ArrayList<String> getAgeItems(String age, String itemsContent, File dataFolder) throws IOException, ParseException {
-		ArrayList<String> finalList = new ArrayList<>();
-		JSONObject items = new JSONObject();
+	public static synchronized List<String> getAgeItems(String age, String itemsContent, File dataFolder) throws IOException, ParseException {
+		List<String> finalList = new ArrayList<>();
+		JSONObject items;
 		JSONParser jsonParser = new JSONParser();
 
 		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "logs.txt")) {
@@ -69,8 +71,8 @@ public class ItemManager {
 		return finalList;
 	}
 
-	public static synchronized String newItem(ArrayList<String> done, ArrayList<String> allAgeItems) {	
-		ArrayList<String> finalList = new ArrayList<>();
+	public static synchronized String newItem(List<String> done, List<String> allAgeItems) {	
+		List<String> finalList = new ArrayList<>();
 		
 		if (allAgeItems == null) {
 			return null;
@@ -89,7 +91,7 @@ public class ItemManager {
 		return finalList.get(ThreadLocalRandom.current().nextInt(finalList.size()));
 	}
 	
-	public static synchronized Pair nextItem(ArrayList<String> done, ArrayList<String> allAgeItems, int sameIdx) {	
+	public static synchronized Pair nextItem(List<String> done, List<String> allAgeItems, int sameIdx) {	
 		String testItem = allAgeItems.get(sameIdx);
 		
 		while (done.contains(testItem)) {
@@ -100,16 +102,16 @@ public class ItemManager {
 		return (new Pair(sameIdx, testItem));
 	}
 	
-	public static HashMap<String, ArrayList<Inventory>> getItemsInvs(HashMap<String, ArrayList<String>> allItems) {
-		HashMap<String, ArrayList<Inventory>> invs = new HashMap<>();
+	public static Map<String, List<Inventory>> getItemsInvs(Map<String, List<String>> allItems) {
+		Map<String, List<Inventory>> invs = new HashMap<>();
 
 		allItems.forEach((k, v) -> invs.put(k, getAgeInvs(k, v)));
 
 		return invs;
 	}
 
-	public static ArrayList<Inventory> getAgeInvs(String age, ArrayList<String> ageItems) {
-		ArrayList<Inventory> invs = new ArrayList<>();
+	public static List<Inventory> getAgeInvs(String age, List<String> ageItems) {
+		List<Inventory> invs = new ArrayList<>();
 		Inventory inv;
 		int invCnt = 0;
 		int nbInv = 1;

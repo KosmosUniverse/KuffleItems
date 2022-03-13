@@ -12,12 +12,6 @@ import org.bukkit.entity.Player;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class KuffleTeamCreateTab implements TabCompleter {
-	private KuffleMain km;
-	
-	public KuffleTeamCreateTab(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
@@ -25,8 +19,8 @@ public class KuffleTeamCreateTab implements TabCompleter {
 		}
 		
 		if (args.length == 2) {
-			ArrayList<String> colorList = new ArrayList<>();
-			ArrayList<String> colorUsed = km.teams.getTeamColors();
+			List<String> colorList = new ArrayList<>();
+			List<String> colorUsed = KuffleMain.teams.getTeamColors();
 			
 			for (ChatColor item : ChatColor.values()) {
 				if (!colorUsed.contains(item.name())) {

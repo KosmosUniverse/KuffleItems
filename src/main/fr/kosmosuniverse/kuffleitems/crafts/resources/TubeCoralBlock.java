@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.crafts.resources;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,12 +16,12 @@ import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 import main.fr.kosmosuniverse.kuffleitems.utils.ItemUtils;
 
 public class TubeCoralBlock extends ACrafts {
-	public TubeCoralBlock(KuffleMain _km) {
+	public TubeCoralBlock() {
 		name = "TubeCoralBlock";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.TUBE_CORAL_BLOCK));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.TUBE_CORAL_BLOCK));
 		
-		ArrayList<Material> corals = new ArrayList<Material>();
+		List<Material> corals = new ArrayList<>();
 		corals.add(Material.TUBE_CORAL);
 		corals.add(Material.TUBE_CORAL_FAN);
 		MaterialChoice mc = new MaterialChoice(corals);

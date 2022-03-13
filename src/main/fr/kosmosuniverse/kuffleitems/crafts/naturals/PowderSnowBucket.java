@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class PowderSnowBucket extends ACrafts {
-	public PowderSnowBucket(KuffleMain _km) {
+	public PowderSnowBucket() {
 		name = "PowderSnowBucket";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.POWDER_SNOW_BUCKET));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.POWDER_SNOW_BUCKET));
 		
 		((ShapedRecipe) recipe).shape("RSR", "SBS", "RSR");
 		((ShapedRecipe) recipe).setIngredient('S', Material.SNOW_BLOCK);

@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class CoalOre extends ACrafts {
-	public CoalOre(KuffleMain _km) {
+	public CoalOre() {
 		name = "CoalOre";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.COAL_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.COAL_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("SCR", "CSR", "RRR");

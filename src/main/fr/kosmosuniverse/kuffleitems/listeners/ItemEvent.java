@@ -15,22 +15,16 @@ import org.bukkit.inventory.ItemStack;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class ItemEvent implements Listener {
-	private KuffleMain km;
-	
-	public ItemEvent(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@EventHandler
 	public void onItemDrop(PlayerDropItemEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
 		Item item = event.getItemDrop();
 		Player player = event.getPlayer();
 		
-		if (!km.games.containsKey(player.getName())) {
+		if (!KuffleMain.games.containsKey(player.getName())) {
 			return ;
 		}
 		
@@ -46,7 +40,7 @@ public class ItemEvent implements Listener {
 	
 	@EventHandler
 	public void onBlockBreak(BlockDropItemEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
@@ -68,7 +62,7 @@ public class ItemEvent implements Listener {
 	
 	@EventHandler
 	public void onItemDespawn(ItemDespawnEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
@@ -76,7 +70,7 @@ public class ItemEvent implements Listener {
 		
 		Player player = Bukkit.getPlayer(item.getOwner());
 		
-		if (player == null || !km.games.containsKey(player.getName())) {
+		if (player == null || !KuffleMain.games.containsKey(player.getName())) {
 			return ;
 		}
 		

@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class EmeraldOre extends ACrafts {
-	public EmeraldOre(KuffleMain _km) {
+	public EmeraldOre() {
 		name = "EmeraldOre";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.EMERALD_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.EMERALD_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("SER", "ESR", "RRR");

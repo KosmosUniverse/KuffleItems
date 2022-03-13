@@ -1,26 +1,27 @@
 package main.fr.kosmosuniverse.kuffleitems.core;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class Team {
-	public ArrayList<Player> players = new ArrayList<>();
+	public List<Player> players = new ArrayList<>();
 	public String name;
 	public ChatColor color;
 	
-	public Team(String _name) {
+	public Team(String teamName) {
 		ChatColor[] colors = ChatColor.values();
 		
-		name = _name;
+		name = teamName;
 		color = colors[ThreadLocalRandom.current().nextInt(colors.length)];
 	}
 	
-	public Team(String _name, ChatColor _color) {
-		name = _name;
-		color = _color;
+	public Team(String teamName, ChatColor teamColor) {
+		name = teamName;
+		color = teamColor;
 	}
 	
 	public boolean hasPlayer(String player)	{
@@ -33,8 +34,8 @@ public class Team {
 		return false;
 	}
 	
-	public ArrayList<String> getPlayersName() {
-		ArrayList<String> names = new ArrayList<String>();
+	public List<String> getPlayersName() {
+		List<String> names = new ArrayList<>();
 		
 		for (Player item : players) {
 			names.add(item.getName());

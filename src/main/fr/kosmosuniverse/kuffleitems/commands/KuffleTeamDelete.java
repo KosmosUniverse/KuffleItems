@@ -9,12 +9,6 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleTeamDelete implements CommandExecutor {
-	private KuffleMain km;
-
-	public KuffleTeamDelete(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -22,15 +16,15 @@ public class KuffleTeamDelete implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-delete>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-team-delete>"));
 		
 		if (!player.hasPermission("ki-team-delete")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (km.games.size() > 0 && km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
+		if (KuffleMain.games.size() > 0 && KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 				
@@ -38,14 +32,14 @@ public class KuffleTeamDelete implements CommandExecutor {
 			return false;
 		}
 		
-		if (!km.teams.hasTeam(args[0])) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+		if (!KuffleMain.teams.hasTeam(args[0])) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
 			return true;
 		}
 		
-		km.teams.deleteTeam(args[0]);
+		KuffleMain.teams.deleteTeam(args[0]);
 		
-		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_DELETED").replace("<#>", "<" + args[0] + ">"));
+		KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_DELETED").replace("<#>", "<" + args[0] + ">"));
 		
 		return true;
 	}

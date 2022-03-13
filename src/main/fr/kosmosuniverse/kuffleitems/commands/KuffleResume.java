@@ -13,12 +13,6 @@ import main.fr.kosmosuniverse.kuffleitems.core.ActionBar;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleResume implements CommandExecutor {
-	private KuffleMain km;
-	
-	public KuffleResume(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -26,47 +20,47 @@ public class KuffleResume implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-resume>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-resume>"));
 		
 		if (!player.hasPermission("ki-resume")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (!km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+		if (!KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
-		if (!km.paused) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_RUNNING"));
+		if (!KuffleMain.paused) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_ALREADY_RUNNING"));
 			return false;
 		}
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "3" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 20);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.RED + "3" + ChatColor.RESET, game.getPlayer())
+			)
+		, 20);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "2" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 40);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.YELLOW + "2" + ChatColor.RESET, game.getPlayer())
+			)
+		, 40);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.games.forEach((playerName, game) -> {
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "1" + ChatColor.RESET, game.getPlayer());
-			});
-		}, 60);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () ->
+			KuffleMain.games.forEach((playerName, game) ->
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.GREEN + "1" + ChatColor.RESET, game.getPlayer())
+			)
+		, 60);
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			km.paused = false;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
+			KuffleMain.paused = false;
 			
-			km.games.forEach((playerName, game) -> {
+			KuffleMain.games.forEach((playerName, game) -> {
 				game.resume();
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + Utils.getLangString(km, player.getName(), "GAME_RESUMED") + ChatColor.RESET, game.getPlayer());
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + Utils.getLangString(player.getName(), "GAME_RESUMED") + ChatColor.RESET, game.getPlayer());
 				game.getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
 			});
 		}, 80);

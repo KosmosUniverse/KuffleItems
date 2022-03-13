@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class CopperOreDeepslate extends ACrafts {
-	public CopperOreDeepslate(KuffleMain _km) {
+	public CopperOreDeepslate() {
 		name = "CopperOreDeepslate";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.DEEPSLATE_COPPER_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.DEEPSLATE_COPPER_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("CDC", "DSD", "CDC");

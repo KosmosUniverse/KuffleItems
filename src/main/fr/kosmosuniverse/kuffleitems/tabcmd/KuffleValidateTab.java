@@ -12,22 +12,16 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.core.Game;
 
 public class KuffleValidateTab implements TabCompleter {
-	private KuffleMain km;
-	
-	public KuffleValidateTab(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public List<String> onTabComplete(CommandSender sender,  Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
 			return new ArrayList<>();
 		
 		if (args.length == 1) {
-			ArrayList<String> list = new ArrayList<>();
+			List<String> list = new ArrayList<>();
 			
-			for (String playerName : km.games.keySet()) {
-				Game tmpGame = km.games.get(playerName);
+			for (String playerName : KuffleMain.games.keySet()) {
+				Game tmpGame = KuffleMain.games.get(playerName);
 				
 				if (!tmpGame.getLose() && !tmpGame.getFinished()) {
 					list.add(playerName);	

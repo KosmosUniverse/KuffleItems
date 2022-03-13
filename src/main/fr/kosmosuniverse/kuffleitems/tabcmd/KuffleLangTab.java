@@ -11,12 +11,6 @@ import org.bukkit.entity.Player;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class KuffleLangTab implements TabCompleter {
-	private KuffleMain km;
-	
-	public KuffleLangTab(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player)) {
@@ -24,7 +18,7 @@ public class KuffleLangTab implements TabCompleter {
 		}
 		
 		if (args.length == 1) {
-			return km.langs;
+			return KuffleMain.langs;
 		}
 
 		return new ArrayList<>();

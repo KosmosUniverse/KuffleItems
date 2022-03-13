@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class GoldOreDeepslate extends ACrafts{
-	public GoldOreDeepslate(KuffleMain _km) {
+	public GoldOreDeepslate() {
 		name = "GoldOreDeepslate";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.DEEPSLATE_GOLD_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.DEEPSLATE_GOLD_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("DGR", "GDR", "RRR");

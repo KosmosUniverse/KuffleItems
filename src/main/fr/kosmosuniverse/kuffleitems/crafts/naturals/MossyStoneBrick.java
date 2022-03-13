@@ -6,13 +6,14 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
+
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class MossyStoneBrick extends ACrafts {	
-	public MossyStoneBrick(KuffleMain _km) {
+	public MossyStoneBrick() {
 		name = "MossyStoneBrick";
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.MOSSY_STONE_BRICKS));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.MOSSY_STONE_BRICKS));
 		
 		((ShapelessRecipe) recipe).addIngredient(Material.STONE_BRICKS);
 		((ShapelessRecipe) recipe).addIngredient(Material.GRASS);

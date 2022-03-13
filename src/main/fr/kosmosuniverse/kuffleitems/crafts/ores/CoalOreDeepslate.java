@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class CoalOreDeepslate extends ACrafts {
-	public CoalOreDeepslate(KuffleMain _km) {
+	public CoalOreDeepslate() {
 		name = "CoalOreDeepslate";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.DEEPSLATE_COAL_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.DEEPSLATE_COAL_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("DCR", "CDR", "RRR");

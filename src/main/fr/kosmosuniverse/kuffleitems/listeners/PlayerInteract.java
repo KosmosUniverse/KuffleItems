@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.listeners;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,21 +30,16 @@ import main.fr.kosmosuniverse.kuffleitems.core.Game;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class PlayerInteract implements Listener {
-	private KuffleMain km;
 	private int xpSub;
-	private HashMap<Location, String> shulkers = new HashMap<>();
-	
-	public PlayerInteract(KuffleMain _km) {
-		km = _km;
-	}
-	
-	public void setXpSub(int _xpSub) {
-		xpSub = _xpSub;
+	private Map<Location, String> shulkers = new HashMap<>();
+
+	public void setXpSub(int xp) {
+		xpSub = xp;
 	}
 	
 	@EventHandler
 	public void onLeftClick(PlayerInteractEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
@@ -56,7 +52,7 @@ public class PlayerInteract implements Listener {
 		}
 		
 		if (action == Action.RIGHT_CLICK_AIR && item != null) {
-			if (Utils.compareItems(item, km.crafts.findItemByName("EndTeleporter"), true, true, true)) {
+			if (Utils.compareItems(item, KuffleMain.crafts.findItemByName("EndTeleporter"), true, true, true)) {
 				endTeleporter(player);
 				
 				if (event.getHand() == EquipmentSlot.HAND) {
@@ -68,7 +64,7 @@ public class PlayerInteract implements Listener {
 				return ;
 			}
 			
-			if (Utils.compareItems(item, km.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
+			if (Utils.compareItems(item, KuffleMain.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
 				overworldTeleporter(player);
 				
 				if (event.getHand() == EquipmentSlot.HAND) {
@@ -80,16 +76,16 @@ public class PlayerInteract implements Listener {
 				return ;
 			}
 			
-			Game tmpGame = km.games.get(player.getName());
+			Game tmpGame = KuffleMain.games.get(player.getName());
 
 			if (item.getItemMeta().getDisplayName().contains("Template")) {
-				String name = AgeManager.getAgeByNumber(km.ages, tmpGame.getAge()).name;
+				String name = AgeManager.getAgeByNumber(KuffleMain.ages, tmpGame.getAge()).name;
 				name = name.replace("_Age", "");
 				name = name + "Template";
 
-				if (Utils.compareItems(item, km.crafts.findItemByName(name), true, true, true)) {
+				if (Utils.compareItems(item, KuffleMain.crafts.findItemByName(name), true, true, true)) {
 					tmpGame.foundSBTT();
-					km.gameLogs.logMsg(tmpGame.getPlayer().getName(), "just used " + name + " !");
+					KuffleMain.gameLogs.logMsg(tmpGame.getPlayer().getName(), "just used " + name + " !");
 					
 					event.setCancelled(true);
 					
@@ -104,14 +100,14 @@ public class PlayerInteract implements Listener {
 			}
 			
 			if (tmpGame != null && tmpGame.getCurrentItem() != null) {
-				if (!km.config.getDouble() && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {
-					km.gameLogs.logMsg(tmpGame.getPlayer().getName(), " validate his item [" + tmpGame.getCurrentItem() + "] !");
+				if (!KuffleMain.config.getDouble() && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {
+					KuffleMain.gameLogs.logMsg(tmpGame.getPlayer().getName(), " validate his item [" + tmpGame.getCurrentItem() + "] !");
 					tmpGame.found();
-				} else if (km.config.getDouble() &&
+				} else if (KuffleMain.config.getDouble() &&
 						(tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ||
 						tmpGame.getCurrentItem().split("/")[1].equals(item.getType().name().toLowerCase()))) {
 					String tmp = tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ? tmpGame.getCurrentItem().split("/")[0] : tmpGame.getCurrentItem().split("/")[1];
-					km.gameLogs.logMsg(tmpGame.getPlayer().getName(), " validate his item [" + tmp + "] !");
+					KuffleMain.gameLogs.logMsg(tmpGame.getPlayer().getName(), " validate his item [" + tmp + "] !");
 					tmpGame.found();
 				}
 			}
@@ -120,7 +116,7 @@ public class PlayerInteract implements Listener {
 	
 	@EventHandler
 	public void onPlaceShulker(BlockPlaceEvent event) {
-		if (!km.gameStarted || !km.config.getPassive()) {
+		if (!KuffleMain.gameStarted || !KuffleMain.config.getPassive()) {
 			return ;
 		}
 		
@@ -135,7 +131,7 @@ public class PlayerInteract implements Listener {
 	
 	@EventHandler
 	public void onBreakShulker(BlockBreakEvent event) {
-		if (!km.gameStarted || !km.config.getPassive()) {
+		if (!KuffleMain.gameStarted || !KuffleMain.config.getPassive()) {
 			return ;
 		}
 		
@@ -150,15 +146,15 @@ public class PlayerInteract implements Listener {
 		String placerName = shulkers.get(location);
 		
 		if (!placerName.equals(player.getName()) &&
-				(!km.config.getTeam() ||
-						!km.games.get(player.getName()).getTeamName().equals(km.games.get(placerName).getTeamName()))) {
+				(!KuffleMain.config.getTeam() ||
+						!KuffleMain.games.get(player.getName()).getTeamName().equals(KuffleMain.games.get(placerName).getTeamName()))) {
 			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void onBreakSign(BlockBreakEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
@@ -173,7 +169,7 @@ public class PlayerInteract implements Listener {
 		if (sign == null ||
 				!sign.getLine(0).equals("[KuffleItems]") ||
 				!sign.getLine(1).equals("Here dies") ||
-				!km.games.containsKey(sign.getLine(2))) {
+				!KuffleMain.games.containsKey(sign.getLine(2))) {
 			return ;
 		}
 		
@@ -182,7 +178,7 @@ public class PlayerInteract implements Listener {
 	
 	@EventHandler
 	public void onInteractShulker(PlayerInteractEvent event) {
-		if (!km.gameStarted || !km.config.getPassive()) {
+		if (!KuffleMain.gameStarted || !KuffleMain.config.getPassive()) {
 			return ;
 		}
 		
@@ -193,56 +189,56 @@ public class PlayerInteract implements Listener {
 		if (action == Action.RIGHT_CLICK_BLOCK && block != null &&
 				block.getType().name().toLowerCase().contains("shulker_box") &&
 				!shulkers.containsValue(player.getName()) &&
-				(!km.config.getTeam() || !km.games.get(player.getName()).getTeamName().equals(km.games.get(shulkers.get(block.getLocation())).getTeamName()))) {
+				(!KuffleMain.config.getTeam() || !KuffleMain.games.get(player.getName()).getTeamName().equals(KuffleMain.games.get(shulkers.get(block.getLocation())).getTeamName()))) {
 			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void onCraft(CraftItemEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
 		ItemStack item = event.getInventory().getResult();
 		Player player = (Player) event.getWhoClicked();
 
-		if (Utils.compareItems(item, km.crafts.findItemByName("EndTeleporter"), true, true, true)) {
+		if (Utils.compareItems(item, KuffleMain.crafts.findItemByName("EndTeleporter"), true, true, true)) {
 			if (player.getLevel() < 5) {
 				event.setCancelled(true);
 				player.sendMessage("You need 5 xp levels to craft this item.");
 			} else {
 				player.setLevel(player.getLevel() - 5);
-				km.gameLogs.logMsg(player.getName(), "Crafted EndTeleporter.");
+				KuffleMain.gameLogs.logMsg(player.getName(), "Crafted EndTeleporter.");
 			}
-		} else if (Utils.compareItems(item, km.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
+		} else if (Utils.compareItems(item, KuffleMain.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
 			if (player.getLevel() < xpSub) {
 				event.setCancelled(true);
 				player.sendMessage("You need " + xpSub + " xp levels to craft this item.");
 			} else {
 				player.setLevel(player.getLevel() - xpSub);
-				km.gameLogs.logMsg(player.getName(), "Crafted OverworldTeleporter.");
+				KuffleMain.gameLogs.logMsg(player.getName(), "Crafted OverworldTeleporter.");
 			}
 		} else if (item.hasItemMeta() &&
 				item.getItemMeta().hasDisplayName() &&
 				item.getItemMeta().getDisplayName().contains("Template")) {
-			String name = AgeManager.getAgeByNumber(km.ages, km.games.get(player.getName()).getAge()).name;
+			String name = AgeManager.getAgeByNumber(KuffleMain.ages, KuffleMain.games.get(player.getName()).getAge()).name;
 
 			name = name.replace("_Age", "");
 			name = name + "Template";
 			
-			Utils.reloadTemplate(km, name, AgeManager.getAgeByNumber(km.ages, km.games.get(player.getName()).getAge()).name);
+			Utils.reloadTemplate(name, AgeManager.getAgeByNumber(KuffleMain.ages, KuffleMain.games.get(player.getName()).getAge()).name);
 			
-			for (String playerName : km.games.keySet()) {
-				km.games.get(playerName).getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.RESET + "" + ChatColor.BLUE + " just crafted Template !");
+			for (String playerName : KuffleMain.games.keySet()) {
+				KuffleMain.games.get(playerName).getPlayer().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + player.getName() + ChatColor.RESET + "" + ChatColor.BLUE + " just crafted Template !");
 			}
-			km.gameLogs.logMsg(player.getName(), "just crafted Template !");
+			KuffleMain.gameLogs.logMsg(player.getName(), "just crafted Template !");
 		}
 	}
 	
 	@EventHandler
 	public void onPlayerHitPlayer(EntityDamageByEntityEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
@@ -256,27 +252,25 @@ public class PlayerInteract implements Listener {
 		Player damager = (Player) tmpDamager;
 		Player damagee = (Player) tmpDamagee;
 		
-		if (!km.games.containsKey(damager.getName()) || !km.games.containsKey(damagee.getName())) {
+		if (!KuffleMain.games.containsKey(damager.getName()) || !KuffleMain.games.containsKey(damagee.getName())) {
 			return ;
 		}
 		
-		if (km.config.getPassive()) {
+		if (KuffleMain.config.getPassive()) {
 			event.setCancelled(true);
 			
 			return ;
 		}
 		
-		if (km.config.getTeam() &&
-				km.games.get(damager.getName()).getTeamName().equals(km.games.get(damagee.getName()).getTeamName())) {
+		if (KuffleMain.config.getTeam() &&
+				KuffleMain.games.get(damager.getName()).getTeamName().equals(KuffleMain.games.get(damagee.getName()).getTeamName())) {
 			event.setCancelled(true);
-
-			return;
 		}
 	}
 	
 	@EventHandler
 	public void onFireWorkThrow(PlayerInteractEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
@@ -284,7 +278,7 @@ public class PlayerInteract implements Listener {
 		Action action = event.getAction();
 		Player player = event.getPlayer();
 
-		if (!km.games.containsKey(player.getName())) {
+		if (!KuffleMain.games.containsKey(player.getName())) {
 			return ;
 		}
 		
@@ -306,8 +300,6 @@ public class PlayerInteract implements Listener {
 				item.setAmount(64);
 				player.getInventory().setItemInOffHand(item);
 			}
-		} else {
-			return;
 		}
 	}
 	
@@ -332,22 +324,22 @@ public class PlayerInteract implements Listener {
 	private void teleport(Location loc, Player player, String msg) {
 		loc.setY((double) loc.getWorld().getHighestBlockAt(loc).getY());
 		
-		if (km.config.getTeam()) {
-			String teamName = km.games.get(player.getName()).getTeamName();
+		if (KuffleMain.config.getTeam()) {
+			String teamName = KuffleMain.games.get(player.getName()).getTeamName();
 			
-			for (String playerName : km.games.keySet()) {
-				if (km.games.get(playerName).getTeamName().equals(teamName)) {
-					km.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
-					km.games.get(playerName).getPlayer().teleport(loc);
-					km.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-					km.gameLogs.logMsg(playerName, msg);
+			for (String playerName : KuffleMain.games.keySet()) {
+				if (KuffleMain.games.get(playerName).getTeamName().equals(teamName)) {
+					KuffleMain.games.get(playerName).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
+					KuffleMain.games.get(playerName).getPlayer().teleport(loc);
+					KuffleMain.games.get(playerName).getPlayer().removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+					KuffleMain.gameLogs.logMsg(playerName, msg);
 				}
 			}
 		} else {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 50, false, false, false));
 			player.teleport(loc);
 			player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
-			km.gameLogs.logMsg(player.getName(), msg);
+			KuffleMain.gameLogs.logMsg(player.getName(), msg);
 		}
 	}
 }

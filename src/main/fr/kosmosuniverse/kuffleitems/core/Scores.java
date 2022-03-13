@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -12,14 +13,12 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import net.md_5.bungee.api.ChatColor;
 
 public class Scores {
-	private KuffleMain km;
 	private Scoreboard scoreboard;
 	private Objective age = null;
 	private Objective items;
-	private ArrayList<Score> S_ages = new ArrayList<>();
+	private List<Score> sAges = new ArrayList<>();
 	
-	public Scores(KuffleMain _km) {
-		km = _km;
+	public Scores() {
 		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		items = scoreboard.registerNewObjective("items", "dummy", "Items");
 	}
@@ -35,34 +34,34 @@ public class Scores {
 		
 		int ageCnt = 0;
 		
-		for (; ageCnt < km.config.getMaxAges(); ageCnt++) {
-			S_ages.add(age.getScore(AgeManager.getAgeByNumber(km.ages, ageCnt).color + AgeManager.getAgeByNumber(km.ages, ageCnt).name.replace("_", " ")));
+		for (; ageCnt < KuffleMain.config.getMaxAges(); ageCnt++) {
+			sAges.add(age.getScore(AgeManager.getAgeByNumber(KuffleMain.ages, ageCnt).color + AgeManager.getAgeByNumber(KuffleMain.ages, ageCnt).name.replace("_", " ")));
 		}
 				
 		ageCnt = 1;
 		
-		for (Score ageScore : S_ages) {
+		for (Score ageScore : sAges) {
 			ageScore.setScore(ageCnt);
 			ageCnt++;
 		}
 		
 		age.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
-		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).setItemScore(items.getScore(playerName));
-			km.games.get(playerName).getItemScore().setScore(1);
-			km.games.get(playerName).getPlayer().setScoreboard(scoreboard);
-			km.games.get(playerName).updatePlayerListName();
+		for (String playerName : KuffleMain.games.keySet()) {
+			KuffleMain.games.get(playerName).setItemScore(items.getScore(playerName));
+			KuffleMain.games.get(playerName).getItemScore().setScore(1);
+			KuffleMain.games.get(playerName).getPlayer().setScoreboard(scoreboard);
+			KuffleMain.games.get(playerName).updatePlayerListName();
 		}
 	}
 	
-	public void setupPlayerScores(Game _game) {
+	public void setupPlayerScores(Game game) {
 		items.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 		age.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-		_game.setItemScore(items.getScore(_game.getPlayer().getName()));
-		_game.getItemScore().setScore(1);
-		_game.getPlayer().setScoreboard(scoreboard);
+		game.setItemScore(items.getScore(game.getPlayer().getName()));
+		game.getItemScore().setScore(1);
+		game.getPlayer().setScoreboard(scoreboard);
 	}
 	
 	public void clear() {
@@ -74,17 +73,17 @@ public class Scores {
 
 		age.unregister();
 		age = null;
-		S_ages.clear();
+		sAges.clear();
 		
-		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).getPlayer().setPlayerListName(ChatColor.WHITE + km.games.get(playerName).getPlayer().getName());
-		}
+		KuffleMain.games.forEach((playerName, game) ->
+			game.getPlayer().setPlayerListName(ChatColor.WHITE + playerName)
+		);
 	}
 	
 	public void reset() {
-		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).getItemScore().setScore(1);;
-			km.games.get(playerName).getPlayer().setPlayerListName(ChatColor.RED + km.games.get(playerName).getPlayer().getName());
-		}
+		KuffleMain.games.forEach((playerName, game) -> {
+			game.getItemScore().setScore(1);
+			game.getPlayer().setPlayerListName(ChatColor.RED + playerName);
+		});
 	}
 }

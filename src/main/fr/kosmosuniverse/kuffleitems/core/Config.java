@@ -2,6 +2,8 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,7 +15,6 @@ import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 public class Config {
 	private static final String CONFIG_DEFAULT = "CONFIG_DEFAULT";
 	
-	private KuffleMain km;
 	private boolean saturation;
 	private boolean spread;
 	private boolean rewards;
@@ -38,19 +39,17 @@ public class Config {
 	private int level;
 	private String lang;
 
-	private ArrayList<String> ret = new ArrayList<String>();
+	private List<String> ret = new ArrayList<>();
 
-	public HashMap<String, String> booleanElems = new HashMap<String, String>();
-	public HashMap<String, String> intElems = new HashMap<String, String>();
-	public HashMap<String, String> stringElems = new HashMap<String, String>();
+	public Map<String, String> booleanElems = new HashMap<>();
+	public Map<String, String> intElems = new HashMap<>();
+	public Map<String, String> stringElems = new HashMap<>();
 
-	public HashMap<String, ArrayList<String>> booleanRet = new HashMap<String, ArrayList<String>>();
-	public HashMap<String, ArrayList<String>> intRet = new HashMap<String, ArrayList<String>>();
-	public HashMap<String, ArrayList<String>> stringRet = new HashMap<String, ArrayList<String>>();
+	public Map<String, List<String>> booleanRet = new HashMap<>();
+	public Map<String, List<String>> intRet = new HashMap<>();
+	public Map<String, List<String>> stringRet = new HashMap<>();
 
-	public Config(KuffleMain _km) {
-		km = _km;
-
+	public Config() {
 		ret.add("TRUE");
 		ret.add("FALSE");
 
@@ -90,7 +89,7 @@ public class Config {
 		intElems.put("TEAMSIZE", "setTeamSize");
 		intElems.put("SBTT_AMOUNT", "setSbttAmount");
 		
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
 		for (int i = 1; i < 11; i++) {
 			ret.add("" + i);
@@ -98,7 +97,7 @@ public class Config {
 
 		intRet.put("ITEM_PER_AGE", ret);
 
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
 		for (int i = 2; i < 11; i++) {
 			ret.add("" + i);
@@ -106,7 +105,7 @@ public class Config {
 
 		intRet.put("TEAMSIZE", ret);
 
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
 		ret.add("100");
 
@@ -116,7 +115,7 @@ public class Config {
 
 		intRet.put("SPREAD_MIN_DISTANCE", ret);
 
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
 		ret.add("500");
 
@@ -127,15 +126,15 @@ public class Config {
 		intRet.put("SPREAD_MIN_RADIUS", ret);
 		intRet.put("FIRST_AGE_SKIP", null);
 
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
-		for (int i = 1; i <= AgeManager.getAgeMaxNumber(km.ages) + 1; i++) {
+		for (int i = 1; i <= AgeManager.getAgeMaxNumber(KuffleMain.ages) + 1; i++) {
 			ret.add("" + i);
 		}
 
 		intRet.put("NB_AGE", ret);
 
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
 		for (int i = 1; i < 7; i++) {
 			ret.add("" + i);
@@ -143,7 +142,7 @@ public class Config {
 		
 		intRet.put("START_DURATION", ret);
 
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
 		for (int i = 1; i < 6; i++) {
 			ret.add("" + i);
@@ -151,7 +150,7 @@ public class Config {
 
 		intRet.put("ADDED_DURATION", ret);
 
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
 		for (int i = 1; i < 10; i++) {
 			ret.add("" + i);
@@ -159,23 +158,23 @@ public class Config {
 		
 		intRet.put("SBTT_AMOUNT", ret);
 		
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
-		for (Level l : km.levels) {
+		for (Level l : KuffleMain.levels) {
 			ret.add(l.name);
 		}
 
 		stringElems.put("LANG", "setLang");
 		stringElems.put("LEVEL", "setLevel");
 
-		stringRet.put("LANG", km.langs);
+		stringRet.put("LANG", KuffleMain.langs);
 		stringRet.put("LEVEL", ret);
 	}
 
-	public void setupConfig(KuffleMain km, FileConfiguration configFile) {
+	public void setupConfig(FileConfiguration configFile) {
 		if (!configFile.contains("game_settings.lang")
-				|| !km.langs.contains(configFile.getString("game_settings.lang"))) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "lang"));
+				|| !KuffleMain.langs.contains(configFile.getString("game_settings.lang"))) {
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "lang"));
 			configFile.set("game_settings.lang", "en");
 		} else {
 			lang = configFile.getString("game_settings.lang");
@@ -183,77 +182,77 @@ public class Config {
 		
 		if (!configFile.contains("game_settings.item_per_age")
 				|| configFile.getInt("game_settings.item_per_age") < 1) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "item per age"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "item per age"));
 			configFile.set("game_settings.item_per_age", 5);
 		}
 
 		if (!configFile.contains("game_settings.spreadplayers.minimum_distance")
 				|| configFile.getInt("game_settings.spreadplayers.minimum_distance") < 1) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "spreadplayers minimum distance"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "spreadplayers minimum distance"));
 			configFile.set("game_settings.spreadplayers.minimum_distance", 500);
 		}
 
 		if (!configFile.contains("game_settings.spreadplayers.minimum_radius")
 				|| configFile.getInt("game_settings.spreadplayers.minimum_radius") < configFile
 						.getInt("game_settings.spreadplayers.minimum_distance")) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "spreadplayers minimum radius"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "spreadplayers minimum radius"));
 			configFile.set("game_settings.spreadplayers.minimum_radius", 1000);
 		}
 
 		if (!configFile.contains("game_settings.start_time") || configFile.getInt("game_settings.start_time") < 1) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "start time"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "start time"));
 			configFile.set("game_settings.start_time", 4);
 		}
 
 		if (!configFile.contains("game_settings.time_added") || configFile.getInt("game_settings.time_added") < 1) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "time added"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "time added"));
 			configFile.set("game_settings.time_added", 2);
 		}
 
-		if (!configFile.contains("game_settings.max_age") || configFile.getInt("game_settings.max_age") < 1 || configFile.getInt("game_settings.max_age") > (AgeManager.getAgeMaxNumber(km.ages) + 1)) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "max ages"));
-			configFile.set("game_settings.max_age", AgeManager.getAgeMaxNumber(km.ages) + 1);
+		if (!configFile.contains("game_settings.max_age") || configFile.getInt("game_settings.max_age") < 1 || configFile.getInt("game_settings.max_age") > (AgeManager.getAgeMaxNumber(KuffleMain.ages) + 1)) {
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "max ages"));
+			configFile.set("game_settings.max_age", AgeManager.getAgeMaxNumber(KuffleMain.ages) + 1);
 		}
 
 		if (!configFile.contains("game_settings.level") || configFile.getInt("game_settings.level") < 0
 				|| configFile.getInt("game_settings.level") > 3) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "level"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "level"));
 			configFile.set("game_settings.level", 1);
 		}
 
 		if (!configFile.contains("game_settings.skip.enable")) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling skip"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "enabling skip"));
 			configFile.set("game_settings.skip.enable", true);
 		}
 
 		if (!configFile.contains("game_settings.skip.age") || configFile.getInt("game_settings.skip.age") < 1) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "skip age"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "skip age"));
 			configFile.set("game_settings.skip.age", 2);
 		}
 
 		if (!configFile.contains("game_settings.custom_crafts")) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling custom crafts"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "enabling custom crafts"));
 			configFile.set("game_settings.custom_crafts", true);
 		}
 
 		if (!configFile.contains("game_settings.team.enable")) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling team"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "enabling team"));
 			configFile.set("game_settings.team.enable", false);
 		}
 
 		if (!configFile.contains("game_settings.team.size") || configFile.getInt("game_settings.team.size") < 2
 				|| configFile.getInt("game_settings.team.size") > 10) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "max team size"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "max team size"));
 			configFile.set("game_settings.team.size", 2);
 		}
 		
 		if (!configFile.contains("game_settings.same_mode")) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling same mode"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "enabling same mode"));
 			configFile.set("game_settings.same_mode", false);
 		}
 		
 		if (!configFile.contains("game_settings.auto_detect_game_end.enable")) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "enabling auto detect game end"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "enabling auto detect game end"));
 			configFile.set("game_settings.auto_detect_game_end.enable", false);
 		}
 		
@@ -261,24 +260,24 @@ public class Config {
 		
 		if (!configFile.contains("game_settings.auto_detect_game_end.end_when_one") ||
 				(!gameEnd && configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one"))) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "game end when one"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "game end when one"));
 			configFile.set("game_settings.auto_detect_game_end.end_when_one", false);
 		}
 		
 		if (!configFile.contains("game_settings.sbtt_mode.enable")) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "SBTT mode"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "SBTT mode"));
 			configFile.set("game_settings.sbtt_mode.enable", false);
 		}
 		
 		if (!configFile.contains("game_settings.passive")) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "passive mode"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "passive mode"));
 			configFile.set("game_settings.passive", true);
 		}
 		
 		if (!configFile.contains("game_settings.sbtt_mode.amount") ||
 				configFile.getInt("game_settings.sbtt_mode.amount") < 1 ||
 				configFile.getInt("game_settings.sbtt_mode.amount") > 9) {
-			km.systemLogs.logSystemMsg(Utils.getLangString(km, null, CONFIG_DEFAULT).replace("<#>", "SBTT item amount"));
+			KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, CONFIG_DEFAULT).replace("<#>", "SBTT item amount"));
 			configFile.set("game_settings.sbtt_mode.amount", 4);
 		}
 
@@ -304,7 +303,7 @@ public class Config {
 		teamSize = configFile.getInt("game_settings.team.size");
 		sbttAmount = configFile.getInt("game_settings.sbtt_mode.amount");
 
-		ret = new ArrayList<String>();
+		ret = new ArrayList<>();
 
 		for (int i = 1; i < maxAges + 1; i++) {
 			ret.add("" + i);
@@ -330,7 +329,7 @@ public class Config {
 		sb.append("  " + ChatColor.BLUE).append("Start duration: " + ChatColor.GOLD).append(startTime).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Added duration: " + ChatColor.GOLD).append(addedTime).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Lang: " + ChatColor.GOLD).append(lang).append("\n");
-		sb.append("  " + ChatColor.BLUE).append("Level: " + ChatColor.GOLD).append(LevelManager.getLevelByNumber(km.levels, level).name).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Level: " + ChatColor.GOLD).append(LevelManager.getLevelByNumber(KuffleMain.levels, level).name).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Detect Game End: " + ChatColor.GOLD).append(gameEnd).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("End game at one: " + ChatColor.GOLD).append(endOne).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Passive: " + ChatColor.GOLD).append(passive).append("\n");
@@ -502,72 +501,72 @@ public class Config {
 	}
 
 	public Level getLevel() {
-		return LevelManager.getLevelByNumber(km.levels, level);
+		return LevelManager.getLevelByNumber(KuffleMain.levels, level);
 	}
 
 	public String getLang() {
 		return lang;
 	}
 
-	public boolean setSaturation(boolean _saturation) {
-		saturation = _saturation;
+	public boolean setSaturation(boolean configSaturation) {
+		saturation = configSaturation;
 		return true;
 	}
 
-	public boolean setSpreadplayers(boolean _spread) {
-		spread = _spread;
+	public boolean setSpreadplayers(boolean configSpread) {
+		spread = configSpread;
 		return true;
 	}
 
-	public boolean setRewards(boolean _rewards) {
-		rewards = _rewards;
+	public boolean setRewards(boolean configRewards) {
+		rewards = configRewards;
 		return true;
 	}
 
-	public boolean setSkip(boolean _skip) {
-		skip = _skip;
+	public boolean setSkip(boolean configSkip) {
+		skip = configSkip;
 		return true;
 	}
 
-	public boolean setCrafts(boolean _crafts) {
-		crafts = _crafts;
+	public boolean setCrafts(boolean configCrafts) {
+		crafts = configCrafts;
 		return true;
 	}
 
-	public boolean setTeam(boolean _team) {
-		if (km.gameStarted) {
+	public boolean setTeam(boolean configTeam) {
+		if (KuffleMain.gameStarted) {
 			return false;
 		}
 
-		team = _team;
+		team = configTeam;
 		
 		return true;
 	}
 	
-	public boolean setSame(boolean _same) {
-		if (km.gameStarted) {
+	public boolean setSame(boolean configSame) {
+		if (KuffleMain.gameStarted) {
 			return false;
 		}
 		
-		same = _same;
+		same = configSame;
 		
 		return true;
 	}
 	
-	public boolean setDoubleMode(boolean _duoMode) {
-		duoMode = _duoMode;
+	public boolean setDoubleMode(boolean configDuoMode) {
+		duoMode = configDuoMode;
 		
 		return true;
 	}
 	
-	public boolean setSbttMode(boolean _sbttMode) {
-		sbttMode = _sbttMode;
+	public boolean setSbttMode(boolean configSbttMode) {
+		sbttMode = configSbttMode;
 		
 		return true;
 	}
 	
-	public boolean setGameEnd(boolean _gameEnd) {
-		gameEnd = _gameEnd;
+	public boolean setGameEnd(boolean configGameEnd) {
+		gameEnd = configGameEnd;
 		
 		if (!gameEnd) {
 			endOne = false;
@@ -576,67 +575,67 @@ public class Config {
 		return true;
 	}
 	
-	public boolean setEndOne(boolean _endOne) {
+	public boolean setEndOne(boolean configEndOne) {
 		if (!gameEnd) {
 			return false;
 		}
 		
-		endOne = _endOne;
+		endOne = configEndOne;
 		
 		return true;
 	}
 	
-	public boolean setPassive(boolean _passive) {
-		passive = _passive;
+	public boolean setPassive(boolean configPassive) {
+		passive = configPassive;
 		
 		return true;
 	}
 
- 	public boolean setTeamSize(int _teamSize) {
- 		if (km.gameStarted) {
+ 	public boolean setTeamSize(int configTeamSize) {
+ 		if (KuffleMain.gameStarted) {
 			return false;
 		}
  		
-		if (km.teams.getTeams().size() > 0 && km.teams.getMaxTeamSize() > _teamSize) {
+		if (KuffleMain.teams.getTeams().size() > 0 && KuffleMain.teams.getMaxTeamSize() > configTeamSize) {
 			return false;
 		}
 
-		teamSize = _teamSize;
+		teamSize = configTeamSize;
 		return true;
 	}
 
-	public boolean setSpreadDistance(int _spreadMin) {
-		spreadMin = _spreadMin;
+	public boolean setSpreadDistance(int configSpreadMin) {
+		spreadMin = configSpreadMin;
 		return true;
 	}
 
-	public boolean setSpreadRadius(int _spreadMax) {
-		spreadMax = _spreadMax;
+	public boolean setSpreadRadius(int configSpreadMax) {
+		spreadMax = configSpreadMax;
 		return true;
 	}
 
-	public boolean setItemAge(int _itemPerAge) {
-		itemPerAge = _itemPerAge;
+	public boolean setItemAge(int configItemPerAge) {
+		itemPerAge = configItemPerAge;
 		return true;
 	}
 
-	public boolean setFirstSkip(int _skipAge) {
-		if (_skipAge > maxAges) {
-			return false;
-		}
-		
-		skipAge = _skipAge;
-		return true;
-	}
-
-	public boolean setMaxAge(int _maxAges) {
-		if (_maxAges > (AgeManager.getAgeMaxNumber(km.ages) + 1)) {
+	public boolean setFirstSkip(int configSkipAge) {
+		if (configSkipAge > maxAges) {
 			return false;
 		}
 		
-		maxAges = _maxAges;
+		skipAge = configSkipAge;
+		return true;
+	}
 
-		ret = new ArrayList<String>();
+	public boolean setMaxAge(int configMaxAges) {
+		if (configMaxAges > (AgeManager.getAgeMaxNumber(KuffleMain.ages) + 1)) {
+			return false;
+		}
+		
+		maxAges = configMaxAges;
+
+		ret = new ArrayList<>();
 
 		for (int i = 1; i < maxAges + 1; i++) {
 			ret.add("" + i);
@@ -646,26 +645,26 @@ public class Config {
 		return true;
 	}
 
-	public boolean setStartTime(int _startTime) {
-		startTime = _startTime;
+	public boolean setStartTime(int configStartTime) {
+		startTime = configStartTime;
 		return true;
 	}
 
-	public boolean setAddedTime(int _addedTime) {
-		addedTime = _addedTime;
+	public boolean setAddedTime(int configAddedTime) {
+		addedTime = configAddedTime;
 		return true;
 	}
 	
-	public boolean setSbttAmount(int _sbttAmount) {
-		sbttAmount = _sbttAmount;
+	public boolean setSbttAmount(int configSbttAmount) {
+		sbttAmount = configSbttAmount;
 		
 		return true;
 	}
 
-	public boolean setLevel(String _level) {
+	public boolean setLevel(String configLevel) {
 		Level l;
 		
-		if ((l = LevelManager.getLevelByName(km.levels, _level)) == null) {
+		if ((l = LevelManager.getLevelByName(KuffleMain.levels, configLevel)) == null) {
 			return false;
 		}
 		
@@ -674,9 +673,9 @@ public class Config {
 		return true;
 	}
 
-	public boolean setLang(String _lang) {
-		if (km.langs.contains(_lang)) {
-			lang = _lang;
+	public boolean setLang(String configLang) {
+		if (KuffleMain.langs.contains(configLang)) {
+			lang = configLang;
 			return true;
 		}
 		

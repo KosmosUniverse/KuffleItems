@@ -129,8 +129,8 @@ public class ItemUtils {
 	 * @return true is lore are same, false if not
 	 */
 	private static boolean compareLoreElements(ItemStack first, ItemStack second) {
-		List<String> firstLore = (ArrayList<String>) first.getItemMeta().getLore();
-		List<String> secondLore = (ArrayList<String>) second.getItemMeta().getLore();
+		List<String> firstLore = first.getItemMeta().getLore();
+		List<String> secondLore = second.getItemMeta().getLore();
 		
 		if (firstLore.size() != secondLore.size()) {
 			return false;

@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,8 +12,8 @@ public class LevelManager {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static ArrayList<Level> getLevels(String content) {
-		ArrayList<Level> finalList = new ArrayList<>();
+	public static List<Level> getLevels(String content) {
+		List<Level> finalList = new ArrayList<>();
 
 		if (content == null) {
 			return null;
@@ -40,7 +41,7 @@ public class LevelManager {
 		return finalList;
 	}
 	
-	public static Level getLevelByNumber(ArrayList<Level> levels, int levelNumber) {
+	public static Level getLevelByNumber(List<Level> levels, int levelNumber) {
 		for (Level level : levels) {
 			if (level.number == levelNumber) {
 				return level;
@@ -50,7 +51,7 @@ public class LevelManager {
 		return null;
 	}
 	
-	public static Level getLevelByName(ArrayList<Level> levels, String levelName) {
+	public static Level getLevelByName(List<Level> levels, String levelName) {
 		for (Level level : levels) {
 			if (level.name.equalsIgnoreCase(levelName)) {
 				return level;
@@ -60,7 +61,7 @@ public class LevelManager {
 		return null;
 	}
 	
-	public static int getLevelMaxNumber(ArrayList<Level> levels) {
+	public static int getLevelMaxNumber(List<Level> levels) {
 		int max = 0;
 		
 		for (Level level : levels) {

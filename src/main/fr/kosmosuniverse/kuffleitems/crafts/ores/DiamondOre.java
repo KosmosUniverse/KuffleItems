@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class DiamondOre extends ACrafts{
-	public DiamondOre(KuffleMain _km) {
+	public DiamondOre() {
 		name = "DiamondOre";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.DIAMOND_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.DIAMOND_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("SDR", "DSR", "RRR");

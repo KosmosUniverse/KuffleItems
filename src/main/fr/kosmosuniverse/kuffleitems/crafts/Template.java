@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.crafts;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,17 +15,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class Template extends ACrafts {
-	ArrayList<Material> compose;
+	List<Material> compose;
 	
-	public Template(KuffleMain _km, String age, ArrayList<Material> _compose) {
-		compose = _compose;
+	public Template(String age, List<Material> craftCompose) {
+		compose = craftCompose;
 		name = age + "Template";
 		item = new ItemStack(Material.EMERALD);
 		
 		ItemMeta itM = item.getItemMeta();
 		itM.setDisplayName(ChatColor.DARK_RED + name);
 		
-		ArrayList<String> lore = new ArrayList<String>();
+		List<String> lore = new ArrayList<>();
 		
 		lore.add("Single Use " + age + " Template.");
 		lore.add("Right click to validate your item.");
@@ -33,9 +34,9 @@ public class Template extends ACrafts {
 		
 		item.setItemMeta(itM);
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), item);
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), item);
 		
-		for (int cnt = 0; cnt < _km.config.getSBTTAmount(); cnt++) {
+		for (int cnt = 0; cnt < KuffleMain.config.getSBTTAmount(); cnt++) {
 			((ShapelessRecipe) recipe).addIngredient(compose.get(cnt));
 		}
 	}

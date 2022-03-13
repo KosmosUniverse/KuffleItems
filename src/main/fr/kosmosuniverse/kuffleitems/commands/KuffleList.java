@@ -14,13 +14,8 @@ import main.fr.kosmosuniverse.kuffleitems.core.Game;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleList implements CommandExecutor {
-	private KuffleMain km;
 	private static final String NO_PLAYERS = "NO_PLAYERS";
-
-	public KuffleList(KuffleMain _km) {
-		km = _km;
-	}
-
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -28,22 +23,22 @@ public class KuffleList implements CommandExecutor {
 
 		Player player = (Player) sender;
 
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-list>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-list>"));
 
 		if (!player.hasPermission("ki-list")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 
 			return false;
 		}
 
 		if (args.length == 0) {
-			if (km.games.size() == 0) {
-				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), NO_PLAYERS));
+			if (KuffleMain.games.size() == 0) {
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), NO_PLAYERS));
 			} else {
 				StringBuilder sb = new StringBuilder();
 				int i = 0;
 
-				for (String playerName : km.games.keySet()) {
+				for (String playerName : KuffleMain.games.keySet()) {
 					if (i == 0) {
 						sb.append(playerName);
 					} else {
@@ -53,20 +48,20 @@ public class KuffleList implements CommandExecutor {
 					i++;
 				}
 
-				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "PLAYER_LIST") + " " + sb.toString());
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_LIST") + " " + sb.toString());
 			}
 
 			return true;
 		} else if (args.length == 1) {
 			if (args[0].equals("reset")) {
-				if (km.games.size() == 0) {
-					km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), NO_PLAYERS));
+				if (KuffleMain.games.size() == 0) {
+					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), NO_PLAYERS));
 
 					return false;
 				}
 
-				km.games.clear();
-				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "LIST_RESET"));
+				KuffleMain.games.clear();
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "LIST_RESET"));
 
 				return true;
 			}
@@ -77,26 +72,26 @@ public class KuffleList implements CommandExecutor {
 					List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
 
 					for (Player p : players) {
-						if (!km.games.containsKey(p.getName())) {
-							km.games.put(p.getName(), new Game(km, p));
+						if (!KuffleMain.games.containsKey(p.getName())) {
+							KuffleMain.games.put(p.getName(), new Game(p));
 							cnt++;
 						}
 					}
 
-					km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "ADDED_LIST").replace("%i", "" + cnt));
+					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "ADDED_LIST").replace("%i", "" + cnt));
 
 					return true;
 				} else {
 					Player retComp;
 
 					if ((retComp = searchPlayerByName(args[1])) != null) {
-						if (!km.games.containsKey(retComp.getName())) {
-							km.games.put(retComp.getName(), new Game(km, retComp));
-							km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "ADDED_ONE_LIST"));
+						if (!KuffleMain.games.containsKey(retComp.getName())) {
+							KuffleMain.games.put(retComp.getName(), new Game(retComp));
+							KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "ADDED_ONE_LIST"));
 
 							return true;
 						} else {
-							km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "PLAYER_ALREADY_LIST"));
+							KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_ALREADY_LIST"));
 
 							return false;
 						}
@@ -105,15 +100,15 @@ public class KuffleList implements CommandExecutor {
 					}
 				}
 			} else if (args[0].equals("remove")) {
-				if (km.games.size() == 0) {
-					km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), NO_PLAYERS));
+				if (KuffleMain.games.size() == 0) {
+					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), NO_PLAYERS));
 
 					return false;
 				}
 
-				if (km.games.containsKey(args[1])) {
-					km.games.remove(args[1]);
-					km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "REMOVED_LIST"));
+				if (KuffleMain.games.containsKey(args[1])) {
+					KuffleMain.games.remove(args[1]);
+					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "REMOVED_LIST"));
 
 					return true;
 				}

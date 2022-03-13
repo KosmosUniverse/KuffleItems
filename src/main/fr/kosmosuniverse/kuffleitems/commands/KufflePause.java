@@ -13,12 +13,6 @@ import main.fr.kosmosuniverse.kuffleitems.core.ActionBar;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KufflePause implements CommandExecutor {
-	private KuffleMain km;
-	
-	public KufflePause(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -26,28 +20,28 @@ public class KufflePause implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-pause>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-pause>"));
 		
 		if (!player.hasPermission("ki-pause")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (!km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_NOT_LAUNCHED"));
+		if (!KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));
 			return false;
 		}
 		
-		if (km.paused) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_PAUSED"));
+		if (KuffleMain.paused) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_ALREADY_PAUSED"));
 			return false;
 		}
 		
-		km.paused = true;
+		KuffleMain.paused = true;
 		
-		km.games.forEach((playerName, game) -> {
+		KuffleMain.games.forEach((playerName, game) -> {
 			game.pause();
-			ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + Utils.getLangString(km, player.getName(), "GAME_PAUSED") + ChatColor.RESET, game.getPlayer());
+			ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + Utils.getLangString(player.getName(), "GAME_PAUSED") + ChatColor.RESET, game.getPlayer());
 			game.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 10, false, false, false));			
 		});
 		

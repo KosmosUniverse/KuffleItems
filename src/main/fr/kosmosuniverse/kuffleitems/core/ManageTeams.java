@@ -1,7 +1,8 @@
 package main.fr.kosmosuniverse.kuffleitems.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class ManageTeams {
-	private ArrayList<Team> teams = new ArrayList<>();
+	private List<Team> teams = new ArrayList<>();
 
 	public void createTeam(String name) {
 		teams.add(new Team(name));
@@ -79,8 +80,8 @@ public class ManageTeams {
 		return false;
 	}
 	
-	public ArrayList<String> getTeamColors() {
-		ArrayList<String> teamColors = new ArrayList<String>();
+	public List<String> getTeamColors() {
+		List<String> teamColors = new ArrayList<>();
 		
 		for (Team item : teams)  {
 			teamColors.add(item.color.name());
@@ -129,7 +130,7 @@ public class ManageTeams {
 		return null;
 	}
 	
-	public String toString(KuffleMain km) {
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
 		if (teams.size() != 0) {
@@ -141,7 +142,7 @@ public class ManageTeams {
 				}
 			}
 		} else {
-			sb.append(Utils.getLangString(km, null, "NO_TEAM"));
+			sb.append(Utils.getLangString(null, "NO_TEAM"));
 		}
 		
 		return sb.toString();
@@ -169,7 +170,7 @@ public class ManageTeams {
 		return global.toString();
 	}
 	
-	public void loadTeams(KuffleMain km, JSONObject global, HashMap<String, Game> games) {
+	public void loadTeams(JSONObject global, Map<String, Game> games) {
 		for (Object key : global.keySet()) {
 			String name = key.toString();
 			JSONObject tmp = (JSONObject) global.get(key);
@@ -184,7 +185,7 @@ public class ManageTeams {
 					Game tmpPlayer = games.get((String) obj);
 					
 					if (tmpPlayer == null) {
-						km.systemLogs.logSystemMsg(Utils.getLangString(km, null, "PLAYER_NOT_EXISTS").replace("<#>", "<" + (String) obj + ">"));
+						KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(null, "PLAYER_NOT_EXISTS").replace("<#>", "<" + (String) obj + ">"));
 					} else {
 						Player p = tmpPlayer.getPlayer();
 						affectPlayer(name, p);	
@@ -194,7 +195,7 @@ public class ManageTeams {
 		}
 	}
 	
-	public ArrayList<Team> getTeams() {
+	public List<Team> getTeams() {
 		return teams;
 	}
 	

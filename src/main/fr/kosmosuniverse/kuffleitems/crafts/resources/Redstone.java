@@ -19,16 +19,16 @@ import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 public class Redstone extends ACrafts {
 	MaterialChoice mc;
 	
-	public Redstone(KuffleMain _km) {
+	public Redstone() {
 		name = "Redstone";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.REDSTONE, 5));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.REDSTONE, 5));
 		
-		ArrayList<Material> ores = new ArrayList<Material>();
+		ArrayList<Material> ores = new ArrayList<>();
 		
 		ores.add(Material.REDSTONE_ORE);
 		
-		if (Utils.findVersionNumber(_km, Utils.getVersion()) >= Utils.findVersionNumber(_km, "1.17")) {
+		if (Utils.findVersionNumber(Utils.getVersion()) >= Utils.findVersionNumber("1.17")) {
 			ores.add(Material.DEEPSLATE_REDSTONE_ORE);
 		}
 		

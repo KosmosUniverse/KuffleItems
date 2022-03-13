@@ -3,6 +3,8 @@ package main.fr.kosmosuniverse.kuffleitems;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -14,7 +16,30 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
-import main.fr.kosmosuniverse.kuffleitems.commands.*;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleAbandon;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleAddDuringGame;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleAgeItems;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleConfig;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleCrafts;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleLang;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleList;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleLoad;
+import main.fr.kosmosuniverse.kuffleitems.commands.KufflePause;
+import main.fr.kosmosuniverse.kuffleitems.commands.KufflePlayers;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleResume;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleSave;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleSkip;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleStart;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleStop;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleTeamAffectPlayer;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleTeamColor;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleTeamCreate;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleTeamDelete;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleTeamRandomPlayer;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleTeamRemovePlayer;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleTeamResetPlayers;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleTeamShow;
+import main.fr.kosmosuniverse.kuffleitems.commands.KuffleValidate;
 import main.fr.kosmosuniverse.kuffleitems.core.Age;
 import main.fr.kosmosuniverse.kuffleitems.core.AgeManager;
 import main.fr.kosmosuniverse.kuffleitems.core.Config;
@@ -31,43 +56,59 @@ import main.fr.kosmosuniverse.kuffleitems.core.RewardElem;
 import main.fr.kosmosuniverse.kuffleitems.core.RewardManager;
 import main.fr.kosmosuniverse.kuffleitems.core.Scores;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
-import main.fr.kosmosuniverse.kuffleitems.listeners.*;
-import main.fr.kosmosuniverse.kuffleitems.tabcmd.*;
+import main.fr.kosmosuniverse.kuffleitems.listeners.InventoryListeners;
+import main.fr.kosmosuniverse.kuffleitems.listeners.ItemEvent;
+import main.fr.kosmosuniverse.kuffleitems.listeners.PlayerEvents;
+import main.fr.kosmosuniverse.kuffleitems.listeners.PlayerInteract;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleAddDuringGameTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleAgeItemsTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleConfigTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleLangTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleListTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleTeamAffectPlayerTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleTeamColorTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleTeamCreateTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleTeamDeleteTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleTeamRemovePlayerTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleTeamResetPlayersTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleTeamShowTab;
+import main.fr.kosmosuniverse.kuffleitems.tabcmd.KuffleValidateTab;
 import main.fr.kosmosuniverse.kuffleitems.utils.FilesConformity;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleMain extends JavaPlugin {
-	public HashMap<String, HashMap<String, RewardElem>> allRewards;
-	public HashMap<String, HashMap<String, String>> allItemsLangs;
-	public HashMap<String, HashMap<String, String>> allLangs;
+	public static Map<String, Map<String, RewardElem>> allRewards;
+	public static Map<String, Map<String, String>> allItemsLangs;
+	public static Map<String, Map<String, String>> allLangs;
 
-	public HashMap<String, ArrayList<String>> allItems = new HashMap<>();
-	public HashMap<String, ArrayList<String>> allSbtts = new HashMap<>();
-	public HashMap<String, ArrayList<Inventory>> itemsInvs;
+	public static Map<String, List<String>> allItems = new HashMap<>();
+	public static Map<String, List<String>> allSbtts = new HashMap<>();
+	public static Map<String, List<Inventory>> itemsInvs;
 
-	public HashMap<String, Game> games = new HashMap<>();
-	public HashMap<String, Integer> playerRank = new HashMap<>();
-	public HashMap<Integer, String> versions;
+	public static Map<String, Game> games = new HashMap<>();
+	public static Map<String, Integer> playerRank = new HashMap<>();
+	public static Map<Integer, String> versions;
 
-	public ArrayList<String> langs;
-	public ArrayList<Age> ages;
-	public ArrayList<Level> levels;
+	public static List<String> langs;
+	public static List<Age> ages;
+	public static List<Level> levels;
 
-	public GameLoop loop;
-	public Config config;
-	public Logs gameLogs;
-	public Logs systemLogs;
-	public ManageTeams teams = new ManageTeams();
-	public CraftsManager crafts = null;
-	public Scores scores;
-	public Inventory playersHeads;
-	public PlayerInteract playerInteract;
-	public PlayerEvents playerEvents;
+	public static KuffleMain current;
+	public static GameLoop loop;
+	public static Config config;
+	public static Logs gameLogs;
+	public static Logs systemLogs;
+	public static ManageTeams teams;
+	public static CraftsManager crafts = null;
+	public static Scores scores;
+	public static Inventory playersHeads;
+	public static PlayerInteract playerInteract;
+	public static PlayerEvents playerEvents;
 	
-	public boolean paused = false;
-	public boolean loaded = false;
+	public static boolean paused = false;
+	public static boolean loaded = false;
 
-	public boolean gameStarted = false;
+	public static boolean gameStarted = false;
 
 	public KuffleMain() {
 		super();
@@ -81,114 +122,14 @@ public class KuffleMain extends JavaPlugin {
 	public void onEnable() {
 		saveDefaultConfig();
 		reloadConfig();
-
-		gameLogs = new Logs(this.getDataFolder().getPath() + File.separator + "KuffleItemsGamelogs.txt");
-		systemLogs = new Logs(this.getDataFolder().getPath() + File.separator + "KuffleItemsSystemlogs.txt");
 		
-		if (((versions = Utils.loadVersions(this, "versions.json")) == null) ||
-				((ages = AgeManager.getAges(FilesConformity.getContent(this, "ages.json"))) == null) ||
-				((allItems = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "items_%v.json"), this.getDataFolder())) == null) ||
-				((allSbtts = ItemManager.getAllItems(ages, FilesConformity.getContent(this, "sbtt_%v.json"), this.getDataFolder())) == null)) {
+		if (!setup(this)) {
 			this.getPluginLoader().disablePlugin(this);
-			return ;
 		}
-
-		if ((allRewards = RewardManager.getAllRewards(ages, FilesConformity.getContent(this, "rewards_%v.json"), this.getDataFolder())) == null) {
-			this.getPluginLoader().disablePlugin(this);
-			return ;
-		}
-
-		if ((allItemsLangs = LangManager.getAllItemsLang(FilesConformity.getContent(this, "items_lang.json"), this.getDataFolder())) == null) {
-			this.getPluginLoader().disablePlugin(this);
-			return ;
-		}
-
-		if ((allLangs = LangManager.getAllItemsLang(FilesConformity.getContent(this, "langs.json"), this.getDataFolder())) == null) {
-			this.getPluginLoader().disablePlugin(this);
-			return ;
-		}
-
-		if ((levels = LevelManager.getLevels(FilesConformity.getContent(this, "levels.json"))) == null) {
-			this.getPluginLoader().disablePlugin(this);
-			return ;
-		}
-
-		langs = LangManager.findAllLangs(allItemsLangs);
-
-		config = new Config(this);
-		config.setupConfig(this, getConfig());
-
-		crafts = new CraftsManager(this);
-		itemsInvs = ItemManager.getItemsInvs(allItems);
-		scores = new Scores(this);
-
-		int cnt = 0;
-
-		for (ACrafts item : crafts.getRecipeList()) {
-			getServer().addRecipe(item.getRecipe());
-			cnt++;
-		}
-
-		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ADD_CRAFTS").replace("%i", "" + cnt));
-
-		playerInteract = new PlayerInteract(this);
-		playerEvents = new PlayerEvents(this, this.getDataFolder());
-
-		getServer().getPluginManager().registerEvents(playerEvents, this);
-		getServer().getPluginManager().registerEvents(playerInteract, this);
-		getServer().getPluginManager().registerEvents(new InventoryListeners(this), this);
-		getServer().getPluginManager().registerEvents(new ItemEvent(this), this);
-		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ADD_LISTENERS").replace("%i", "4"));
-
-		getCommand("ki-config").setExecutor(new KuffleConfig(this));
-		getCommand("ki-list").setExecutor(new KuffleList(this));
-		getCommand("ki-save").setExecutor(new KuffleSave(this, this.getDataFolder()));
-		getCommand("ki-load").setExecutor(new KuffleLoad(this, this.getDataFolder()));
-		getCommand("ki-start").setExecutor(new KuffleStart(this));
-		getCommand("ki-stop").setExecutor(new KuffleStop(this));
-		getCommand("ki-pause").setExecutor(new KufflePause(this));
-		getCommand("ki-resume").setExecutor(new KuffleResume(this));
-		getCommand("ki-ageitems").setExecutor(new KuffleAgeItems(this));
-		getCommand("ki-crafts").setExecutor(new KuffleCrafts(this));
-		getCommand("ki-lang").setExecutor(new KuffleLang(this));
-		getCommand("ki-skip").setExecutor(new KuffleSkip(this));
-		getCommand("ki-abandon").setExecutor(new KuffleAbandon(this));
-		getCommand("ki-adminskip").setExecutor(new KuffleSkip(this));
-		getCommand("ki-validate").setExecutor(new KuffleValidate(this));
-		getCommand("ki-validate-age").setExecutor(new KuffleValidate(this));
-		getCommand("ki-players").setExecutor(new KufflePlayers(this));
-		getCommand("ki-add-during-game").setExecutor(new KuffleAddDuringGame(this));
-
-		getCommand("ki-team-create").setExecutor(new KuffleTeamCreate(this));
-		getCommand("ki-team-delete").setExecutor(new KuffleTeamDelete(this));
-		getCommand("ki-team-color").setExecutor(new KuffleTeamColor(this));
-		getCommand("ki-team-show").setExecutor(new KuffleTeamShow(this));
-		getCommand("ki-team-affect-player").setExecutor(new KuffleTeamAffectPlayer(this));
-		getCommand("ki-team-remove-player").setExecutor(new KuffleTeamRemovePlayer(this));
-		getCommand("ki-team-reset-players").setExecutor(new KuffleTeamResetPlayers(this));
-		getCommand("ki-team-random-player").setExecutor(new KuffleTeamRandomPlayer(this));
-		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ADD_CMD").replace("%i", "25"));
-
-		getCommand("ki-config").setTabCompleter(new KuffleConfigTab(this));
-		getCommand("ki-list").setTabCompleter(new KuffleListTab(this));
-		getCommand("ki-lang").setTabCompleter(new KuffleLangTab(this));
-		getCommand("ki-ageitems").setTabCompleter(new KuffleAgeItemsTab(this));
-		getCommand("ki-validate").setTabCompleter(new KuffleValidateTab(this));
-		getCommand("ki-validate-age").setTabCompleter(new KuffleValidateTab(this));
-		getCommand("ki-add-during-game").setTabCompleter(new KuffleAddDuringGameTab(this));
 		
-		getCommand("ki-team-create").setTabCompleter(new KuffleTeamCreateTab(this));
-		getCommand("ki-team-delete").setTabCompleter(new KuffleTeamDeleteTab(this));
-		getCommand("ki-team-color").setTabCompleter(new KuffleTeamColorTab(this));
-		getCommand("ki-team-show").setTabCompleter(new KuffleTeamShowTab(this));
-		getCommand("ki-team-affect-player").setTabCompleter(new KuffleTeamAffectPlayerTab(this));
-		getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab(this));
-		getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab(this));
-		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ADD_TAB").replace("%i", "13"));
-
 		loaded = true;
 
-		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "ON"));
+		systemLogs.logMsg(this.getName(), Utils.getLangString(null, "ON"));
 	}
 
 	@Override
@@ -197,21 +138,128 @@ public class KuffleMain extends JavaPlugin {
 			killAll();
 		}
 
-		systemLogs.logMsg(this.getName(), Utils.getLangString(this, null, "OFF"));
+		systemLogs.logMsg(this.getName(), Utils.getLangString(null, "OFF"));
+	}
+	
+	private static boolean setup(JavaPlugin plugin) {
+		current = (KuffleMain) plugin;
+		
+		gameLogs = new Logs(plugin.getDataFolder().getPath() + File.separator + "KuffleItemsGamelogs.txt");
+		systemLogs = new Logs(plugin.getDataFolder().getPath() + File.separator + "KuffleItemsSystemlogs.txt");
+		
+		if (((versions = Utils.loadVersions("versions.json")) == null) ||
+				((ages = AgeManager.getAges(FilesConformity.getContent("ages.json"))) == null) ||
+				((allItems = ItemManager.getAllItems(ages, FilesConformity.getContent("items_%v.json"), plugin.getDataFolder())) == null) ||
+				((allSbtts = ItemManager.getAllItems(ages, FilesConformity.getContent("sbtt_%v.json"), plugin.getDataFolder())) == null)) {
+			
+			return false;
+		}
+
+		if ((allRewards = RewardManager.getAllRewards(ages, FilesConformity.getContent("rewards_%v.json"), plugin.getDataFolder())) == null) {
+			return false;
+		}
+
+		if ((allItemsLangs = LangManager.getAllItemsLang(FilesConformity.getContent("items_lang.json"), plugin.getDataFolder())) == null) {
+			return false;
+		}
+
+		if ((allLangs = LangManager.getAllItemsLang(FilesConformity.getContent("langs.json"), plugin.getDataFolder())) == null) {
+			return false;
+		}
+
+		if ((levels = LevelManager.getLevels(FilesConformity.getContent("levels.json"))) == null) {
+			return false;
+		}
+
+		langs = LangManager.findAllLangs(allItemsLangs);
+
+		config = new Config();
+		config.setupConfig(plugin.getConfig());
+
+		teams = new ManageTeams();
+		crafts = new CraftsManager();
+		itemsInvs = ItemManager.getItemsInvs(allItems);
+		scores = new Scores();
+
+		int cnt = 0;
+
+		for (ACrafts item : crafts.getRecipeList()) {
+			plugin.getServer().addRecipe(item.getRecipe());
+			cnt++;
+		}
+
+		systemLogs.logMsg(plugin.getName(), Utils.getLangString(null, "ADD_CRAFTS").replace("%i", "" + cnt));
+
+		playerInteract = new PlayerInteract();
+		playerEvents = new PlayerEvents(plugin.getDataFolder());
+
+		plugin.getServer().getPluginManager().registerEvents(playerEvents, current);
+		plugin.getServer().getPluginManager().registerEvents(playerInteract, current);
+		plugin.getServer().getPluginManager().registerEvents(new InventoryListeners(), current);
+		plugin.getServer().getPluginManager().registerEvents(new ItemEvent(), current);
+		systemLogs.logMsg(plugin.getName(), Utils.getLangString(null, "ADD_LISTENERS").replace("%i", "4"));
+
+		plugin.getCommand("ki-config").setExecutor(new KuffleConfig());
+		plugin.getCommand("ki-list").setExecutor(new KuffleList());
+		plugin.getCommand("ki-save").setExecutor(new KuffleSave(plugin.getDataFolder()));
+		plugin.getCommand("ki-load").setExecutor(new KuffleLoad(plugin.getDataFolder()));
+		plugin.getCommand("ki-start").setExecutor(new KuffleStart());
+		plugin.getCommand("ki-stop").setExecutor(new KuffleStop());
+		plugin.getCommand("ki-pause").setExecutor(new KufflePause());
+		plugin.getCommand("ki-resume").setExecutor(new KuffleResume());
+		plugin.getCommand("ki-ageitems").setExecutor(new KuffleAgeItems());
+		plugin.getCommand("ki-crafts").setExecutor(new KuffleCrafts());
+		plugin.getCommand("ki-lang").setExecutor(new KuffleLang());
+		plugin.getCommand("ki-skip").setExecutor(new KuffleSkip());
+		plugin.getCommand("ki-abandon").setExecutor(new KuffleAbandon());
+		plugin.getCommand("ki-adminskip").setExecutor(new KuffleSkip());
+		plugin.getCommand("ki-validate").setExecutor(new KuffleValidate());
+		plugin.getCommand("ki-validate-age").setExecutor(new KuffleValidate());
+		plugin.getCommand("ki-players").setExecutor(new KufflePlayers());
+		plugin.getCommand("ki-add-during-game").setExecutor(new KuffleAddDuringGame());
+
+		plugin.getCommand("ki-team-create").setExecutor(new KuffleTeamCreate());
+		plugin.getCommand("ki-team-delete").setExecutor(new KuffleTeamDelete());
+		plugin.getCommand("ki-team-color").setExecutor(new KuffleTeamColor());
+		plugin.getCommand("ki-team-show").setExecutor(new KuffleTeamShow());
+		plugin.getCommand("ki-team-affect-player").setExecutor(new KuffleTeamAffectPlayer());
+		plugin.getCommand("ki-team-remove-player").setExecutor(new KuffleTeamRemovePlayer());
+		plugin.getCommand("ki-team-reset-players").setExecutor(new KuffleTeamResetPlayers());
+		plugin.getCommand("ki-team-random-player").setExecutor(new KuffleTeamRandomPlayer());
+		systemLogs.logMsg(plugin.getName(), Utils.getLangString(null, "ADD_CMD").replace("%i", "25"));
+
+		plugin.getCommand("ki-config").setTabCompleter(new KuffleConfigTab());
+		plugin.getCommand("ki-list").setTabCompleter(new KuffleListTab());
+		plugin.getCommand("ki-lang").setTabCompleter(new KuffleLangTab());
+		plugin.getCommand("ki-ageitems").setTabCompleter(new KuffleAgeItemsTab());
+		plugin.getCommand("ki-validate").setTabCompleter(new KuffleValidateTab());
+		plugin.getCommand("ki-validate-age").setTabCompleter(new KuffleValidateTab());
+		plugin.getCommand("ki-add-during-game").setTabCompleter(new KuffleAddDuringGameTab());
+		
+		plugin.getCommand("ki-team-create").setTabCompleter(new KuffleTeamCreateTab());
+		plugin.getCommand("ki-team-delete").setTabCompleter(new KuffleTeamDeleteTab());
+		plugin.getCommand("ki-team-color").setTabCompleter(new KuffleTeamColorTab());
+		plugin.getCommand("ki-team-show").setTabCompleter(new KuffleTeamShowTab());
+		plugin.getCommand("ki-team-affect-player").setTabCompleter(new KuffleTeamAffectPlayerTab());
+		plugin.getCommand("ki-team-remove-player").setTabCompleter(new KuffleTeamRemovePlayerTab());
+		plugin.getCommand("ki-team-reset-players").setTabCompleter(new KuffleTeamResetPlayersTab());
+		systemLogs.logMsg(plugin.getName(), Utils.getLangString(null, "ADD_TAB").replace("%i", "13"));
+
+		return true;
 	}
 
-	public void addRecipe(Recipe recipe) {
-		getServer().addRecipe(recipe);
+	public static void addRecipe(Recipe recipe) {
+		current.getServer().addRecipe(recipe);
 	}
 
-	public void removeRecipe(String name) {
-		NamespacedKey n = new NamespacedKey(this, name);
+	public static void removeRecipe(String name) {
+		NamespacedKey n = new NamespacedKey(current, name);
 
 		for (String playerName : games.keySet()) {
 			games.get(playerName).getPlayer().undiscoverRecipe(n);
 		}
 
-		getServer().removeRecipe(n);
+		current.getServer().removeRecipe(n);
 	}
 
 	private void killAll() {
@@ -268,7 +316,7 @@ public class KuffleMain extends JavaPlugin {
 		}
 	}
 	
-	public void updatePlayersHead() {
+	public static void updatePlayersHead() {
 		Inventory newInv = Bukkit.createInventory(null, Utils.getNbInventoryRows(games.size()), "§8Players");
 		
 		for (String playerName : games.keySet()) {
@@ -279,7 +327,7 @@ public class KuffleMain extends JavaPlugin {
 		playersHeads = newInv;
 	}
 
-	public void updatePlayersHeadData(String player, String currentItem) {
+	public static void updatePlayersHeadData(String player, String currentItem) {
 		ItemMeta itM;
 
 		if (playersHeads == null) {
@@ -291,7 +339,7 @@ public class KuffleMain extends JavaPlugin {
 				itM = item.getItemMeta();
 
 				if (itM.getDisplayName().equals(player)) {
-					ArrayList<String> lore = new ArrayList<>();
+					List<String> lore = new ArrayList<>();
 
 					if (currentItem != null) {
 						lore.add(currentItem);

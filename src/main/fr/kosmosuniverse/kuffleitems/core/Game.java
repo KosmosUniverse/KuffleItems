@@ -29,7 +29,6 @@ import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 import net.md_5.bungee.api.ChatColor;
 
 public class Game {
-	private KuffleMain km;
 	private ArrayList<String> alreadyGot;
 	private HashMap<String, Long> times;
 	private long totalTime = 0;
@@ -65,21 +64,20 @@ public class Game {
 	private Score itemScore;
 	private BossBar ageDisplay;
 
-	public Game(KuffleMain _km, Player _player) {
-		km = _km;
-		player = _player;
+	public Game(Player gamePlayer) {
+		player = gamePlayer;
 		finished = false;
 		lose = false;
 		dead = false;
 	}
 
 	public void setup() {
-		time = km.config.getStartTime();
+		time = KuffleMain.config.getStartTime();
 		timeBase = System.currentTimeMillis();
 		times = new HashMap<>();
 		alreadyGot = new ArrayList<>();
-		configLang = km.config.getLang();
-		ageDisplay = Bukkit.createBossBar(Utils.getLangString(km, player.getName(), "START"), BarColor.PURPLE, BarStyle.SOLID);
+		configLang = KuffleMain.config.getLang();
+		ageDisplay = Bukkit.createBossBar(Utils.getLangString(player.getName(), "START"), BarColor.PURPLE, BarStyle.SOLID);
 		ageDisplay.addPlayer(player);
 		deathLoc = null;
 		updateBar();
@@ -124,7 +122,7 @@ public class Game {
 		}
 
 		global.put("age", age);
-		global.put("maxAge", km.config.getMaxAges());
+		global.put("maxAge", KuffleMain.config.getMaxAges());
 		global.put("current", currentItem);
 		global.put("interval", System.currentTimeMillis() - timeShuffle);
 		global.put("time", time);
@@ -149,7 +147,7 @@ public class Game {
 
 		JSONObject saveTimes = new JSONObject();
 
-		times.forEach((k, v) -> saveTimes.put(k, v));
+		times.forEach(saveTimes::put);
 
 		saveTimes.put("interval", System.currentTimeMillis() - timeBase);
 
@@ -159,7 +157,7 @@ public class Game {
 	}
 
 	public void saveInventory() throws IOException {
-        File f = new File(km.getDataFolder().getPath(), player.getName() + ".yml");
+        File f = new File(KuffleMain.current.getDataFolder().getPath(), player.getName() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
         c.set("inventory.content", deathInv.getContents());
         c.save(f);
@@ -167,7 +165,7 @@ public class Game {
 
 	@SuppressWarnings("unchecked")
 	public void loadInventory() throws IOException {
-        File f = new File(km.getDataFolder().getPath(), player.getName() + ".yml");
+        File f = new File(KuffleMain.current.getDataFolder().getPath(), player.getName() + ".yml");
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
 
         deathInv = Bukkit.createInventory(null, 54);
@@ -178,7 +176,7 @@ public class Game {
 
 	public void load() {
 		if (finished) {
-			gameRank = km.playerRank.get(player.getName());
+			gameRank = KuffleMain.playerRank.get(player.getName());
 		}
 
 		updateBar();
@@ -199,22 +197,22 @@ public class Game {
 	private void updateBar() {
 		if (lose) {
 			ageDisplay.setProgress(0.0);
-			ageDisplay.setTitle(Utils.getLangString(km, player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
+			ageDisplay.setTitle(Utils.getLangString(player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
 
 			return ;
 		}
 
 		if (finished) {
 			ageDisplay.setProgress(1.0);
-			ageDisplay.setTitle(Utils.getLangString(km, player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
+			ageDisplay.setTitle(Utils.getLangString(player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
 
 			return ;
 		}
 
-		double calc = ((double) itemCount) / km.config.getItemPerAge();
+		double calc = ((double) itemCount) / KuffleMain.config.getItemPerAge();
 		calc = calc > 1.0 ? 1.0 : calc;
 		ageDisplay.setProgress(calc);
-		ageDisplay.setTitle(AgeManager.getAgeByNumber(km.ages, age).name.replace("_", " ") + ": " + itemCount);
+		ageDisplay.setTitle(AgeManager.getAgeByNumber(KuffleMain.ages, age).name.replace("_", " ") + ": " + itemCount);
 	}
 
 	public void resetBar() {
@@ -239,16 +237,16 @@ public class Game {
 	}
 
 	public void nextAge() {
-		if (km.config.getRewards()) {
+		if (KuffleMain.config.getRewards()) {
 			if (age > 0) {
-				RewardManager.managePreviousEffects(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age - 1).name), player);
+				RewardManager.managePreviousEffects(KuffleMain.allRewards.get(AgeManager.getAgeByNumber(KuffleMain.ages, age - 1).name), player);
 			}
 
-			RewardManager.givePlayerReward(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, age).name), player, km.ages,  AgeManager.getAgeByNumber(km.ages, age).number);
+			RewardManager.givePlayerReward(KuffleMain.allRewards.get(AgeManager.getAgeByNumber(KuffleMain.ages, age).name), player, KuffleMain.ages,  AgeManager.getAgeByNumber(KuffleMain.ages, age).number);
 		}
 
-		times.put(AgeManager.getAgeByNumber(km.ages, age).name, System.currentTimeMillis() - timeBase);
-		totalTime += times.get(AgeManager.getAgeByNumber(km.ages, age).name) / 1000;
+		times.put(AgeManager.getAgeByNumber(KuffleMain.ages, age).name, System.currentTimeMillis() - timeBase);
+		totalTime += times.get(AgeManager.getAgeByNumber(KuffleMain.ages, age).name) / 1000;
 
 		timeBase = System.currentTimeMillis();
 		alreadyGot.clear();
@@ -256,34 +254,34 @@ public class Game {
 		itemCount = 1;
 		sameIdx = 0;
 		age++;
-		time = time + km.config.getAddedTime();
+		time = time + KuffleMain.config.getAddedTime();
 		player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, 1f, 1f);
 		updatePlayerListName();
 		itemScore.setScore(itemCount);
 		updateBar();
 
-		Age tmpAge = AgeManager.getAgeByNumber(km.ages, age);
+		Age tmpAge = AgeManager.getAgeByNumber(KuffleMain.ages, age);
 
-		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).getPlayer().sendMessage(Utils.getLangString(km, playerName, "AGE_MOVED").replace("<#>", ChatColor.BLUE + "<§6§l" + player.getName() + ChatColor.BLUE + ">").replace("<##>", "<" + tmpAge.color + tmpAge.name.replace("_Age", "") + ChatColor.BLUE + ">"));
+		for (String playerName : KuffleMain.games.keySet()) {
+			KuffleMain.games.get(playerName).getPlayer().sendMessage(Utils.getLangString(playerName, "AGE_MOVED").replace("<#>", ChatColor.BLUE + "<§6§l" + player.getName() + ChatColor.BLUE + ">").replace("<##>", "<" + tmpAge.color + tmpAge.name.replace("_Age", "") + ChatColor.BLUE + ">"));
 		}
 
-		player.sendMessage(Utils.getLangString(km, player.getName(), "TIME_AGE").replace("%t", Utils.getTimeFromSec(totalTime)));
+		player.sendMessage(Utils.getLangString(player.getName(), "TIME_AGE").replace("%t", Utils.getTimeFromSec(totalTime)));
 	}
 
-	public void finish(int _gameRank) {
+	public void finish(int rank) {
 		finished = true;
 
-		if (km.config.getTeam()) {
+		if (KuffleMain.config.getTeam()) {
 			int tmpRank;
 
 			if ((tmpRank = checkTeamMateRank()) != -1) {
-				_gameRank = tmpRank;
+				rank = tmpRank;
 			}
 		}
 
-		gameRank = _gameRank;
-		ageDisplay.setTitle(Utils.getLangString(km, player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
+		gameRank = rank;
+		ageDisplay.setTitle(Utils.getLangString(player.getName(), "GAME_DONE").replace("%i", "" + gameRank));
 
 		if (lose) {
 			ageDisplay.setProgress(0.0f);
@@ -291,36 +289,36 @@ public class Game {
 			ageDisplay.setProgress(1.0f);
 		}
 
-		km.playerRank.put(player.getName(), gameRank);
-		km.updatePlayersHeadData(player.getName(), null);
+		KuffleMain.playerRank.put(player.getName(), gameRank);
+		KuffleMain.updatePlayersHeadData(player.getName(), null);
 
 		for (PotionEffect pe : player.getActivePotionEffects()) {
 			player.removePotionEffect(pe.getType());
 		}
 
 		if (lose) {
-			for (int cnt = age; cnt < km.config.getMaxAges(); cnt++) {
-				times.put(AgeManager.getAgeByNumber(km.ages, cnt).name, (long) -1);
+			for (int cnt = age; cnt < KuffleMain.config.getMaxAges(); cnt++) {
+				times.put(AgeManager.getAgeByNumber(KuffleMain.ages, cnt).name, (long) -1);
 			}
 		} else {
-			times.put(AgeManager.getAgeByNumber(km.ages, age).name, System.currentTimeMillis() - timeBase);
+			times.put(AgeManager.getAgeByNumber(KuffleMain.ages, age).name, System.currentTimeMillis() - timeBase);
 		}
 
 		age = -1;
 
 		updatePlayerListName();
 
-		Utils.printPlayer(km, player.getName(), player.getName());
-		Utils.logPlayer(km, player.getName());
+		Utils.printPlayer(player.getName(), player.getName());
+		Utils.logPlayer(player.getName());
 	}
 
 	private int checkTeamMateRank() {
 		int tmp = -1;
 
-		for (String playerName : km.games.keySet()) {
-			if (km.games.get(playerName).getTeamName().equals(teamName) &&
-					km.games.get(playerName).getRank() != -1) {
-				tmp = km.games.get(playerName).getRank();
+		for (String playerName : KuffleMain.games.keySet()) {
+			if (KuffleMain.games.get(playerName).getTeamName().equals(teamName) &&
+					KuffleMain.games.get(playerName).getRank() != -1) {
+				tmp = KuffleMain.games.get(playerName).getRank();
 			}
 		}
 
@@ -337,14 +335,14 @@ public class Game {
 		skipCount++;
 
 		if (malus) {
-			if ((age + 1) < km.config.getSkipAge()) {
-				km.gameLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "CANT_SKIP_AGE"));
+			if ((age + 1) < KuffleMain.config.getSkipAge()) {
+				KuffleMain.gameLogs.writeMsg(player, Utils.getLangString(player.getName(), "CANT_SKIP_AGE"));
 
 				return false;
 			}
 
 			if (itemCount == 1) {
-				km.gameLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "CANT_SKIP_FIRST"));
+				KuffleMain.gameLogs.writeMsg(player, Utils.getLangString(player.getName(), "CANT_SKIP_FIRST"));
 
 				return false;
 			}
@@ -352,9 +350,9 @@ public class Game {
 			itemCount--;
 
 			if (currentItem.contains("/")) {
-				km.gameLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEMS_SKIP").replace("[#]", "[" + currentItem.split("/")[0] + "]").replace("[##]", "[" + currentItem.split("/")[1] + "]"));
+				KuffleMain.gameLogs.writeMsg(player, Utils.getLangString(player.getName(), "ITEMS_SKIP").replace("[#]", "[" + currentItem.split("/")[0] + "]").replace("[##]", "[" + currentItem.split("/")[1] + "]"));
 			} else {
-				km.gameLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "ITEM_SKIP").replace("[#]", "[" + currentItem + "]"));
+				KuffleMain.gameLogs.writeMsg(player, Utils.getLangString(player.getName(), "ITEM_SKIP").replace("[#]", "[" + currentItem + "]"));
 			}
 
 			itemScore.setScore(itemCount);
@@ -370,8 +368,8 @@ public class Game {
 	}
 
 	public void reloadEffects() {
-		if (km.config.getRewards()) {
-			if (km.config.getSaturation()) {
+		if (KuffleMain.config.getRewards()) {
+			if (KuffleMain.config.getSaturation()) {
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false));
 			}
 
@@ -380,7 +378,7 @@ public class Game {
 			if (tmp < 0)
 				return;
 
-			RewardManager.givePlayerRewardEffect(km.allRewards.get(AgeManager.getAgeByNumber(km.ages, tmp).name), player);
+			RewardManager.givePlayerRewardEffect(KuffleMain.allRewards.get(AgeManager.getAgeByNumber(KuffleMain.ages, tmp).name), player);
 		}
 	}
 
@@ -413,14 +411,14 @@ public class Game {
 	}
 
 	public void updatePlayerListName() {
-		if (km.config.getTeam()) {
-			player.setPlayerListName("[" + km.teams.getTeam(teamName).color + teamName + ChatColor.RESET + "] - " + AgeManager.getAgeByNumber(km.ages, age).color + player.getName());
+		if (KuffleMain.config.getTeam()) {
+			player.setPlayerListName("[" + KuffleMain.teams.getTeam(teamName).color + teamName + ChatColor.RESET + "] - " + AgeManager.getAgeByNumber(KuffleMain.ages, age).color + player.getName());
 		} else {
-			player.setPlayerListName(AgeManager.getAgeByNumber(km.ages, age).color + player.getName());
+			player.setPlayerListName(AgeManager.getAgeByNumber(KuffleMain.ages, age).color + player.getName());
 		}
 	}
 
-	public ArrayList<String> getAlreadyGot() {
+	public List<String> getAlreadyGot() {
 		return alreadyGot;
 	}
 
@@ -508,34 +506,34 @@ public class Game {
 		return deathLoc;
 	}
 
-	public void setAlreadyGot(JSONArray _alreadyGot) {
-		for (Object element : _alreadyGot) {
+	public void setAlreadyGot(JSONArray got) {
+		for (Object element : got) {
 			alreadyGot.add((String) element);
 		}
 	}
 
-	public void setFinished(boolean _finished) {
-		finished = _finished;
+	public void setFinished(boolean gameFinished) {
+		finished = gameFinished;
 	}
 
-	public void setLose(boolean _lose) {
-		lose = _lose;
+	public void setLose(boolean gameLose) {
+		lose = gameLose;
 	}
 
-	public void setDead(boolean _dead) {
-		dead = _dead;
+	public void setDead(boolean death) {
+		dead = death;
 
 		if (dead) {
 			deathCount++;
 		}
 	}
 
-	public void setTime(int _time) {
-		time = _time;
+	public void setTime(int gameTime) {
+		time = gameTime;
 	}
 
-	public void setItemCount(int _itemCount) {
-		itemCount = _itemCount;
+	public void setItemCount(int itemNb) {
+		itemCount = itemNb;
 
 		if (itemScore != null) {
 			itemScore.setScore(itemCount);
@@ -544,112 +542,112 @@ public class Game {
 		updateBar();
 	}
 
-	public void setAge(int _age) {
-		if (age == _age) {
+	public void setAge(int gameAge) {
+		if (age == gameAge) {
 			return;
 		}
 
-		age = _age;
+		age = gameAge;
 		alreadyGot.clear();
 	}
 
-	public void setSameIdx(int _sameIdx) {
-		sameIdx = _sameIdx;
+	public void setSameIdx(int idx) {
+		sameIdx = idx;
 	}
 
-	public void setDeathCount(int _deathCount) {
-		deathCount = _deathCount;
+	public void setDeathCount(int death) {
+		deathCount = death;
 	}
 
-	public void setSkipCount(int _skipCount) {
-		skipCount = _skipCount;
+	public void setSkipCount(int skip) {
+		skipCount = skip;
 	}
 
-	public void setTimeShuffle(long _timeShuffle) {
-		timeShuffle = _timeShuffle;
+	public void setTimeShuffle(long shuffle) {
+		timeShuffle = shuffle;
 	}
 
-	public void setCurrentItem(String _currentItem) {
-		currentItem = _currentItem;
+	public void setCurrentItem(String current) {
+		currentItem = current;
 
 		if (currentItem == null) {
 			return ;
 		}
 
-		if (km.config.getDouble()) {
+		if (KuffleMain.config.getDouble()) {
 			timeShuffle = System.currentTimeMillis();
 
-			itemDisplay = LangManager.findDisplay(km.allItemsLangs, currentItem.split("/")[0], configLang) + "/" + LangManager.findDisplay(km.allItemsLangs, currentItem.split("/")[1], configLang);
-			km.updatePlayersHeadData(player.getName(), itemDisplay);
+			itemDisplay = LangManager.findDisplay(KuffleMain.allItemsLangs, currentItem.split("/")[0], configLang) + "/" + LangManager.findDisplay(KuffleMain.allItemsLangs, currentItem.split("/")[1], configLang);
+			KuffleMain.updatePlayersHeadData(player.getName(), itemDisplay);
 		} else {
 			if (!alreadyGot.contains(currentItem)) {
 				alreadyGot.add(currentItem);
 			}
 
 			timeShuffle = System.currentTimeMillis();
-			itemDisplay = LangManager.findDisplay(km.allItemsLangs, currentItem, configLang);
-			km.updatePlayersHeadData(player.getName(), itemDisplay);
+			itemDisplay = LangManager.findDisplay(KuffleMain.allItemsLangs, currentItem, configLang);
+			KuffleMain.updatePlayersHeadData(player.getName(), itemDisplay);
 		}
 	}
 
-	public void setTeamName(String _teamName) {
-		teamName = _teamName;
+	public void setTeamName(String team) {
+		teamName = team;
 	}
 
-	public void setLang(String _configLang) {
-		if (_configLang.equals(configLang)) {
+	public void setLang(String lang) {
+		if (lang.equals(configLang)) {
 			return ;
 		}
 
-		configLang = _configLang;
+		configLang = lang;
 
 		if (currentItem != null) {
-			itemDisplay = LangManager.findDisplay(km.allItemsLangs, currentItem, configLang);
+			itemDisplay = LangManager.findDisplay(KuffleMain.allItemsLangs, currentItem, configLang);
 		}
 	}
 
-	public void setItemScore(Score score) {
-		itemScore = score;
+	public void setItemScore(Score gameScore) {
+		itemScore = gameScore;
 	}
 
-	public void setDeathInv(Inventory _deathInv) {
-		deathInv = _deathInv;
+	public void setDeathInv(Inventory death) {
+		deathInv = death;
 	}
 
-	public void setSpawnLoc(Location _spawnLoc) {
-		spawnLoc = _spawnLoc;
+	public void setSpawnLoc(Location spawn) {
+		spawnLoc = spawn;
 	}
 
-	public void setSpawnLoc(JSONObject _spawnloc) {
-		spawnLoc = new Location(Bukkit.getWorld((String) _spawnloc.get("World")),
-				(double) _spawnloc.get("X"),
-				(double) _spawnloc.get("Y"),
-				(double) _spawnloc.get("Z"));
+	public void setSpawnLoc(JSONObject spawn) {
+		spawnLoc = new Location(Bukkit.getWorld((String) spawn.get("World")),
+				(double) spawn.get("X"),
+				(double) spawn.get("Y"),
+				(double) spawn.get("Z"));
 	}
 
-	public void setDeathLoc(Location _deathLoc) {
-		deathLoc = _deathLoc;
+	public void setDeathLoc(Location spawn) {
+		deathLoc = spawn;
 	}
 
-	public void setDeathLoc(JSONObject _deathLoc) {
-		if (_deathLoc == null) {
+	public void setDeathLoc(JSONObject spawn) {
+		if (spawn == null) {
 			deathLoc = null;
 		} else {
-			deathLoc = new Location(Bukkit.getWorld((String) _deathLoc.get("World")),
-					(double) _deathLoc.get("X"),
-					(double) _deathLoc.get("Y"),
-					(double) _deathLoc.get("Z"));
+			deathLoc = new Location(Bukkit.getWorld((String) spawn.get("World")),
+					(double) spawn.get("X"),
+					(double) spawn.get("Y"),
+					(double) spawn.get("Z"));
 		}
 	}
 
-	public void setTimes(JSONObject _times) {
-		timeBase = System.currentTimeMillis() - (Long) _times.get("interval");
+	public void setTimes(JSONObject gameTimes) {
+		timeBase = System.currentTimeMillis() - (Long) gameTimes.get("interval");
 
-		for (int i = 0; i < km.config.getMaxAges(); i++) {
-			Age ageTime = AgeManager.getAgeByNumber(km.ages, i);
+		for (int i = 0; i < KuffleMain.config.getMaxAges(); i++) {
+			Age ageTime = AgeManager.getAgeByNumber(KuffleMain.ages, i);
 
-			if (_times.containsKey(ageTime.name)) {
-				times.put(ageTime.name, (Long) _times.get(ageTime.name));
+			if (gameTimes.containsKey(ageTime.name)) {
+				times.put(ageTime.name, (Long) gameTimes.get(ageTime.name));
 			}
 		}
 	}

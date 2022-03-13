@@ -12,10 +12,10 @@ import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class Quartz extends ACrafts {
 
-	public Quartz(KuffleMain _km) {
+	public Quartz() {
 		name = "Quartz";
 		
-		recipe = new ShapelessRecipe(new NamespacedKey(_km, name), new ItemStack(Material.QUARTZ, 2));
+		recipe = new ShapelessRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.QUARTZ, 2));
 		
 		((ShapelessRecipe) recipe).addIngredient(Material.NETHER_QUARTZ_ORE);
 		

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,13 +32,11 @@ import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class PlayerEvents implements Listener {
-	private KuffleMain km;
 	private File dataFolder;
-	private ArrayList<Material> exceptions;
+	private List<Material> exceptions;
 	
-	public PlayerEvents(KuffleMain _km, File _dataFolder) {
-		km = _km;
-		dataFolder = _dataFolder;
+	public PlayerEvents(File folder) {
+		dataFolder = folder;
 
 		exceptions = new ArrayList<>();
 		
@@ -57,11 +56,11 @@ public class PlayerEvents implements Listener {
 		Player player = event.getPlayer();
 		Game tmpGame;
 
-		for (ACrafts item : km.crafts.getRecipeList()) {
-			player.discoverRecipe(new NamespacedKey(km, item.getName()));
+		for (ACrafts item : KuffleMain.crafts.getRecipeList()) {
+			player.discoverRecipe(new NamespacedKey(KuffleMain.current, item.getName()));
 		}
 	
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return;
 		}
 		
@@ -69,21 +68,19 @@ public class PlayerEvents implements Listener {
 			return;
 		}		
 
-		Utils.loadGame(km, player);
+		Utils.loadGame(player);
 		
-		tmpGame = km.games.get(player.getName());
-		km.updatePlayersHead();
-		km.scores.setupPlayerScores(tmpGame);
+		tmpGame = KuffleMain.games.get(player.getName());
+		KuffleMain.updatePlayersHead();
+		KuffleMain.scores.setupPlayerScores(tmpGame);
 		tmpGame.load();
-		km.updatePlayersHeadData(player.getName(), tmpGame.getItemDisplay());
+		KuffleMain.updatePlayersHeadData(player.getName(), tmpGame.getItemDisplay());
 		
-		for (String playerName : km.games.keySet()) {
-			km.games.get(playerName).getPlayer().sendMessage("[" + km.getName() + "] : <" + player.getName() + "> game is reloaded !");
+		for (String playerName : KuffleMain.games.keySet()) {
+			KuffleMain.games.get(playerName).getPlayer().sendMessage("[" + KuffleMain.current.getName() + "] : <" + player.getName() + "> game is reloaded !");
 		}
 		
-		km.systemLogs.logMsg(km.getName(), "<" + player.getName() + "> game is reloaded !");
-		
-		return;
+		KuffleMain.systemLogs.logMsg(KuffleMain.current.getName(), "<" + player.getName() + "> game is reloaded !");
 	}
 	
 	@EventHandler
@@ -91,32 +88,32 @@ public class PlayerEvents implements Listener {
 		Player player = event.getPlayer();
 		Game tmpGame;
 		
-		if (!km.gameStarted || !km.games.containsKey(player.getName())) {
+		if (!KuffleMain.gameStarted || !KuffleMain.games.containsKey(player.getName())) {
 			return ;
 		}
 		
-		tmpGame = km.games.remove(player.getName());
+		tmpGame = KuffleMain.games.remove(player.getName());
 
 		try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + player.getName() + ".ki")) {			
 			Inventory newInv = Bukkit.createInventory(null, 54, "§8Players");
 			
-			for (ItemStack item : km.playersHeads.getContents()) {
+			for (ItemStack item : KuffleMain.playersHeads.getContents()) {
 				if (item != null && !item.getItemMeta().getDisplayName().equals(player.getName())) {
 					newInv.addItem(item);
 				}
 			}
 			
-			km.playersHeads = newInv;
+			KuffleMain.playersHeads = newInv;
 			
 			writer.write(tmpGame.save());
 			
 			tmpGame.stop();
 			
-			for (String playerName : km.games.keySet()) {
-				km.games.get(playerName).getPlayer().sendMessage("[" + km.getName() + "] : <" + player.getName() + "> game is saved.");
+			for (String playerName : KuffleMain.games.keySet()) {
+				KuffleMain.games.get(playerName).getPlayer().sendMessage("[" + KuffleMain.current.getName() + "] : <" + player.getName() + "> game is saved.");
 			}
 			
-			km.systemLogs.logMsg(km.getName(), "<" + player.getName() + "> game is saved.");
+			KuffleMain.systemLogs.logMsg(KuffleMain.current.getName(), "<" + player.getName() + "> game is saved.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -124,7 +121,7 @@ public class PlayerEvents implements Listener {
 	
 	@EventHandler
 	public void onPlayerDeathEvent(PlayerDeathEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
@@ -136,16 +133,16 @@ public class PlayerEvents implements Listener {
 			event.getDrops().clear();
 		}
 		
-		km.gameLogs.logMsg(player.getName(), "just died.");
+		KuffleMain.gameLogs.logMsg(player.getName(), "just died.");
 		
-		for (String playerName : km.games.keySet()) {
+		for (String playerName : KuffleMain.games.keySet()) {
 			if (playerName.equals(player.getName())) {
-				if (km.config.getLevel().losable) {
-					km.games.get(playerName).setLose(true);
+				if (KuffleMain.config.getLevel().losable) {
+					KuffleMain.games.get(playerName).setLose(true);
 				} else {
-					km.games.get(playerName).setDeathLoc(deathLoc);
-					km.games.get(playerName).savePlayerInv();
-					km.games.get(playerName).setDead(true);
+					KuffleMain.games.get(playerName).setDeathLoc(deathLoc);
+					KuffleMain.games.get(playerName).savePlayerInv();
+					KuffleMain.games.get(playerName).setDead(true);
 				}
 				
 				return ;
@@ -155,36 +152,36 @@ public class PlayerEvents implements Listener {
 	
 	@EventHandler
 	public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
-		if (!km.gameStarted) {
+		if (!KuffleMain.gameStarted) {
 			return ;
 		}
 		
 		Player player = event.getPlayer();
 		
-		km.gameLogs.logMsg(player.getName(), "just respawned.");
+		KuffleMain.gameLogs.logMsg(player.getName(), "just respawned.");
 		
-		for (String playerName : km.games.keySet()) {
+		for (String playerName : KuffleMain.games.keySet()) {
 			if (playerName.equals(player.getName())) {
-				event.setRespawnLocation(km.games.get(playerName).getSpawnLoc());
+				event.setRespawnLocation(KuffleMain.games.get(playerName).getSpawnLoc());
 				player.getInventory().clear();
 			}
 		}
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
-			if (km.config.getLevel().losable) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
+			if (KuffleMain.config.getLevel().losable) {
 				player.sendMessage(ChatColor.RED + "YOU LOSE !");
 			} else {
-				teleportAutoBack(km.games.get(player.getName()));
-				km.games.get(player.getName()).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 1));
-				km.games.get(player.getName()).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 999999, 10));
+				teleportAutoBack(KuffleMain.games.get(player.getName()));
+				KuffleMain.games.get(player.getName()).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 1));
+				KuffleMain.games.get(player.getName()).getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 999999, 10));
 			}
 		}, 20);
 	}
 	
 	public void teleportAutoBack(Game tmpGame) {
-		tmpGame.getPlayer().sendMessage("You will be tp back to your death spot in " + km.config.getLevel().seconds + " seconds.");
+		tmpGame.getPlayer().sendMessage("You will be tp back to your death spot in " + KuffleMain.config.getLevel().seconds + " seconds.");
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(km, () -> {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
 			Location loc = tmpGame.getDeathLoc();
 				
 			if (loc.getWorld().getName().contains("the_end") && loc.getY() < 0) {
@@ -241,7 +238,7 @@ public class PlayerEvents implements Listener {
 			}
 			
 			tmpGame.reloadEffects();
-		}, (km.config.getLevel().seconds * 20));
+		}, (KuffleMain.config.getLevel().seconds * 20));
 	}
 	
 	private void replaceExeption(Location loc, Material m) {
@@ -257,7 +254,7 @@ public class PlayerEvents implements Listener {
 			Sign sign = (Sign) loc.getBlock().getState();
 			
 			sign.setLine(0, "[KuffleItems]");
-			sign.setLine(1, Utils.getLangString(km, null, "HERE_DIES"));
+			sign.setLine(1, Utils.getLangString(null, "HERE_DIES"));
 			sign.setLine(2, playerName);
 			sign.update(true);
 		}
@@ -265,9 +262,8 @@ public class PlayerEvents implements Listener {
 	
 	@EventHandler
 	public void onPauseEvent(PlayerMoveEvent event) {
-		if (km.paused) {
+		if (KuffleMain.paused) {
 			event.setCancelled(true);
-			return ;
 		}
 	}
 }

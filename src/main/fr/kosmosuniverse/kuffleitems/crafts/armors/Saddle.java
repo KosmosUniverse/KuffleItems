@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class Saddle extends ACrafts {
-	public Saddle(KuffleMain _km) {
+	public Saddle() {
 		name = "Saddle";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.SADDLE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.SADDLE));
 		
 		((ShapedRecipe) recipe).shape("LLL", "RLR", "TRT");
 		((ShapedRecipe) recipe).setIngredient('L', Material.LEATHER);

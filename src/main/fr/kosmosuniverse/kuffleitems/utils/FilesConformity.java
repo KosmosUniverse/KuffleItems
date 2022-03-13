@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,53 +24,51 @@ public class FilesConformity {
 		throw new IllegalStateException("Utility class");
 	}
 	
-	public static String getContent(KuffleMain km, String file) {
+	public static String getContent(String file) {
 		String content;
 		
 		if (file.contains("%v")) {
-			file = Utils.findFileExistVersion(km, file);
+			file = Utils.findFileExistVersion(file);
 			
 			if (file == null) {
 				return null;
 			}
 		}
 		
-		content = getFromFile(km, file);
+		content = getFromFile(file);
 		
-		if (content == null || !checkContent(km, file, content)) {
-			content = getFromResource(km, file);
-			km.systemLogs.logMsg(km.getName(), "Load " + file + " from Resource");
+		if (content == null || !checkContent(file, content)) {
+			content = getFromResource(file);
+			KuffleMain.systemLogs.logMsg(KuffleMain.current.getName(), "Load " + file + " from Resource.");
 		} else {
-			km.systemLogs.logMsg(km.getName(), "Load " + file + " from File");
+			KuffleMain.systemLogs.logMsg(KuffleMain.current.getName(), "Load " + file + " from File.");
 		}
 		
 		return content;
 	}
 	
-	private static String getFromFile(KuffleMain km, String file) {
-		if (fileExists(km, km.getDataFolder().getPath(), file)) {
-			try (FileReader reader = new FileReader(km.getDataFolder().getPath() + File.separator + km.getDescription().getVersion() + File.separator  + file)) {
+	private static String getFromFile(String file) {
+		if (fileExists(KuffleMain.current.getDataFolder().getPath(), file)) {
+			try (FileReader reader = new FileReader(KuffleMain.current.getDataFolder().getPath() + File.separator + KuffleMain.current.getDescription().getVersion() + File.separator  + file)) {
 				JSONParser parser = new JSONParser();
 				
-				String result = ((JSONObject) parser.parse(reader)).toString();
-
-				return result;
+				return ((JSONObject) parser.parse(reader)).toString();
 			} catch (IOException | ParseException e) {
 				e.printStackTrace();
 			}
 		} else {
-			createFromResource(km, file);
+			createFromResource(file);
 		}
 		
 		return null;
 	}
 	
-	private static void createFromResource(KuffleMain km, String fileName) {
-		String path = km.getDataFolder().getPath() + File.separator + km.getDescription().getVersion();
+	private static void createFromResource(String fileName) {
+		String path = KuffleMain.current.getDataFolder().getPath() + File.separator + KuffleMain.current.getDescription().getVersion();
 		directoryExists(path);		
 		
 		try (FileWriter writer = new FileWriter(path + File.separator + fileName)) {
-			InputStream in = km.getResource(fileName);
+			InputStream in = KuffleMain.current.getResource(fileName);
 
 			writer.write(Utils.readFileContent(in));
 			in.close();
@@ -78,9 +77,9 @@ public class FilesConformity {
 		}
 	}
 	
-	private static String getFromResource(KuffleMain km, String file) {
+	private static String getFromResource(String file) {
 		try {
-			InputStream in = km.getResource(file);
+			InputStream in = KuffleMain.current.getResource(file);
 			String result = Utils.readFileContent(in);
 			
 			JSONParser parser = new JSONParser();
@@ -100,30 +99,30 @@ public class FilesConformity {
 		return null;
 	}
 	
-	private static boolean checkContent(KuffleMain km, String file, String content) {
-		if (content.equals(getFromResource(km, file))) {
+	private static boolean checkContent(String file, String content) {
+		if (content.equals(getFromResource(file))) {
 			return false;
 		}
 		
 		if (file.equals("ages.json")) {
-			return ageConformity(km, content);
+			return ageConformity(content);
 		} else if (file.equals("items_lang.json")) {
-			return itemLangConformity(km, content);
+			return itemLangConformity(content);
 		} else if (file.equals("items_" + Utils.getVersion() + ".json") ||
 				file.equals("sbtt_" + Utils.getVersion() + ".json")) {
-			return itemsConformity(km, content);
+			return itemsConformity(content);
 		} else if (file.equals("rewards_" + Utils.getVersion() + ".json")) {
-			return rewardsConformity(km, content);
+			return rewardsConformity(content);
 		} else if (file.equals("levels.json")) {
-			return levelsConformity(km, content);
+			return levelsConformity(content);
 		} else if (file.equals("langs.json")) {
-			return langConformity(km, content);
+			return langConformity(content);
 		}
 		
 		return false;
 	}
 	
-	private static boolean ageConformity(KuffleMain km, String content) {
+	private static boolean ageConformity(String content) {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj;
@@ -133,7 +132,7 @@ public class FilesConformity {
 			for (Object key : jsonObj.keySet()) {
 				
 				if (!((String) key).endsWith("_Age")) {
-					km.systemLogs.logSystemMsg("Age [" + (String) key + "] does not finish by '_Age'.");
+					KuffleMain.systemLogs.logSystemMsg("Age [" + (String) key + "] does not finish by '_Age'.");
 					jsonObj.clear();
 					return false;
 				}
@@ -141,17 +140,17 @@ public class FilesConformity {
 				JSONObject ageObj = (JSONObject) jsonObj.get(key);
 				
 				if (!ageObj.containsKey("Number")) {
-					km.systemLogs.logSystemMsg("Age [" + (String) key + "] does not contain 'Number' Object.");
+					KuffleMain.systemLogs.logSystemMsg("Age [" + (String) key + "] does not contain 'Number' Object.");
 					ageObj.clear();
 					jsonObj.clear();
 					return false;
 				} else if (!ageObj.containsKey("TextColor")) {
-					km.systemLogs.logSystemMsg("Age [" + (String) key + "] does not contain 'TextColor' Object.");
+					KuffleMain.systemLogs.logSystemMsg("Age [" + (String) key + "] does not contain 'TextColor' Object.");
 					ageObj.clear();
 					jsonObj.clear();
 					return false;
 				} else if (!ageObj.containsKey("BoxColor")) {
-					km.systemLogs.logSystemMsg("Age [" + (String) key + "] does not contain 'BoxColor' Object.");
+					KuffleMain.systemLogs.logSystemMsg("Age [" + (String) key + "] does not contain 'BoxColor' Object.");
 					ageObj.clear();
 					jsonObj.clear();
 					return false;
@@ -163,14 +162,14 @@ public class FilesConformity {
 				String box = (String) ageObj.get("BoxColor") + "_SHULKER_BOX";
 				
 				if (ChatColor.valueOf(color) == null) {
-					km.systemLogs.logSystemMsg("Age [" + (String) key + "] color [" + color + "] is not in ChatColor Enum.");
+					KuffleMain.systemLogs.logSystemMsg("Age [" + (String) key + "] color [" + color + "] is not in ChatColor Enum.");
 					ageObj.clear();
 					jsonObj.clear();
 					return false;
 				}
 				
 				if (Material.matchMaterial(box) == null) {
-					km.systemLogs.logSystemMsg("Age [" + (String) key + "] box [" + box + "] is not in Material Enum.");
+					KuffleMain.systemLogs.logSystemMsg("Age [" + (String) key + "] box [" + box + "] is not in Material Enum.");
 					ageObj.clear();
 					jsonObj.clear();
 					return false;
@@ -189,18 +188,18 @@ public class FilesConformity {
 		return false;
 	}
 	
-	private static boolean itemLangConformity(KuffleMain km, String content) {
+	private static boolean itemLangConformity(String content) {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj;
-			ArrayList<String> langs = null;
+			List<String> langs = null;
 			
 			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
 				
 				if (Material.matchMaterial((String) key) == null) {
-					km.systemLogs.logSystemMsg("Material [" + (String) key + "] does not exist.");
+					KuffleMain.systemLogs.logSystemMsg("Material [" + (String) key + "] does not exist.");
 					jsonObj.clear();
 					return false;
 				}
@@ -215,8 +214,8 @@ public class FilesConformity {
 					}
 				} else {
 					for (Object keyLang : materialObj.keySet()) {
-						if (!langs.contains((String) keyLang)) {
-							km.systemLogs.logSystemMsg("Lang [" + (String) keyLang + "] is not everywhere in lang file.");
+						if (!langs.contains(keyLang)) {
+							KuffleMain.systemLogs.logSystemMsg("Lang [" + (String) keyLang + "] is not everywhere in lang file.");
 							langs.clear();
 							materialObj.clear();
 							return false;
@@ -241,11 +240,11 @@ public class FilesConformity {
 		return false;
 	}
 	
-	private static boolean langConformity(KuffleMain km, String content) {
+	private static boolean langConformity(String content) {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj;
-			ArrayList<String> langs = null;
+			List<String> langs = null;
 			
 			jsonObj = (JSONObject) parser.parse(content);
 			
@@ -260,8 +259,8 @@ public class FilesConformity {
 					}
 				} else {
 					for (Object keyLang : phraseObj.keySet()) {
-						if (!langs.contains((String) keyLang)) {
-							km.systemLogs.logSystemMsg("Lang [" + (String) keyLang + "] is not everywhere in lang file.");
+						if (!langs.contains(keyLang)) {
+							KuffleMain.systemLogs.logSystemMsg("Lang [" + (String) keyLang + "] is not everywhere in lang file.");
 							langs.clear();
 							phraseObj.clear();
 							return false;
@@ -286,7 +285,7 @@ public class FilesConformity {
 		return false;
 	}
 	
-	private static boolean itemsConformity(KuffleMain km, String content) {
+	private static boolean itemsConformity(String content) {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj;
@@ -294,8 +293,8 @@ public class FilesConformity {
 			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
-				if (AgeManager.ageExists(km.ages, (String) key)) {
-					km.systemLogs.logSystemMsg("Age [" + (String) key + "] does exist in ages.json.");
+				if (AgeManager.ageExists(KuffleMain.ages, (String) key)) {
+					KuffleMain.systemLogs.logSystemMsg("Age [" + (String) key + "] does exist in ages.json.");
 					return false;
 				}
 				
@@ -319,7 +318,7 @@ public class FilesConformity {
 		return false;
 	}
 	
-	private static boolean rewardsConformity(KuffleMain km, String content) {
+	private static boolean rewardsConformity(String content) {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj;
@@ -327,8 +326,8 @@ public class FilesConformity {
 			jsonObj = (JSONObject) parser.parse(content);
 			
 			for (Object key : jsonObj.keySet()) {
-				if (AgeManager.ageExists(km.ages, (String) key)) {
-					km.systemLogs.logSystemMsg("Age [" + (String) key + "] does exist in ages.json.");
+				if (AgeManager.ageExists(KuffleMain.ages, (String) key)) {
+					KuffleMain.systemLogs.logSystemMsg("Age [" + (String) key + "] does exist in ages.json.");
 					return false;
 				}
 				
@@ -336,7 +335,7 @@ public class FilesConformity {
 				
 				for (Object reward : rewards.keySet()) {
 					if (Material.matchMaterial((String) reward) == null) {
-						km.systemLogs.logSystemMsg("Material [" + (String) reward + "] is not in Material Enum.");
+						KuffleMain.systemLogs.logSystemMsg("Material [" + (String) reward + "] is not in Material Enum.");
 						rewards.clear();
 						jsonObj.clear();
 						
@@ -344,27 +343,23 @@ public class FilesConformity {
 					}
 					
 					JSONObject itemObj = (JSONObject) rewards.get(reward);
-
+					boolean containKey = true;
+					
 					if (!itemObj.containsKey("Amount")) {
-						km.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Amount' Object.");
-						itemObj.clear();
-						rewards.clear();
-						jsonObj.clear();
-						return false;
+						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Amount' Object.");
+						containKey = false;
 					} else if (!itemObj.containsKey("Enchant")) {
-						km.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Enchant' Object.");
-						itemObj.clear();
-						rewards.clear();
-						jsonObj.clear();
-						return false;
+						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Enchant' Object.");
+						containKey = false;
 					} else if (!itemObj.containsKey("Level")) {
-						km.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Level' Object.");
-						itemObj.clear();
-						rewards.clear();
-						jsonObj.clear();
-						return false;
+						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Level' Object.");
+						containKey = false;
 					} else if (!itemObj.containsKey("Effect")) {
-						km.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Effect' Object.");
+						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Effect' Object.");
+						containKey = false;
+					}
+					
+					if (!containKey) {
 						itemObj.clear();
 						rewards.clear();
 						jsonObj.clear();
@@ -378,18 +373,22 @@ public class FilesConformity {
 					String enchants = (String) itemObj.get("Enchant");
 					String effects = (String) itemObj.get("Effect");
 					
+					containKey = true;
+					
 					if (enchants.contains(",")) {
 						for (String enchant : enchants.split(",")) {
 							if (RewardManager.getEnchantment(enchant) == null) {
-								km.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + enchant + "].");
-								itemObj.clear();
-								rewards.clear();
-								jsonObj.clear();
-								return false;
+								KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + enchant + "].");
+								containKey = false;
+								break;
 							}
 						}
 					} else if (RewardManager.getEnchantment(enchants) == null) {
-						km.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + enchants + "].");
+						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + enchants + "].");
+						containKey = false;
+					}
+					
+					if (!containKey) {
 						itemObj.clear();
 						rewards.clear();
 						jsonObj.clear();
@@ -399,8 +398,7 @@ public class FilesConformity {
 					if (effects.contains(",")) {
 						for (String effect : effects.split(",")) {
 							if (!Utils.checkEffect(effect)) {
-								km.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown effect : [" + effect + "].");
-								
+								KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown effect : [" + effect + "].");
 								itemObj.clear();
 								rewards.clear();
 								jsonObj.clear();
@@ -408,7 +406,7 @@ public class FilesConformity {
 							}
 						}
 					} else if (!Utils.checkEffect(effects)) {
-						km.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + effects + "].");
+						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + effects + "].");
 						itemObj.clear();
 						rewards.clear();
 						jsonObj.clear();
@@ -431,7 +429,7 @@ public class FilesConformity {
 		return false;
 	}
 	
-	private static boolean levelsConformity(KuffleMain km, String content) {
+	private static boolean levelsConformity(String content) {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObj;
@@ -441,18 +439,20 @@ public class FilesConformity {
 			for (Object key : jsonObj.keySet()) {
 				JSONObject levelObj = (JSONObject) jsonObj.get(key);
 				
+				boolean containKey = true;
+				
 				if (!levelObj.containsKey("Number")) {
-					km.systemLogs.logSystemMsg("Level [" + (String) key + "] does not contain 'Number' Object.");
-					levelObj.clear();
-					jsonObj.clear();
-					return false;
+					KuffleMain.systemLogs.logSystemMsg("Level [" + (String) key + "] does not contain 'Number' Object.");
+					containKey = false;
 				} else if (!levelObj.containsKey("Seconds")) {
-					km.systemLogs.logSystemMsg("Level [" + (String) key + "] does not contain 'Seconds' Object.");
-					levelObj.clear();
-					jsonObj.clear();
-					return false;
+					KuffleMain.systemLogs.logSystemMsg("Level [" + (String) key + "] does not contain 'Seconds' Object.");
+					containKey = false;
 				} else if (!levelObj.containsKey("Lose")) {
-					km.systemLogs.logSystemMsg("Level [" + (String) key + "] does not contain 'Lose' Object.");
+					KuffleMain.systemLogs.logSystemMsg("Level [" + (String) key + "] does not contain 'Lose' Object.");
+					containKey = false;
+				}
+				
+				if (!containKey) {
 					levelObj.clear();
 					jsonObj.clear();
 					return false;
@@ -465,6 +465,8 @@ public class FilesConformity {
 				String lose = levelObj.get("Lose").toString();
 
 				if (!lose.equalsIgnoreCase("true") && !lose.equalsIgnoreCase("false")) {
+					levelObj.clear();
+					jsonObj.clear();
 					return false;
 				}
 			}
@@ -479,8 +481,8 @@ public class FilesConformity {
 		return false;
 	}
 	
-	public static boolean fileExists(KuffleMain km, String path, String fileName) {
-		File tmp = new File(path + File.separator + km.getDescription().getVersion() + File.separator + fileName);
+	public static boolean fileExists(String path, String fileName) {
+		File tmp = new File(path + File.separator + KuffleMain.current.getDescription().getVersion() + File.separator + fileName);
 		
 		return tmp.exists();
 	}

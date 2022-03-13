@@ -9,12 +9,6 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleTeamShow implements CommandExecutor {
-	private KuffleMain km;
-
-	public KuffleTeamShow(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -22,10 +16,10 @@ public class KuffleTeamShow implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-show>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-team-show>"));
 		
 		if (!player.hasPermission("ki-team-show")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
@@ -34,12 +28,12 @@ public class KuffleTeamShow implements CommandExecutor {
 		}
 		
 		if (args.length == 0) {
-			km.systemLogs.writeMsg(player, km.teams.toString(km));
+			KuffleMain.systemLogs.writeMsg(player, KuffleMain.teams.toString());
 		} else if (args.length == 1) {
-			if (km.teams.hasTeam(args[0])) {
-				km.systemLogs.writeMsg(player, km.teams.printTeam(args[0]));
+			if (KuffleMain.teams.hasTeam(args[0])) {
+				KuffleMain.systemLogs.writeMsg(player, KuffleMain.teams.printTeam(args[0]));
 			} else {
-				km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[0] + ">"));
 			}
 		}
 		

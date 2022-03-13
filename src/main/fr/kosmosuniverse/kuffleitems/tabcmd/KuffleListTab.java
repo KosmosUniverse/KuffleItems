@@ -12,12 +12,9 @@ import org.bukkit.entity.Player;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 
 public class KuffleListTab implements TabCompleter {
-	private KuffleMain km;
-	private ArrayList<String> list = new ArrayList<>();
+	private List<String> list = new ArrayList<>();
 	
-	public KuffleListTab(KuffleMain _km) {
-		km = _km;
-		
+	public KuffleListTab() {
 		list.add("add");
 		list.add("remove");
 		list.add("reset");
@@ -32,7 +29,7 @@ public class KuffleListTab implements TabCompleter {
 		if (args.length == 1) {
 			return list;
 		} else if (args.length == 2) {
-			ArrayList<String> nextList = new ArrayList<>();
+			List<String> nextList = new ArrayList<>();
 			
 			if (args[0].equals("add")) {
 				nextList.add("@a");
@@ -43,7 +40,7 @@ public class KuffleListTab implements TabCompleter {
 				
 				return nextList;
 			} else if (args[0].equals("remove")) {
-				for (String playerName : km.games.keySet()) {
+				for (String playerName : KuffleMain.games.keySet()) {
 					nextList.add(playerName);
 				}
 				return nextList;

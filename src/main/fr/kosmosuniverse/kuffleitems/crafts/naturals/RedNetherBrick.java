@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class RedNetherBrick extends ACrafts {
-	public RedNetherBrick(KuffleMain _km) {
+	public RedNetherBrick() {
 		name = "RedNetherBrick";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.RED_NETHER_BRICKS, 2));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.RED_NETHER_BRICKS, 2));
 		
 		
 		((ShapedRecipe) recipe).shape("NDR", "DNR", "RRR");

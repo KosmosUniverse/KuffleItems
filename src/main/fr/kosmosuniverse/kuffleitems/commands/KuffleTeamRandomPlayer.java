@@ -1,6 +1,6 @@
 package main.fr.kosmosuniverse.kuffleitems.commands;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bukkit.command.Command;
@@ -13,12 +13,6 @@ import main.fr.kosmosuniverse.kuffleitems.core.Team;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class KuffleTeamRandomPlayer implements CommandExecutor {
-	private KuffleMain km;
-
-	public KuffleTeamRandomPlayer(KuffleMain _km) {
-		km = _km;
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))
@@ -26,15 +20,15 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 		
 		Player player = (Player) sender;
 		
-		km.systemLogs.logMsg(player.getName(), Utils.getLangString(km, player.getName(), "CMD_PERF").replace("<#>", "<ki-team-random-player>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-team-random-player>"));
 		
 		if (!player.hasPermission("ki-team-random-player")) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "NOT_ALLOWED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
 			return false;
 		}
 		
-		if (km.games.size() > 0 && km.gameStarted) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "GAME_ALREADY_LAUNCHED"));
+		if (KuffleMain.games.size() > 0 && KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_ALREADY_LAUNCHED"));
 			return true;
 		}
 		
@@ -42,51 +36,51 @@ public class KuffleTeamRandomPlayer implements CommandExecutor {
 			return false;
 		}
 		
-		if (km.games.size() == 0) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "LIST_EMPTY"));
+		if (KuffleMain.games.size() == 0) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "LIST_EMPTY"));
 			return true;
 		}
 		
-		if (calcMAxPlayers() < Utils.getPlayerList(km.games).size()) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_TOO_MANY_PLAYERS"));
+		if (calcMAxPlayers() < Utils.getPlayerList(KuffleMain.games).size()) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_TOO_MANY_PLAYERS"));
 			return true;
 		}
 		
 		if (!checkEmptyTeams()) {
-			km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "TEAM_ALREADY_PLAYERS"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_ALREADY_PLAYERS"));
 			return true;
 		}
 		
 		int cnt = 0;
-		ArrayList<Player> players = Utils.getPlayerList(km.games);
+		List<Player> players = Utils.getPlayerList(KuffleMain.games);
 		
 		final ThreadLocalRandom random = ThreadLocalRandom.current();
 		
 		while (players.size() > 0) {
 			int idx = random.nextInt(players.size());
 			
-			km.teams.affectPlayer(km.teams.getTeams().get(cnt).name, players.get(idx));
+			KuffleMain.teams.affectPlayer(KuffleMain.teams.getTeams().get(cnt).name, players.get(idx));
 			
 			players.remove(idx);
 			
 			cnt++;
 			
-			if (cnt >= km.teams.getTeams().size()) {
+			if (cnt >= KuffleMain.teams.getTeams().size()) {
 				cnt = 0;
 			}
 		}
 		
-		km.systemLogs.writeMsg(player, Utils.getLangString(km, player.getName(), "RANDOM").replace("%i", "" + Utils.getPlayerNames(km.games).size()).replace("%j", "" + km.teams.getTeams().size()));
+		KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "RANDOM").replace("%i", "" + Utils.getPlayerNames(KuffleMain.games).size()).replace("%j", "" + KuffleMain.teams.getTeams().size()));
 
 		return true;
 	}
 	
 	public int calcMAxPlayers() {
-		return (km.config.getTeamSize() * km.teams.getTeams().size());
+		return (KuffleMain.config.getTeamSize() * KuffleMain.teams.getTeams().size());
 	}
 
 	public boolean checkEmptyTeams() {
-		for (Team item : km.teams.getTeams()) {
+		for (Team item : KuffleMain.teams.getTeams()) {
 			if (item.players.size() != 0) {
 				return false;
 			}

@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class LapisOre extends ACrafts {
-	public LapisOre(KuffleMain _km) {
+	public LapisOre() {
 		name = "LapisOre";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.LAPIS_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.LAPIS_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("LSL", "LRL", "LSL");

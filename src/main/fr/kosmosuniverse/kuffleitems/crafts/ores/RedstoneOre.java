@@ -11,10 +11,10 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.crafts.ACrafts;
 
 public class RedstoneOre extends ACrafts {
-	public RedstoneOre(KuffleMain _km) {
+	public RedstoneOre() {
 		name = "RedstoneOre";
 		
-		recipe = new ShapedRecipe(new NamespacedKey(_km, name), new ItemStack(Material.REDSTONE_ORE));
+		recipe = new ShapedRecipe(new NamespacedKey(KuffleMain.current, name), new ItemStack(Material.REDSTONE_ORE));
 		
 		
 		((ShapedRecipe) recipe).shape("RSR", "SRS", "RSR");

@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,14 +12,14 @@ public class AgeManager {
 		throw new IllegalStateException("Utility class");
     }
 	
-	public static ArrayList<Age> getAges(String ageContent) {
-		ArrayList<Age> finalList = new ArrayList<Age>();
+	public static List<Age> getAges(String ageContent) {
+		List<Age> finalList = new ArrayList<>();
 
 		if (ageContent == null) {
 			return null;
 		}
 		
-		JSONObject jsonObj = new JSONObject();
+		JSONObject jsonObj;
 		JSONParser parser = new JSONParser();
 		
 		try {
@@ -40,7 +41,7 @@ public class AgeManager {
 		return finalList;
 	}
 	
-	public static boolean ageExists(ArrayList<Age> ages, String ageName) {
+	public static boolean ageExists(List<Age> ages, String ageName) {
 		for (Age age : ages) {
 			if (age.name.equals(ageName)) {
 				return true;
@@ -50,7 +51,7 @@ public class AgeManager {
 		return false;
 	}
 	
-	public static Age getAgeByNumber(ArrayList<Age> ages, int ageNumber) {
+	public static Age getAgeByNumber(List<Age> ages, int ageNumber) {
 		for (Age age : ages) {
 			if (age.number == ageNumber) {
 				return age;
@@ -60,7 +61,7 @@ public class AgeManager {
 		return getDefaultAge(ages);
 	}
 	
-	public static Age getDefaultAge(ArrayList<Age> ages) {
+	public static Age getDefaultAge(List<Age> ages) {
 		for (Age age : ages) {
 			if (age.number == -1) {
 				return age;
@@ -70,7 +71,7 @@ public class AgeManager {
 		return null;
 	}
 	
-	public static int getAgeMaxNumber(ArrayList<Age> ages) {
+	public static int getAgeMaxNumber(List<Age> ages) {
 		int max = 0;
 		
 		for (Age age : ages) {

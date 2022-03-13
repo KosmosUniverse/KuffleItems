@@ -1,6 +1,7 @@
 package main.fr.kosmosuniverse.kuffleitems.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -8,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class SpreadPlayer {
@@ -16,9 +16,9 @@ public class SpreadPlayer {
 		throw new IllegalStateException("Utility class");
 	}
 	
-    public static ArrayList<Location> spreadPlayers(KuffleMain km, Player sender, double distance, long min_radius, ArrayList<Team> teams, ArrayList<Player> players) {
+    public static List<Location> spreadPlayers(Player sender, double distance, long minRadius, List<Team> teams, List<Player> players) {
         if (distance < 0.0D) {
-            sender.sendMessage(ChatColor.RED + Utils.getLangString(km, null, "TOO_SHORT"));
+            sender.sendMessage(ChatColor.RED + Utils.getLangString(null, "TOO_SHORT"));
             return null;
         }
 
@@ -39,9 +39,9 @@ public class SpreadPlayer {
         double angle = 360.0 / spreadSize;
         long radius = radiusCalc(angle, distance);
         
-        radius = radius <= min_radius ? min_radius : radius;
+        radius = radius <= minRadius ? minRadius : radius;
         
-        ArrayList<Location> locations = getSpreadLocations(radius, angle, spreadSize, world, sender.getLocation());
+        List<Location> locations = getSpreadLocations(radius, angle, spreadSize, world, sender.getLocation());
         
         if ((teams != null && locations.size() != teams.size()) ||
         		(teams == null && players != null && locations.size() != players.size())) {
@@ -66,8 +66,8 @@ public class SpreadPlayer {
     	return Math.round(tmp);
     }
     
-    private static ArrayList<Location> getSpreadLocations(long radius, double angleInc, int size, World world, Location center) {
-    	ArrayList<Location> locations = new ArrayList<>();
+    private static List<Location> getSpreadLocations(long radius, double angleInc, int size, World world, Location center) {
+    	List<Location> locations = new ArrayList<>();
     	
     	double angle = 0;
     	double x;
@@ -85,7 +85,7 @@ public class SpreadPlayer {
     	return locations;
     }
     
-    private static void spread(ArrayList<Player> players, ArrayList<Team> teams, ArrayList<Location> locations, World world) {
+    private static void spread(List<Player> players, List<Team> teams, List<Location> locations, World world) {
     	if (players == null) {
         	for (int j = 0; j < 15; j++) {
         		Location location = locations.get(j);
