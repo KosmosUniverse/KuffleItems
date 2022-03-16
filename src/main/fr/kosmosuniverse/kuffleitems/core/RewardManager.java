@@ -80,7 +80,7 @@ public class RewardManager {
 		}
 	}
 	
-	public static synchronized void givePlayerReward(Map<String, RewardElem> ageReward, Player p, List<Age> ages, int age) {
+	public static synchronized void givePlayerReward(Map<String, RewardElem> ageReward, Player player, List<Age> ages, int age) {
 		List<ItemStack> items = new ArrayList<>();
 		
 		ItemStack container = new ItemStack(AgeManager.getAgeByNumber(ages, age).box);
@@ -93,35 +93,9 @@ public class RewardManager {
 			ItemStack it;
 			
 			if (ageReward.get(k).enchant()) {
-				it = new ItemStack(Material.matchMaterial(k), ageReward.get(k).getAmount());
-				
-				if (ageReward.get(k).getEnchant().contains(",")) {
-					String[] tmp = ageReward.get(k).getEnchant().split(",");
-					
-					for (String enchant : tmp) {
-						if (getEnchantment(enchant) != null) {
-							it.addUnsafeEnchantment(getEnchantment(enchant), ageReward.get(k).getLevel());
-						}
-					}
-				} else {
-					if (getEnchantment(ageReward.get(k).getEnchant()) != null) {
-						it.addUnsafeEnchantment(getEnchantment(ageReward.get(k).getEnchant()), ageReward.get(k).getLevel());		
-					}
-				}
-				
-				items.add(new ItemStack(it));
+				items.add(giveEnchantedItem(k, ageReward.get(k)));
 			} else if (k.contains("potion")) {
-				if (ageReward.get(k).getEffect().contains(",")) {
-					String[] tmp = ageReward.get(k).getEffect().split(",");
-					
-					for (String effect : tmp) {
-						if (getEnchantment(effect) != null) {
-							p.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
-						}
-					}
-				} else {
-					p.addPotionEffect(new PotionEffect(findEffect(ageReward.get(k).getEffect()), 999999, ageReward.get(k).getAmount()));
-				}
+				givePotionEffect(ageReward.get(k), player);
 			} else {
 				it = new ItemStack(Material.matchMaterial(k), ageReward.get(k).getAmount());
 				items.add(new ItemStack(it));
@@ -140,12 +114,46 @@ public class RewardManager {
 		itM.setDisplayName(AgeManager.getAgeByNumber(ages, age).name.replace("_", " "));
 		container.setItemMeta(itM);
 		
-		Map<Integer, ItemStack> ret = p.getInventory().addItem(container);
+		Map<Integer, ItemStack> ret = player.getInventory().addItem(container);
 		
 		if (ret != null) {
 			for (Integer i : ret.keySet()) {
-				p.getWorld().dropItem(p.getLocation(), ret.get(i));
+				player.getWorld().dropItem(player.getLocation(), ret.get(i));
 			}
+		}
+	}
+	
+	private static ItemStack giveEnchantedItem(String key, RewardElem elem) {
+		ItemStack it = new ItemStack(Material.matchMaterial(key), elem.getAmount());
+		
+		if (elem.getEnchant().contains(",")) {
+			String[] tmp = elem.getEnchant().split(",");
+			
+			for (String enchant : tmp) {
+				if (getEnchantment(enchant) != null) {
+					it.addUnsafeEnchantment(getEnchantment(enchant), elem.getLevel());
+				}
+			}
+		} else {
+			if (getEnchantment(elem.getEnchant()) != null) {
+				it.addUnsafeEnchantment(getEnchantment(elem.getEnchant()), elem.getLevel());		
+			}
+		}
+		
+		return it;
+	}
+	
+	private static void givePotionEffect(RewardElem elem, Player player) {
+		if (elem.getEffect().contains(",")) {
+			String[] tmp = elem.getEffect().split(",");
+			
+			for (String effect : tmp) {
+				if (getEnchantment(effect) != null) {
+					player.addPotionEffect(new PotionEffect(findEffect(elem.getEffect()), 999999, elem.getAmount()));
+				}
+			}
+		} else {
+			player.addPotionEffect(new PotionEffect(findEffect(elem.getEffect()), 999999, elem.getAmount()));
 		}
 	}
 	

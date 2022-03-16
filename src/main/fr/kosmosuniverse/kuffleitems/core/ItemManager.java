@@ -18,6 +18,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.ItemUtils;
 import main.fr.kosmosuniverse.kuffleitems.utils.Pair;
 
@@ -36,7 +37,7 @@ public class ItemManager {
 				finalMap.put(AgeManager.getAgeByNumber(ages, ageCnt).name, getAgeItems(AgeManager.getAgeByNumber(ages, ageCnt).name, itemsContent, dataFolder));
 			}
 		} catch (IOException | ParseException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 			finalMap = null;
 		}
 		
@@ -115,10 +116,8 @@ public class ItemManager {
 		Inventory inv;
 		int invCnt = 0;
 		int nbInv = 1;
-		
-		ItemStack bluePane = ItemUtils.itemMakerName(Material.BLUE_STAINED_GLASS_PANE, 1, "Next ->");
-		ItemStack limePane = ItemUtils.itemMakerName(Material.LIME_STAINED_GLASS_PANE, 1, " ");
-		ItemStack redPane = ItemUtils.itemMakerName(Material.RED_STAINED_GLASS_PANE, 1, "<- Previous");
+		boolean hasNext = ageItems.size() > 45;
+
 		
 		if (ageItems.size() > 45) {
 			inv = Bukkit.createInventory(null, 54, "§8" + age + " Items Tab 1");
@@ -126,20 +125,10 @@ public class ItemManager {
 			inv = Bukkit.createInventory(null, 54, "§8" + age + " Items");
 		}
 		
-		for (; invCnt < 9; invCnt++) {
-			if (invCnt == 8) {
-				inv.setItem(invCnt, bluePane);
-			} else {
-				inv.setItem(invCnt, limePane);
-			}
-		}
+		setFirstRow(inv, true, hasNext);
 		
 		for (String item : ageItems) {
-			try {
-				inv.setItem(invCnt, getMaterial(item));
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			}
+			inv.addItem(getMaterial(item));
 			
 			if (invCnt == 53) {
 				invCnt = 0;
@@ -147,25 +136,34 @@ public class ItemManager {
 				nbInv++;
 				inv = Bukkit.createInventory(null, 54, "§8" + age + " Items Tab " + nbInv);
 				
-				for (; invCnt < 9; invCnt++) {
-					if (invCnt == 0) {
-						inv.setItem(invCnt, redPane);
-					} else if (invCnt == 8) {
-						inv.setItem(invCnt, bluePane);
-					} else {
-						inv.setItem(invCnt, limePane);
-					}
-				}
+				setFirstRow(inv, false, hasNext);
 			} else {
 				invCnt++;
 			}
 		}
 		
-		inv.setItem(8, limePane);
+		inv.setItem(8, ItemUtils.itemMakerName(Material.LIME_STAINED_GLASS_PANE, 1, " "));
 		
 		invs.add(inv);
 		
 		return invs;
+	}
+	
+	private static void setFirstRow(Inventory inv, boolean isFirst, boolean hasNext) {
+		int invCnt = 0;
+		ItemStack bluePane = ItemUtils.itemMakerName(Material.BLUE_STAINED_GLASS_PANE, 1, "Next ->");
+		ItemStack limePane = ItemUtils.itemMakerName(Material.LIME_STAINED_GLASS_PANE, 1, " ");
+		ItemStack redPane = ItemUtils.itemMakerName(Material.RED_STAINED_GLASS_PANE, 1, "<- Previous");
+		
+		for (; invCnt < 9; invCnt++) {
+			if (invCnt == 0 && !isFirst) {
+				inv.setItem(invCnt, redPane);
+			} else if (invCnt == 8 && hasNext) {
+				inv.setItem(invCnt, bluePane);
+			} else {
+				inv.setItem(invCnt, limePane);
+			}
+		}
 	}
 	
 	private static ItemStack getMaterial(String item) {

@@ -13,9 +13,13 @@ import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class ManageTeams {
-	private List<Team> teams = new ArrayList<>();
+	private List<Team> teams = null;
 
 	public void createTeam(String name) {
+		if (teams == null) {
+			teams = new ArrayList<>();
+		}
+		
 		teams.add(new Team(name));
 	}
 	

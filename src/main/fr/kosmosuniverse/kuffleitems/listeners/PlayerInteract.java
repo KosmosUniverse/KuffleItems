@@ -51,66 +51,72 @@ public class PlayerInteract implements Listener {
 			return ;
 		}
 		
-		if (action == Action.RIGHT_CLICK_AIR && item != null) {
-			if (Utils.compareItems(item, KuffleMain.crafts.findItemByName("EndTeleporter"), true, true, true)) {
-				endTeleporter(player);
+		if (action != Action.RIGHT_CLICK_AIR || item == null) {
+			return ;
+		}
+		
+		if (Utils.compareItems(item, KuffleMain.crafts.findItemByName("EndTeleporter"), true, true, true)) {
+			consumeItem(event);
+			
+			endTeleporter(player);
+			
+			return ;
+		}
+		
+		if (Utils.compareItems(item, KuffleMain.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
+			consumeItem(event);
+			
+			overworldTeleporter(player);
+			
+			return ;
+		}
+		
+		Game tmpGame = KuffleMain.games.get(player.getName());
+
+		if (item.getItemMeta().getDisplayName().contains("Template")) {
+			String name = AgeManager.getAgeByNumber(KuffleMain.ages, tmpGame.getAge()).name;
+			name = name.replace("_Age", "");
+			name = name + "Template";
+
+			if (Utils.compareItems(item, KuffleMain.crafts.findItemByName(name), true, true, true)) {
+				event.setCancelled(true);
 				
-				if (event.getHand() == EquipmentSlot.HAND) {
-					player.getInventory().setItemInMainHand(null);	
-				} else if (event.getHand() == EquipmentSlot.OFF_HAND) {
-					player.getInventory().setItemInOffHand(null);
-				}
+				consumeItem(event);
+				
+				tmpGame.foundSBTT();
+				KuffleMain.gameLogs.logMsg(tmpGame.getPlayer().getName(), "just used " + name + " !");
 				
 				return ;
 			}
-			
-			if (Utils.compareItems(item, KuffleMain.crafts.findItemByName("OverworldTeleporter"), true, true, true)) {
-				overworldTeleporter(player);
-				
-				if (event.getHand() == EquipmentSlot.HAND) {
-					player.getInventory().setItemInMainHand(null);	
-				} else if (event.getHand() == EquipmentSlot.OFF_HAND) {
-					player.getInventory().setItemInOffHand(null);
-				}
-				
-				return ;
-			}
-			
-			Game tmpGame = KuffleMain.games.get(player.getName());
-
-			if (item.getItemMeta().getDisplayName().contains("Template")) {
-				String name = AgeManager.getAgeByNumber(KuffleMain.ages, tmpGame.getAge()).name;
-				name = name.replace("_Age", "");
-				name = name + "Template";
-
-				if (Utils.compareItems(item, KuffleMain.crafts.findItemByName(name), true, true, true)) {
-					tmpGame.foundSBTT();
-					KuffleMain.gameLogs.logMsg(tmpGame.getPlayer().getName(), "just used " + name + " !");
-					
-					event.setCancelled(true);
-					
-					if (event.getHand() == EquipmentSlot.HAND) {
-						player.getInventory().setItemInMainHand(null);	
-					} else if (event.getHand() == EquipmentSlot.OFF_HAND) {
-						player.getInventory().setItemInOffHand(null);
-					}
-					
-					return ;
-				}
-			}
-			
-			if (tmpGame != null && tmpGame.getCurrentItem() != null) {
-				if (!KuffleMain.config.getDouble() && tmpGame.getCurrentItem().equals(item.getType().name().toLowerCase())) {
-					KuffleMain.gameLogs.logMsg(tmpGame.getPlayer().getName(), " validate his item [" + tmpGame.getCurrentItem() + "] !");
-					tmpGame.found();
-				} else if (KuffleMain.config.getDouble() &&
-						(tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ||
-						tmpGame.getCurrentItem().split("/")[1].equals(item.getType().name().toLowerCase()))) {
-					String tmp = tmpGame.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ? tmpGame.getCurrentItem().split("/")[0] : tmpGame.getCurrentItem().split("/")[1];
-					KuffleMain.gameLogs.logMsg(tmpGame.getPlayer().getName(), " validate his item [" + tmp + "] !");
-					tmpGame.found();
-				}
-			}
+		}
+		
+		if (tmpGame == null || tmpGame.getCurrentItem() == null) {
+			return ;
+		}
+		
+		checkItem(tmpGame, item);
+	}
+	
+	private void consumeItem(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		
+		if (event.getHand() == EquipmentSlot.HAND) {
+			player.getInventory().setItemInMainHand(null);	
+		} else if (event.getHand() == EquipmentSlot.OFF_HAND) {
+			player.getInventory().setItemInOffHand(null);
+		}
+	}
+	
+	private void checkItem(Game game, ItemStack item) {
+		if (!KuffleMain.config.getDouble() && game.getCurrentItem().equals(item.getType().name().toLowerCase())) {
+			KuffleMain.gameLogs.logMsg(game.getPlayer().getName(), " validate his item [" + game.getCurrentItem() + "] !");
+			game.found();
+		} else if (KuffleMain.config.getDouble() &&
+				(game.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ||
+						game.getCurrentItem().split("/")[1].equals(item.getType().name().toLowerCase()))) {
+			String tmp = game.getCurrentItem().split("/")[0].equals(item.getType().name().toLowerCase()) ? game.getCurrentItem().split("/")[0] : game.getCurrentItem().split("/")[1];
+			KuffleMain.gameLogs.logMsg(game.getPlayer().getName(), " validate his item [" + tmp + "] !");
+			game.found();
 		}
 	}
 	

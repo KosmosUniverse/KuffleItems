@@ -20,7 +20,6 @@ public class InventoryListeners implements Listener {
 	public void onItemClick(InventoryClickEvent event) {	
 		Player player = (Player) event.getWhoClicked();
 		ItemStack item = event.getCurrentItem();
-		Inventory current = event.getClickedInventory();
 		ACrafts craft;
 		Inventory inv;
 		
@@ -30,6 +29,7 @@ public class InventoryListeners implements Listener {
 		
 		if (event.getView().getTitle() == "§8AllCustomCrafts") {
 			event.setCancelled(true);
+			
 			if ((craft = KuffleMain.crafts.findCraftInventoryByItem(item)) != null &&
 					(inv = craft.getInventoryRecipe()) != null) {
 				player.openInventory(inv);
@@ -43,32 +43,43 @@ public class InventoryListeners implements Listener {
 		} else if (event.getView().getTitle() == "§8Players") {
 			event.setCancelled(true);
 			
-			if (item.getType() == Material.PLAYER_HEAD &&
-					!item.getItemMeta().getDisplayName().equals(player.getName())) {
-				Game tmpGame = KuffleMain.games.get(item.getItemMeta().getDisplayName());
-				
-				if (tmpGame != null && KuffleMain.games.get(player.getName()).getFinished()) {
-					if (player.getGameMode() != GameMode.SPECTATOR) {
-						player.setGameMode(GameMode.SPECTATOR);
-					}
-					player.teleport(tmpGame.getPlayer());	
-				}
-			}
+			playersInventory(player, item);
 		} else if (event.getView().getTitle().contains(" Items ")) {
-			for (String age : KuffleMain.itemsInvs.keySet()) {
-				if (event.getView().getTitle().contains(age)) {
-					event.setCancelled(true);
+			itemsInventory(event);
+		}
+	}
+	
+	private void playersInventory(Player player, ItemStack item) {
+		if (item.getType() == Material.PLAYER_HEAD &&
+				!item.getItemMeta().getDisplayName().equals(player.getName())) {
+			Game tmpGame = KuffleMain.games.get(item.getItemMeta().getDisplayName());
+			
+			if (tmpGame != null && KuffleMain.games.get(player.getName()).getFinished()) {
+				if (player.getGameMode() != GameMode.SPECTATOR) {
+					player.setGameMode(GameMode.SPECTATOR);
+				}
+				player.teleport(tmpGame.getPlayer());	
+			}
+		}
+	}
+	
+	private void itemsInventory(InventoryClickEvent event) {
+		Player player = (Player) event.getWhoClicked();
+		ItemStack item = event.getCurrentItem();
+		
+		for (String age : KuffleMain.itemsInvs.keySet()) {
+			if (event.getView().getTitle().contains(age)) {
+				event.setCancelled(true);
 
-					List<Inventory> tmpInvs = KuffleMain.itemsInvs.get(age);
+				List<Inventory> tmpInvs = KuffleMain.itemsInvs.get(age);
+				
+				if (tmpInvs.size() > 1) {
+					int invIdx = tmpInvs.indexOf(event.getClickedInventory());
 					
-					if (tmpInvs.size() > 1) {
-						int invIdx = tmpInvs.indexOf(current);
-						
-						if (item.getItemMeta().getDisplayName().equals("<- Previous")) {
-							player.openInventory(tmpInvs.get(invIdx - 1));
-						} else if (item.getItemMeta().getDisplayName().equals("Next ->")) {
-							player.openInventory(tmpInvs.get(invIdx + 1));
-						}
+					if (item.getItemMeta().getDisplayName().equals("<- Previous")) {
+						player.openInventory(tmpInvs.get(invIdx - 1));
+					} else if (item.getItemMeta().getDisplayName().equals("Next ->")) {
+						player.openInventory(tmpInvs.get(invIdx + 1));
 					}
 				}
 			}

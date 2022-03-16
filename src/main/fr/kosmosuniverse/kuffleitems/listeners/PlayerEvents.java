@@ -115,7 +115,7 @@ public class PlayerEvents implements Listener {
 			
 			KuffleMain.systemLogs.logMsg(KuffleMain.current.getName(), "<" + player.getName() + "> game is saved.");
 		} catch (IOException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 		}
 	}
 	
@@ -178,6 +178,37 @@ public class PlayerEvents implements Listener {
 		}, 20);
 	}
 	
+	private void getEndLoc(Location loc) {
+		int tmp = loc.getWorld().getHighestBlockYAt(loc);
+		
+		if (tmp != -1) {
+			loc.setY(loc.getWorld().getHighestBlockYAt(loc) + 1);
+		} else {
+			loc.setY(61);
+		}
+	}
+	
+	private void createSafeBox(Location loc, String playerName) {
+		Location wall;
+		
+		for (double x = -2; x <= 2; x++) {
+			for (double y = -2; y <= 2; y++) {
+				for (double z = -2; z <= 2; z++) {
+					wall = loc.clone();
+					wall.add(x, y, z);
+					
+					if (x == 0 && y == -1 && z == 0) {
+						setSign(wall, playerName);
+					} else if (x <= 1 && x >= -1 && y <= 1 && y >= -1 && z <= 1 && z >= -1) {
+						replaceExeption(wall, Material.AIR);
+					} else {
+						replaceExeption(wall, Material.DIRT);
+					}
+				}
+			}
+		}
+	}
+	
 	public void teleportAutoBack(Game tmpGame) {
 		tmpGame.getPlayer().sendMessage("You will be tp back to your death spot in " + KuffleMain.config.getLevel().seconds + " seconds.");
 		
@@ -185,47 +216,12 @@ public class PlayerEvents implements Listener {
 			Location loc = tmpGame.getDeathLoc();
 				
 			if (loc.getWorld().getName().contains("the_end") && loc.getY() < 0) {
-				int tmp = loc.getWorld().getHighestBlockYAt(loc);
-				
-				if (tmp == -1) {
-					loc.setY(59);
-					
-					for (double cntX = -2; cntX <= 2; cntX++) {
-						for (double cntZ = -2; cntZ <= 2; cntZ++) {
-							Location platform = loc.clone();
-							
-							platform.add(cntX, 0, cntZ);
-							
-							platform.getBlock().setType(Material.COBBLESTONE);
-						}
-					}
-					
-					loc.setY(61);
-				} else {
-					loc.setY(loc.getWorld().getHighestBlockYAt(loc) + 1);
-				}
-			} else {
-				Location wall;
-				
-				for (double x = -2; x <= 2; x++) {
-					for (double y = -2; y <= 2; y++) {
-						for (double z = -2; z <= 2; z++) {
-							wall = loc.clone();
-							wall.add(x, y, z);
-							
-							if (x == 0 && y == -1 && z == 0) {
-								setSign(wall, tmpGame.getPlayer().getName());
-							} else if (x <= 1 && x >= -1 && y <= 1 && y >= -1 && z <= 1 && z >= -1) {
-								replaceExeption(wall, Material.AIR);
-							} else {
-								replaceExeption(wall, Material.DIRT);
-							}
-						}
-					}
-				}
+				getEndLoc(loc);
 			}
 			
-			tmpGame.getPlayer().teleport(loc);
+			createSafeBox(loc, tmpGame.getPlayer().getName());
+			
+			tmpGame.getPlayer().teleport(loc.add(0, 1, 0));
 			
 			for (Entity e : tmpGame.getPlayer().getNearbyEntities(3.0, 3.0, 3.0)) {
 				e.remove();

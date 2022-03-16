@@ -173,6 +173,7 @@ public class KuffleMain extends JavaPlugin {
 
 		langs = LangManager.findAllLangs(allItemsLangs);
 
+		loop = new GameLoop();
 		config = new Config();
 		config.setupConfig(plugin.getConfig());
 

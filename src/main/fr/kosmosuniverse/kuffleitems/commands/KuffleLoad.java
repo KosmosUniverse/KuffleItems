@@ -44,29 +44,26 @@ public class KuffleLoad implements CommandExecutor {
 			return false;
 		}
 		
-		if (KuffleMain.games.size() != 0) {
-			if (KuffleMain.gameStarted) {
-				KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
-			} else {
-				KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "LIST_NOT_EMPTY") + ".");
-			}
-			
-			return false;
+		if (KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
+			return true;
+		} else if (KuffleMain.games.size() != 0) {
+			KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "LIST_NOT_EMPTY") + ".");
+			return true;
 		}
 		
 		JSONParser parser = new JSONParser();
-		JSONObject mainObject = new JSONObject();
+		JSONObject mainObject;
 		
 		if (Utils.fileExists(dataFolder.getPath(), GAME_FILE)) {
 			try (FileReader reader = new FileReader(dataFolder.getPath() + File.separator + GAME_FILE)) {
 				mainObject = (JSONObject) parser.parse(reader);
 				KuffleMain.config.loadConfig((JSONObject) mainObject.get("config"));
 				loadRanks((JSONObject) mainObject.get("ranks"));
+				mainObject.clear();
 			} catch (IOException | ParseException e) {
 				e.printStackTrace();
 			}
-			
-			mainObject.clear();
 		}
 		
 		List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
@@ -79,29 +76,12 @@ public class KuffleLoad implements CommandExecutor {
 		
 		KuffleMain.playersHeads = Bukkit.createInventory(null, Utils.getNbInventoryRows(KuffleMain.games.size()), "§8Players");
 		
-		KuffleMain.games.forEach((playerName, game) -> {
-			KuffleMain.playersHeads.addItem(Utils.getHead(game.getPlayer()));
-			
-			if (KuffleMain.config.getTeam() && !KuffleMain.playerRank.containsKey(game.getTeamName())) {
-				KuffleMain.playerRank.put(game.getTeamName(), 0);
-			} else if (!KuffleMain.playerRank.containsKey(playerName)) {
-				KuffleMain.playerRank.put(playerName, 0);
-			}
-		});
+		loadRankAndTeams(parser);
 		
 		if (KuffleMain.config.getSaturation()) {
 			KuffleMain.games.forEach((playerName, game) ->
 				game.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false))
 			);
-		}
-		
-		if (KuffleMain.config.getTeam()) {
-			try (FileReader reader = new FileReader(dataFolder.getPath() + File.separator + "Teams.ki")) {
-				mainObject = (JSONObject) parser.parse(reader);
-				KuffleMain.teams.loadTeams(mainObject, KuffleMain.games);
-			} catch (IOException | ParseException e) {
-				e.printStackTrace();
-			}
 		}
 		
 		KuffleMain.paused = true;
@@ -154,6 +134,30 @@ public class KuffleLoad implements CommandExecutor {
 		}, 120);
 		
 		return true;
+	}
+	
+	private void loadRankAndTeams(JSONParser parser) {
+		KuffleMain.games.forEach((playerName, game) -> {
+			KuffleMain.playersHeads.addItem(Utils.getHead(game.getPlayer()));
+			
+			if (KuffleMain.config.getTeam() && !KuffleMain.playerRank.containsKey(game.getTeamName())) {
+				KuffleMain.playerRank.put(game.getTeamName(), 0);
+			} else if (!KuffleMain.playerRank.containsKey(playerName)) {
+				KuffleMain.playerRank.put(playerName, 0);
+			}
+		});
+		
+		if (KuffleMain.config.getTeam()) {
+			JSONObject mainObject;
+			
+			try (FileReader reader = new FileReader(dataFolder.getPath() + File.separator + "Teams.ki")) {
+				mainObject = (JSONObject) parser.parse(reader);
+				KuffleMain.teams.loadTeams(mainObject, KuffleMain.games);
+				mainObject.clear();
+			} catch (IOException | ParseException e) {
+				KuffleMain.systemLogs.logSystemMsg(e.getMessage());
+			}
+		}
 	}
 	
 	private void loadRanks(JSONObject ranksObj) {

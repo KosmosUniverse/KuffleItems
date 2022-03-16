@@ -117,7 +117,7 @@ public class Game {
 			try {
 				saveInventory();
 			} catch (IOException e) {
-				e.printStackTrace();
+				KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 			}
 		}
 

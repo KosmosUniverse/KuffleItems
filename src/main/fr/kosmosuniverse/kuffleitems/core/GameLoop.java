@@ -13,6 +13,8 @@ import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 public class GameLoop {
 	private BukkitTask runnable;
 	private boolean finished = false;
+	private int bestRank;
+	private int worstRank;
 
 	public void startRunnable() {
 		final ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -24,8 +26,8 @@ public class GameLoop {
 					return ;
 				}
 
-				int bestRank = getBestRank();
-				int worstRank = getWorstRank();
+				bestRank = getBestRank();
+				worstRank = getWorstRank();
 
 				if (KuffleMain.config.getGameEnd() && !finished) {
 					int lasts = Utils.playerLasts();
@@ -38,58 +40,72 @@ public class GameLoop {
 					}
 				}
 
-				for (String playerName : KuffleMain.games.keySet()) {
-					Game tmpGame = KuffleMain.games.get(playerName);
-
-					if (tmpGame.getLose()) {
-						if (!tmpGame.getFinished()) {
-							tmpGame.finish(worstRank);
-							worstRank = getWorstRank();
-						}
-					} else if (tmpGame.getFinished()) {
-						tmpGame.randomBarColor();
-					} else {
-						if (tmpGame.getCurrentItem() == null) {
-							if (tmpGame.getItemCount() >= (KuffleMain.config.getItemPerAge() + 1)) {
-								if (!KuffleMain.config.getTeam() || checkTeamMates(tmpGame)) {
-									if ((tmpGame.getAge() + 1) == KuffleMain.config.getMaxAges()) {
-										tmpGame.finish(bestRank);
-										bestRank = getBestRank();
-										KuffleMain.gameLogs.logSystemMsg(tmpGame.getPlayer().getName() + " complete this game !");
-
-										for (String toSend : KuffleMain.games.keySet()) {
-											KuffleMain.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(toSend, "GAME_COMPLETE").replace("<#>", ChatColor.GOLD + "" + ChatColor.BOLD + tmpGame.getPlayer().getName() + ChatColor.BLUE));
-										}
-									} else {
-										tmpGame.nextAge();
-									}
-								}
-							} else {
-								newItem(tmpGame);
-							}
-						} else {
-							if (System.currentTimeMillis() - tmpGame.getTimeShuffle() > (tmpGame.getTime() * 60000)) {
-								tmpGame.getPlayer().sendMessage(ChatColor.RED + Utils.getLangString(tmpGame.getPlayer().getName(), "ITEM_NOT_FOUND"));
-								KuffleMain.gameLogs.logSystemMsg("Player : " + tmpGame.getPlayer().getName() + " did not found item : " + tmpGame.getCurrentItem());
-								newItem(tmpGame);
-							} else if (KuffleMain.config.getDouble() && !tmpGame.getCurrentItem().contains("/")) {
-								String currentTmp = ItemManager.newItem(tmpGame.getAlreadyGot(), KuffleMain.allItems.get(AgeManager.getAgeByNumber(KuffleMain.ages, tmpGame.getAge()).name));
-
-								tmpGame.addToAlreadyGot(currentTmp);
-								tmpGame.setCurrentItem(tmpGame.getCurrentItem() + "/" + currentTmp);
-							} else if (!KuffleMain.config.getDouble() && tmpGame.getCurrentItem().contains("/")) {
-								String[] array = tmpGame.getCurrentItem().split("/");
-
-								tmpGame.setCurrentItem(array[random.nextInt(2)]);
-								tmpGame.removeFromList(array);
-							}
-						}
-
-						printTimerItem(tmpGame);
-					}
-				}
+				runLoop(random);
 			}
 		}.runTaskTimer(KuffleMain.current, 0, 20);
+	}
+	
+	private void runLoop(ThreadLocalRandom random) {
+		for (String playerName : KuffleMain.games.keySet()) {
+			Game tmpGame = KuffleMain.games.get(playerName);
+
+			if (tmpGame.getLose()) {
+				if (!tmpGame.getFinished()) {
+					tmpGame.finish(worstRank);
+					worstRank = getWorstRank();
+				}
+			} else if (tmpGame.getFinished()) {
+				tmpGame.randomBarColor();
+			} else {
+				if (tmpGame.getCurrentItem() == null) {
+					bestRank = checkItemStatus(tmpGame);
+				} else {
+					resetOrDisplayItem(tmpGame, random);
+				}
+
+				printTimerItem(tmpGame);
+			}
+		}
+	}
+ 	
+	private int checkItemStatus(Game game) {
+		if (game.getItemCount() >= (KuffleMain.config.getItemPerAge() + 1)) {
+			if (!KuffleMain.config.getTeam() || checkTeamMates(game)) {
+				if ((game.getAge() + 1) == KuffleMain.config.getMaxAges()) {
+					game.finish(bestRank);
+					bestRank = getBestRank();
+					KuffleMain.gameLogs.logSystemMsg(game.getPlayer().getName() + " complete this game !");
+
+					for (String toSend : KuffleMain.games.keySet()) {
+						KuffleMain.games.get(toSend).getPlayer().sendMessage(Utils.getLangString(toSend, "GAME_COMPLETE").replace("<#>", ChatColor.GOLD + "" + ChatColor.BOLD + game.getPlayer().getName() + ChatColor.BLUE));
+					}
+				} else {
+					game.nextAge();
+				}
+			}
+		} else {
+			newItem(game);
+		}
+		
+		return bestRank;
+	}
+	
+	private void resetOrDisplayItem(Game game, ThreadLocalRandom random) {
+		if (System.currentTimeMillis() - game.getTimeShuffle() > (game.getTime() * 60000)) {
+			game.getPlayer().sendMessage(ChatColor.RED + Utils.getLangString(game.getPlayer().getName(), "ITEM_NOT_FOUND"));
+			KuffleMain.gameLogs.logSystemMsg("Player : " + game.getPlayer().getName() + " did not found item : " + game.getCurrentItem());
+			newItem(game);
+		} else if (KuffleMain.config.getDouble() && !game.getCurrentItem().contains("/")) {
+			String currentTmp = ItemManager.newItem(game.getAlreadyGot(), KuffleMain.allItems.get(AgeManager.getAgeByNumber(KuffleMain.ages, game.getAge()).name));
+
+			game.addToAlreadyGot(currentTmp);
+			game.setCurrentItem(game.getCurrentItem() + "/" + currentTmp);
+		} else if (!KuffleMain.config.getDouble() && game.getCurrentItem().contains("/")) {
+			String[] array = game.getCurrentItem().split("/");
+
+			game.setCurrentItem(array[random.nextInt(2)]);
+			game.removeFromList(array);
+		}
 	}
 
 	private void printTimerItem(Game tmpGame) {

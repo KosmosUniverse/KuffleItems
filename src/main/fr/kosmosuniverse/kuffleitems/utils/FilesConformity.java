@@ -73,7 +73,7 @@ public class FilesConformity {
 			writer.write(Utils.readFileContent(in));
 			in.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 		}
 	}
 	
@@ -189,100 +189,105 @@ public class FilesConformity {
 	}
 	
 	private static boolean itemLangConformity(String content) {
+		JSONParser parser = new JSONParser();
+		JSONObject jsonObj = null;
+		List<String> langs = null;
+		
 		try {
-			JSONParser parser = new JSONParser();
-			JSONObject jsonObj;
-			List<String> langs = null;
-			
 			jsonObj = (JSONObject) parser.parse(content);
+		} catch (ParseException e) {
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
+			return false;
+		}
+		
+		for (Object key : jsonObj.keySet()) {
 			
-			for (Object key : jsonObj.keySet()) {
+			if (Material.matchMaterial((String) key) == null) {
+				KuffleMain.systemLogs.logSystemMsg("Material [" + (String) key + "] does not exist.");
+				jsonObj.clear();
+				return false;
+			}
+			
+			JSONObject materialObj = (JSONObject) jsonObj.get(key);
+			
+			if (langs == null) {
+				langs = new ArrayList<>();
 				
-				if (Material.matchMaterial((String) key) == null) {
-					KuffleMain.systemLogs.logSystemMsg("Material [" + (String) key + "] does not exist.");
+				for (Object keyLang : materialObj.keySet()) {
+					langs.add((String) keyLang);
+				}
+			} else {
+				if (!materialLangCheck(materialObj, langs)) {
+					langs.clear();
+					materialObj.clear();
 					jsonObj.clear();
 					return false;
 				}
-				
-				JSONObject materialObj = (JSONObject) jsonObj.get(key);
-				
-				if (langs == null) {
-					langs = new ArrayList<>();
-					
-					for (Object keyLang : materialObj.keySet()) {
-						langs.add((String) keyLang);
-					}
-				} else {
-					for (Object keyLang : materialObj.keySet()) {
-						if (!langs.contains(keyLang)) {
-							KuffleMain.systemLogs.logSystemMsg("Lang [" + (String) keyLang + "] is not everywhere in lang file.");
-							langs.clear();
-							materialObj.clear();
-							return false;
-						}
-					}
-				}
-				
-				materialObj.clear();
 			}
 			
-			if (langs != null) {
-				langs.clear();
-			}
-			
-			jsonObj.clear();
-			
-			return true;
-		} catch (ParseException e) {
-			e.printStackTrace();
+			materialObj.clear();
 		}
 		
-		return false;
+		if (langs != null) {
+			langs.clear();
+		}
+		
+		jsonObj.clear();
+		
+		return true;
+	}
+	
+	private static boolean materialLangCheck(JSONObject materialObj, List<String> langs) {
+		for (Object keyLang : materialObj.keySet()) {
+			if (!langs.contains(keyLang)) {
+				KuffleMain.systemLogs.logSystemMsg("Lang [" + (String) keyLang + "] is not everywhere in lang file.");
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	private static boolean langConformity(String content) {
+		JSONParser parser = new JSONParser();
+		JSONObject jsonObj;
+		List<String> langs = null;
+		
 		try {
-			JSONParser parser = new JSONParser();
-			JSONObject jsonObj;
-			List<String> langs = null;
-			
 			jsonObj = (JSONObject) parser.parse(content);
-			
-			for (Object key : jsonObj.keySet()) {
-				JSONObject phraseObj = (JSONObject) jsonObj.get(key);
-				
-				if (langs == null) {
-					langs = new ArrayList<>();
-					
-					for (Object keyLang : phraseObj.keySet()) {
-						langs.add((String) keyLang);
-					}
-				} else {
-					for (Object keyLang : phraseObj.keySet()) {
-						if (!langs.contains(keyLang)) {
-							KuffleMain.systemLogs.logSystemMsg("Lang [" + (String) keyLang + "] is not everywhere in lang file.");
-							langs.clear();
-							phraseObj.clear();
-							return false;
-						}
-					}
-				}
-				
-				phraseObj.clear();
-			}
-			
-			if (langs != null) {
-				langs.clear();
-			}
-			
-			jsonObj.clear();
-			
-			return true;
 		} catch (ParseException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
+			return false;
 		}
 		
-		return false;
+		for (Object key : jsonObj.keySet()) {
+			JSONObject phraseObj = (JSONObject) jsonObj.get(key);
+			
+			if (langs == null) {
+				langs = new ArrayList<>();
+				
+				for (Object keyLang : phraseObj.keySet()) {
+					langs.add((String) keyLang);
+				}
+			} else {
+				if (!materialLangCheck(phraseObj, langs)) {
+					langs.clear();
+					phraseObj.clear();
+					jsonObj.clear();
+					return false;
+				}
+			}
+			
+			phraseObj.clear();
+		}
+		
+		if (langs != null) {
+			langs.clear();
+		}
+		
+		jsonObj.clear();
+		
+		return true;
 	}
 	
 	private static boolean itemsConformity(String content) {
@@ -312,7 +317,7 @@ public class FilesConformity {
 			
 			return true;
 		} catch (ParseException | IllegalArgumentException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 		}
 		
 		return false;
@@ -333,100 +338,107 @@ public class FilesConformity {
 				
 				JSONObject rewards = (JSONObject) jsonObj.get(key);
 				
-				for (Object reward : rewards.keySet()) {
-					if (Material.matchMaterial((String) reward) == null) {
-						KuffleMain.systemLogs.logSystemMsg("Material [" + (String) reward + "] is not in Material Enum.");
-						rewards.clear();
-						jsonObj.clear();
-						
-						return false;
-					}
-					
-					JSONObject itemObj = (JSONObject) rewards.get(reward);
-					boolean containKey = true;
-					
-					if (!itemObj.containsKey("Amount")) {
-						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Amount' Object.");
-						containKey = false;
-					} else if (!itemObj.containsKey("Enchant")) {
-						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Enchant' Object.");
-						containKey = false;
-					} else if (!itemObj.containsKey("Level")) {
-						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Level' Object.");
-						containKey = false;
-					} else if (!itemObj.containsKey("Effect")) {
-						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] does not contain 'Effect' Object.");
-						containKey = false;
-					}
-					
-					if (!containKey) {
-						itemObj.clear();
-						rewards.clear();
-						jsonObj.clear();
-						return false;
-					}
-					
-					@SuppressWarnings("unused")
-					int number = Integer.parseInt(itemObj.get("Amount").toString());
-					number = Integer.parseInt(itemObj.get("Level").toString());
-					
-					String enchants = (String) itemObj.get("Enchant");
-					String effects = (String) itemObj.get("Effect");
-					
-					containKey = true;
-					
-					if (enchants.contains(",")) {
-						for (String enchant : enchants.split(",")) {
-							if (RewardManager.getEnchantment(enchant) == null) {
-								KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + enchant + "].");
-								containKey = false;
-								break;
-							}
-						}
-					} else if (RewardManager.getEnchantment(enchants) == null) {
-						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + enchants + "].");
-						containKey = false;
-					}
-					
-					if (!containKey) {
-						itemObj.clear();
-						rewards.clear();
-						jsonObj.clear();
-						return false;
-					}
-					
-					if (effects.contains(",")) {
-						for (String effect : effects.split(",")) {
-							if (!Utils.checkEffect(effect)) {
-								KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown effect : [" + effect + "].");
-								itemObj.clear();
-								rewards.clear();
-								jsonObj.clear();
-								return false;
-							}
-						}
-					} else if (!Utils.checkEffect(effects)) {
-						KuffleMain.systemLogs.logSystemMsg("Reward [" + (String) reward + "] contains unknown enchant : [" + effects + "].");
-						itemObj.clear();
-						rewards.clear();
-						jsonObj.clear();
-						return false;
-					}
-					
-					itemObj.clear();
-				}
-				
-				rewards.clear();
+				checkRewards(rewards);
 			}
 			
 			jsonObj.clear();
 			
 			return true;
 		} catch (ParseException | IllegalArgumentException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 		}
 		
 		return false;
+	}
+	
+	private static boolean checkRewards(JSONObject rewards) {
+		boolean containKey = true;
+		
+		for (Object reward : rewards.keySet()) {
+			if (Material.matchMaterial((String) reward) == null) {
+				KuffleMain.systemLogs.logSystemMsg("Material [" + (String) reward + "] is not in Material Enum.");
+				containKey = false;
+			}
+			
+			JSONObject itemObj = (JSONObject) rewards.get(reward);
+			
+			if (!checkRewardElem(itemObj, (String) reward)) {
+				containKey = false;
+			}
+			
+			@SuppressWarnings("unused")
+			int number = Integer.parseInt(itemObj.get("Amount").toString());
+			number = Integer.parseInt(itemObj.get("Level").toString());
+			
+			String enchants = (String) itemObj.get("Enchant");
+			String effects = (String) itemObj.get("Effect");
+			
+			if (!checkRewardEnchant(enchants, (String) reward) ||
+					!checkRewardEffect(effects, (String) reward)) {
+				containKey = false;
+			}
+			
+			itemObj.clear();
+		}
+		
+		return containKey;
+	}
+	
+	private static boolean checkRewardElem(JSONObject itemObj, String reward) {
+		boolean containKey = true;
+		
+		if (!itemObj.containsKey("Amount")) {
+			KuffleMain.systemLogs.logSystemMsg("Reward [" + reward + "] does not contain 'Amount' Object.");
+			containKey = false;
+		} else if (!itemObj.containsKey("Enchant")) {
+			KuffleMain.systemLogs.logSystemMsg("Reward [" + reward + "] does not contain 'Enchant' Object.");
+			containKey = false;
+		} else if (!itemObj.containsKey("Level")) {
+			KuffleMain.systemLogs.logSystemMsg("Reward [" + reward + "] does not contain 'Level' Object.");
+			containKey = false;
+		} else if (!itemObj.containsKey("Effect")) {
+			KuffleMain.systemLogs.logSystemMsg("Reward [" + reward + "] does not contain 'Effect' Object.");
+			containKey = false;
+		}
+		
+		return containKey;
+	}
+	
+	private static boolean checkRewardEnchant(String enchants, String reward) {
+		boolean containKey = true;
+		
+		if (enchants.contains(",")) {
+			for (String enchant : enchants.split(",")) {
+				if (RewardManager.getEnchantment(enchant) == null) {
+					KuffleMain.systemLogs.logSystemMsg("Reward [" + reward + "] contains unknown enchant : [" + enchant + "].");
+					containKey = false;
+					break;
+				}
+			}
+		} else if (RewardManager.getEnchantment(enchants) == null) {
+			KuffleMain.systemLogs.logSystemMsg("Reward [" + reward + "] contains unknown enchant : [" + enchants + "].");
+			containKey = false;
+		}
+		
+		return containKey;
+	}
+	
+	private static boolean checkRewardEffect(String effects, String reward) {
+		boolean containKey = true;
+		
+		if (effects.contains(",")) {
+			for (String effect : effects.split(",")) {
+				if (!Utils.checkEffect(effect)) {
+					KuffleMain.systemLogs.logSystemMsg("Reward [" + reward + "] contains unknown effect : [" + effect + "].");
+					containKey = false;
+				}
+			}
+		} else if (!Utils.checkEffect(effects)) {
+			KuffleMain.systemLogs.logSystemMsg("Reward [" + reward + "] contains unknown enchant : [" + effects + "].");
+			containKey = false;
+		}
+		
+		return containKey;
 	}
 	
 	private static boolean levelsConformity(String content) {
@@ -475,7 +487,7 @@ public class FilesConformity {
 			
 			return true;
 		} catch (ParseException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 		}
 		
 		return false;

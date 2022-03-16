@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.utils.Utils;
 
 public class SpreadPlayer {
@@ -16,7 +17,7 @@ public class SpreadPlayer {
 		throw new IllegalStateException("Utility class");
 	}
 	
-    public static List<Location> spreadPlayers(Player sender, double distance, long minRadius, List<Team> teams, List<Player> players) {
+    public static List<Location> spreadPlayers(Player sender, double distance, long minRadius, List<Player> players) {
         if (distance < 0.0D) {
             sender.sendMessage(ChatColor.RED + Utils.getLangString(null, "TOO_SHORT"));
             return null;
@@ -27,6 +28,8 @@ public class SpreadPlayer {
         if (world == null) {
             return null;
         }
+        
+        List<Team> teams = KuffleMain.teams.getTeams();
         
         int spreadSize;
         

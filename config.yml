@@ -3,7 +3,7 @@ game_settings:
       enable: false # If True, checks at every game loop if game is ended
       end_when_one: false # If True, End the game if only one player remains (do not toggle to true if the game contains only one player)
    spreadplayers:
-      enable: false # True: when start the game, spread players.
+      enable: false # True: when start the game, spread players., Default: False
       minimum_distance: 500 # for spreadplayer command, minimum distance between player, Default: 500
       minimum_radius: 1000 # for spreadplayer command, minimum radius must be > minimum_distance parameter, Default: 1000
    saturation: false # True: give infinite saturation effect to all players

@@ -27,34 +27,33 @@ public class KuffleAddDuringGame implements CommandExecutor {
 			return false;
 		}
 
-		if (KuffleMain.gameStarted) {
-			if (args.length != 1 && args.length != 2) {
-				return false;
-			}
+		if (!KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));			
+		}
+		if (args.length != 1 && args.length != 2) {
+			return false;
+		}
 
-			Player retPlayer;
+		Player retPlayer;
 
-			if ((retPlayer = KuffleList.searchPlayerByName(args[0])) == null) {
+		if ((retPlayer = KuffleList.searchPlayerByName(args[0])) == null) {
+			return true;
+		}
+
+		if (KuffleMain.config.getTeam() && args.length == 2) {
+			if (!KuffleMain.teams.hasTeam(args[1])) {
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[1] + ">"));
+				return true;
+			} else if (KuffleMain.teams.getTeam(args[1]).players.size() == KuffleMain.config.getTeamSize()) {
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_FULL"));
 				return true;
 			}
 
-			if (KuffleMain.config.getTeam() && args.length == 2) {
-				if (!KuffleMain.teams.hasTeam(args[1])) {
-					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_NOT_EXISTS").replace("<#>", "<" + args[1] + ">"));
-					return true;
-				} else if (KuffleMain.teams.getTeam(args[1]).players.size() == KuffleMain.config.getTeamSize()) {
-					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_FULL"));
-					return true;
-				}
-
-				startPlayer(player, retPlayer, args[1]);
-			} else if (args.length == 1 && !KuffleMain.config.getTeam()) {
-				startPlayer(player, retPlayer, null);
-			} else {
-				return false;
-			}
+			startPlayer(player, retPlayer, args[1]);
+		} else if (args.length == 1 && !KuffleMain.config.getTeam()) {
+			startPlayer(player, retPlayer, null);
 		} else {
-			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));
+			return false;
 		}
 
 		return true;

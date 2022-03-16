@@ -52,8 +52,6 @@ public class KuffleStart implements CommandExecutor {
 			);
 		}
 
-		int spread = 0;
-
 		if (KuffleMain.config.getTeam() && !checkTeams()) {
 			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_NOT_IN_TEAM"));
 			return true;
@@ -69,43 +67,7 @@ public class KuffleStart implements CommandExecutor {
 
 		KuffleMain.systemLogs.logSystemMsg(Utils.getLangString(player.getName(), "GAME_STARTED"));
 
-		if (KuffleMain.config.getSpread()) {
-			if (KuffleMain.config.getTeam()) {
-				SpreadPlayer.spreadPlayers(player, KuffleMain.config.getSpreadDistance(), KuffleMain.config.getSpreadRadius(), KuffleMain.teams.getTeams(), Utils.getPlayerList(KuffleMain.games));
-			} else {
-				SpreadPlayer.spreadPlayers(player, KuffleMain.config.getSpreadDistance(), KuffleMain.config.getSpreadRadius(), null, Utils.getPlayerList(KuffleMain.games));
-			}
-
-			KuffleMain.games.forEach((playerName, game) -> {
-				if (KuffleMain.config.getTeam()) {
-					game.setTeamName(KuffleMain.teams.findTeamByPlayer(playerName));
-				}
-
-				game.getPlayer().setBedSpawnLocation(game.getPlayer().getLocation(), true);
-				game.setSpawnLoc(game.getPlayer().getLocation());
-				game.getSpawnLoc().add(0, -1, 0).getBlock().setType(Material.BEDROCK);
-			});
-
-			spread = 20;
-		} else {
-			Location spawn = null;
-
-			for (String playerName : KuffleMain.games.keySet()) {
-				if (KuffleMain.config.getTeam()) {
-					KuffleMain.games.get(playerName).setTeamName(KuffleMain.teams.findTeamByPlayer(playerName));
-				}
-
-				if (spawn == null) {
-					spawn = KuffleMain.games.get(playerName).getPlayer().getLocation().getWorld().getSpawnLocation();
-				}
-
-				KuffleMain.games.get(playerName).setSpawnLoc(spawn);
-			}
-
-			if (spawn != null) {
-				spawn.subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
-			}
-		}
+		int spread = spreadAndSpawn(player);
 
 		KuffleMain.playersHeads = Bukkit.createInventory(null, Utils.getNbInventoryRows(KuffleMain.games.size()), "§8Players");
 
@@ -173,6 +135,43 @@ public class KuffleStart implements CommandExecutor {
 		}, 120 + spread);
 
 		return true;
+	}
+	
+	private int spreadAndSpawn(Player sender) {
+		if (KuffleMain.config.getSpread()) {
+			SpreadPlayer.spreadPlayers(sender, KuffleMain.config.getSpreadDistance(), KuffleMain.config.getSpreadRadius(), Utils.getPlayerList(KuffleMain.games));
+
+			KuffleMain.games.forEach((playerName, game) -> {
+				if (KuffleMain.config.getTeam()) {
+					game.setTeamName(KuffleMain.teams.findTeamByPlayer(playerName));
+				}
+
+				game.getPlayer().setBedSpawnLocation(game.getPlayer().getLocation(), true);
+				game.setSpawnLoc(game.getPlayer().getLocation());
+				game.getSpawnLoc().add(0, -1, 0).getBlock().setType(Material.BEDROCK);
+			});
+
+			return 20;
+		} else {
+			Location spawn = null;
+
+			for (String playerName : KuffleMain.games.keySet()) {
+				if (KuffleMain.config.getTeam()) {
+					KuffleMain.games.get(playerName).setTeamName(KuffleMain.teams.findTeamByPlayer(playerName));
+				}
+
+				if (spawn == null) {
+					spawn = KuffleMain.games.get(playerName).getPlayer().getLocation().getWorld().getSpawnLocation();
+				}
+
+				KuffleMain.games.get(playerName).setSpawnLoc(spawn);
+			}
+
+			if (spawn != null) {
+				spawn.subtract(0, 1, 0).getBlock().setType(Material.BEDROCK);
+			}
+			return 0;
+		}
 	}
 
 	static ItemStack getStartBox() {

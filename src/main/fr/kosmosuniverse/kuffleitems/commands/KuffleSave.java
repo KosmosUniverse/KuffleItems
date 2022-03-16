@@ -47,7 +47,7 @@ public class KuffleSave implements CommandExecutor {
 			try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + playerName + ".ki");) {				
 				writer.write(KuffleMain.games.get(playerName).save());
 			} catch (IOException e) {
-				e.printStackTrace();
+				KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 			}
 			
 			KuffleMain.games.get(playerName).stop();
@@ -57,7 +57,7 @@ public class KuffleSave implements CommandExecutor {
 			try (FileWriter writer = new FileWriter(dataFolder.getPath() + File.separator + "Teams.ki");) {				
 				writer.write(KuffleMain.teams.saveTeams());
 			} catch (IOException e) {
-				e.printStackTrace();
+				KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 			}
 		}
 		
@@ -71,7 +71,7 @@ public class KuffleSave implements CommandExecutor {
 			
 			global.clear();
 		} catch (IOException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 		}
 		
 		Utils.removeTemplates();

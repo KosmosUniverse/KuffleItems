@@ -69,7 +69,7 @@ public final class Utils {
 		try {
 			Files.delete(Paths.get(path + File.separator + fileName));
 		} catch (IOException e) {
-			e.printStackTrace();
+			KuffleMain.systemLogs.logSystemMsg(e.getMessage());
 			return false;
 		}
 		

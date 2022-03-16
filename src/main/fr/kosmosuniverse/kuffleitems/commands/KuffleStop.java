@@ -40,7 +40,9 @@ public class KuffleStop implements CommandExecutor {
 		Utils.removeTemplates();
 		KuffleMain.scores.clear();
 		
-		KuffleMain.teams.resetAll();
+		if (KuffleMain.config.getTeam()) {
+			KuffleMain.teams.resetAll();
+		}
 		
 		KuffleMain.games.clear();
 		KuffleMain.loop.kill();
