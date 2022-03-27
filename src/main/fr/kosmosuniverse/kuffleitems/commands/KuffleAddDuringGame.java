@@ -20,7 +20,7 @@ public class KuffleAddDuringGame implements CommandExecutor {
 
 		Player player = (Player) sender;
 
-		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-abandon>"));
+		KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "CMD_PERF").replace("<#>", "<ki-add-during-game>"));
 
 		if (!player.hasPermission("ki-add-during-game")) {
 			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
@@ -29,8 +29,10 @@ public class KuffleAddDuringGame implements CommandExecutor {
 
 		if (!KuffleMain.gameStarted) {
 			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));			
+			return true;
 		}
-		if (args.length != 1 && args.length != 2) {
+		
+		if (args.length == 0 || args.length > 2) {
 			return false;
 		}
 
@@ -53,6 +55,7 @@ public class KuffleAddDuringGame implements CommandExecutor {
 		} else if (args.length == 1 && !KuffleMain.config.getTeam()) {
 			startPlayer(player, retPlayer, null);
 		} else {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "TEAM_PREVENT_ADD"));			
 			return false;
 		}
 

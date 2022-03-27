@@ -1,5 +1,5 @@
 name: KuffleItems
-version: 1.14
+version: 1.15
 author: KosmosUniverse
 main: main.fr.kosmosuniverse.kuffleitems.KuffleMain
 api-version: 1.15
@@ -72,10 +72,6 @@ commands:
       usage: /<command>
       description: command to put random players in teams
       permission: inferno.flagrate
-   ki-team-show:
-      usage: /<command> [TeamName]
-      description: command to show all or one team
-      permission: inferno.flagrate
    ki-team-color:
       usage: /<command> <TeamName> <TeamColor>
       description: command to change team color
@@ -84,6 +80,9 @@ commands:
       usage: /<command> <PlayerName> [TeamName]
       description: command to add a player during the game
       permission: inferno.flagrate
+   ki-team-show:
+      usage: /<command> [TeamName]
+      description: command to show all or one team
    ki-skip:
       usage: /<command>
       description: command to skip a block
@@ -155,15 +154,15 @@ permissions:
    ki-team-random-player:
       description: command to put random players in teams
       default: op
-   ki-team-show:
-      description: command to show all or one team
-      default: op
    ki-team-color:
       description: command to change team color
       default: op
    ki-addDuringGame:
       description: command to add a player during the game
       default: op
+   ki-team-show:
+      description: command to show all or one team
+      default: true
    ki-config:
       default: true
       description: command to see or change game configuration
@@ -176,7 +175,7 @@ permissions:
    ki-crafts:
       description: command to see custom crafts
       default: true
-   ki-ageblocks:
+   ki-ageitems:
       description: command to see current age blocks
       default: true
    ki-lang:

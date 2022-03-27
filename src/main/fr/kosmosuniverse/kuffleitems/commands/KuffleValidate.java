@@ -36,6 +36,7 @@ public class KuffleValidate implements CommandExecutor {
 			
 			if (!KuffleMain.games.containsKey(args[0])) {
 				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "VALIDATE_PLAYER_ITEM"));	
+				return true;
 			}
 
 			String tmp = KuffleMain.games.get(args[0]).getCurrentItem();
@@ -54,6 +55,8 @@ public class KuffleValidate implements CommandExecutor {
 			
 			if (!KuffleMain.games.containsKey(args[0])) {
 				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "VALIDATE_PLAYER_AGE"));	
+				
+				return true;
 			}
 			
 			if (KuffleMain.games.get(args[0]).getAge() == -1) {
@@ -69,7 +72,7 @@ public class KuffleValidate implements CommandExecutor {
 			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "AGE_VALIDATED").replace("[#]", "[" + tmp + "]").replace("<#>", "<" + args[0] + ">"));
 		}
 		
-		return false;
+		return true;
 	}
 
 }

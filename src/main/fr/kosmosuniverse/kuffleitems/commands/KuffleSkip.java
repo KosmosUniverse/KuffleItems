@@ -24,7 +24,7 @@ public class KuffleSkip implements CommandExecutor {
 			return false;
 		}
 
-		if (!KuffleMain.config.getSkip()) {
+		if (!KuffleMain.config.getSkip() && !msg.equals("ki-adminskip")) {
 			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "CONFIG_DISABLED"));
 			
 			return false;
@@ -52,17 +52,22 @@ public class KuffleSkip implements CommandExecutor {
 		return true;
 	}
 	
-	private boolean doSkip(Player player, String cmd, String playerTarget) {
+	private void doSkip(Player player, String cmd, String playerTarget) {
 		if (!player.hasPermission(cmd)) {
 			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_ALLOWED"));
-			return false;
+			return ;
+		}
+		
+		if (!KuffleMain.games.containsKey(playerTarget)) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_NOT_IN_GAME"));
+			return ;
 		}
 		
 		String tmp = KuffleMain.games.get(playerTarget).getCurrentItem();
 		
-		KuffleMain.games.get(player.getName()).skip(false);
+		KuffleMain.games.get(player.getName()).skip("ki-skip".equals(cmd));
 		KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "ITEM_SKIPPED").replace("[#]", " [" + tmp + "] ").replace("<#>", " <" + playerTarget + ">"));				
 		
-		return true;
+		return ;
 	}
 }

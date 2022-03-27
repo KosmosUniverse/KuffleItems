@@ -24,7 +24,7 @@ public class KuffleTeamResetPlayers implements CommandExecutor {
 		}
 		
 		if (KuffleMain.games.size() > 0 && KuffleMain.gameStarted) {
-			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_ALREADY_LAUNCHED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
 			return true;
 		}
 				

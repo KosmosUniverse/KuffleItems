@@ -18,17 +18,14 @@ public class KuffleTeamRemovePlayerTab implements TabCompleter {
 			return new ArrayList<>();
 		}
 		
-		if (args.length == 1) {				
-			List<Team> teams = KuffleMain.teams.getTeams();
+		if (args.length == 1) {
 			List<String> ret = new ArrayList<>();
 			
-			for (Team item : teams) {
+			for (Team item : KuffleMain.teams.getTeams()) {
 				if (item.players.size() != 0) {
 					ret.add(item.name);
 				}
 			}
-			
-			teams.clear();
 			
 			return ret;
 		} else if (args.length == 2 && KuffleMain.teams.hasTeam(args[0])) {

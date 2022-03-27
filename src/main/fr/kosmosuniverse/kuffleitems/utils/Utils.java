@@ -508,4 +508,14 @@ public final class Utils {
 
 		KuffleMain.gameLogs.logSystemMsg(sb.toString());
 	}
+	
+	public static void printException(Exception e) {
+		StringBuilder sb = new StringBuilder();
+		
+		for (StackTraceElement ste : e.getStackTrace()) {
+			sb.append(ste).append("\n");
+		}
+		
+		KuffleMain.systemLogs.logSystemMsg(sb.toString());
+	}
 }

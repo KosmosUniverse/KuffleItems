@@ -31,32 +31,33 @@ public class KuffleAgeItems implements CommandExecutor  {
 			return false;
 		}
 		
-		if (KuffleMain.gameStarted) {
-			if (!KuffleMain.games.containsKey(player.getName())) {
-				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_PLAYING"));
-				return true;
-			}
-			
-			String age;
-			
-			if (args.length == 0) {
+		String age;
+		
+		if (args.length == 0) {
+			if (KuffleMain.gameStarted) {
+				if (!KuffleMain.games.containsKey(player.getName())) {
+					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "NOT_PLAYING"));
+					return true;
+				}
+				
 				age = AgeManager.getAgeByNumber(KuffleMain.ages, KuffleMain.games.get(player.getName()).getAge()).name;	
 			} else {
-				age = args[0];
-				
-				if (!AgeManager.ageExists(KuffleMain.ages, age)) {
-					KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "AGE_NOT_EXISTS"));
-					return false;
-				}
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));			
+				return true;
 			}
-			
-			List<Inventory> ageItems = KuffleMain.itemsInvs.get(age);
-			
-			player.openInventory(ageItems.get(0));
 		} else {
-			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_NOT_LAUNCHED"));			
+			age = args[0];
+			
+			if (!AgeManager.ageExists(KuffleMain.ages, age)) {
+				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "AGE_NOT_EXISTS"));
+				return false;
+			}
 		}
-
+		
+		List<Inventory> ageItems = KuffleMain.itemsInvs.get(age);
+		
+		player.openInventory(ageItems.get(0));
+		
 		return true;
 	}
 }

@@ -354,5 +354,9 @@
 	"TIME_AGE" : {
 		"en" : "Total Time at this point: %t",
 		"fr" : "Temps total à cet instant : %t"
+	},
+	"TEAM_PREVENT_ADD" : {
+		"en" : "Cannot add player due to current team state.",
+		"fr" : "Impossible d'ajouter un joueur a cause de l'état courant des équipes."
 	}
 }

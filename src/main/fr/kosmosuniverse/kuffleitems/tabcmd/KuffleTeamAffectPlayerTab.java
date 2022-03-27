@@ -19,11 +19,10 @@ public class KuffleTeamAffectPlayerTab implements TabCompleter {
 			return new ArrayList<>();
 		}
 		
-		if (args.length == 1) {				
-			List<Team> teams = KuffleMain.teams.getTeams();
+		if (args.length == 1) {
 			List<String> ret = new ArrayList<>();
 			
-			for (Team item : teams) {
+			for (Team item : KuffleMain.teams.getTeams()) {
 				ret.add(item.name);
 			}
 			

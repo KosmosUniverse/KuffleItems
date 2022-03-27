@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import main.fr.kosmosuniverse.kuffleitems.KuffleMain;
 import main.fr.kosmosuniverse.kuffleitems.core.Game;
 
-public class KuffleValidateTab implements TabCompleter {
+public class KuffleCurrentGamePlayerTab implements TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender,  Command cmd, String msg, String[] args) {
 		if (!(sender instanceof Player))

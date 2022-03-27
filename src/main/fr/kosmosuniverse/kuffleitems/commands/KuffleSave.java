@@ -89,8 +89,11 @@ public class KuffleSave implements CommandExecutor {
 	private JSONObject saveRanks() {
 		JSONObject rankObj = new JSONObject();
 		
-		for (String playerName : KuffleMain.playerRank.keySet()) {
-			rankObj.put(playerName, KuffleMain.playerRank.get(playerName));
+		for (String name : KuffleMain.playerRank.keySet()) {
+			if ((!KuffleMain.config.getTeam() && KuffleMain.games.containsKey(name)) ||
+			(KuffleMain.config.getTeam() && KuffleMain.teams.hasTeam(name))) {
+				rankObj.put(name, KuffleMain.playerRank.get(name));
+			}
 		}
 		
 		return rankObj;

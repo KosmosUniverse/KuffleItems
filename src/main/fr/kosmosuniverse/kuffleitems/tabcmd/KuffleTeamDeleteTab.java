@@ -19,14 +19,11 @@ public class KuffleTeamDeleteTab implements TabCompleter {
 		}
 		
 		if (args.length == 1) {
-			List<Team> teams = KuffleMain.teams.getTeams();
 			List<String> ret = new ArrayList<>();
 			
-			for (Team item : teams) {
+			for (Team item : KuffleMain.teams.getTeams()) {
 				ret.add(item.name);
 			}
-			
-			teams.clear();
 			
 			return ret;
 		}

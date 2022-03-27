@@ -30,6 +30,11 @@ public class KuffleList implements CommandExecutor {
 
 			return false;
 		}
+		
+		if (args.length != 0 && KuffleMain.gameStarted) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
+			return true;
+		}
 
 		if (args.length == 0) {
 			displayList(player);
@@ -116,6 +121,8 @@ public class KuffleList implements CommandExecutor {
 			} else {
 				KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_ALREADY_LIST"));
 			}
+		} else {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_NOT_EXISTS").replace("<#>", playerName));
 		}
 	}
 	
@@ -125,6 +132,8 @@ public class KuffleList implements CommandExecutor {
 		} else if (KuffleMain.games.containsKey(playerName)) {
 			KuffleMain.games.remove(playerName);
 			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "REMOVED_LIST"));
+		} else {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_NOT_IN_GAME"));		
 		}
 	}
 	

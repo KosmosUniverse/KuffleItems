@@ -24,13 +24,19 @@ public class ManageTeams {
 	}
 	
 	public void createTeam(String name, ChatColor color) {
+		if (teams == null) {
+			teams = new ArrayList<>();
+		}
+		
 		teams.add(new Team(name, color));
 	}
 	
 	public boolean hasTeam(String team) {
-		for (Team item : teams) {
-			if (item.name.equals(team)) {
-				return true;
+		if (teams != null) {
+			for (Team item : teams) {
+				if (item.name.equals(team)) {
+					return true;
+				}
 			}
 		}
 		
@@ -38,46 +44,56 @@ public class ManageTeams {
 	}
 	
 	public void deleteTeam(String name) {
-		for (Team item : teams) {
-			if (item.name.equals(name)) {
-				item.players.clear();
-				teams.remove(item);
-				return ;
+		if (teams != null) {
+			for (Team item : teams) {
+				if (item.name.equals(name)) {
+					item.players.clear();
+					teams.remove(item);
+					return ;
+				}
 			}
 		}
 	}
 	
 	public void changeTeamColor(String name, ChatColor color) {
-		for (Team item : teams) {
-			if (item.name.equals(name)) {
-				item.color = color;
-				return ;
+		if (teams != null) {
+			for (Team item : teams) {
+				if (item.name.equals(name)) {
+					item.color = color;
+					return ;
+				}
 			}
 		}
 	}
 	
 	public void affectPlayer(String teamName, Player player) {
-		for (Team item : teams) {
-			if (item.name.equals(teamName)) {
-				item.players.add(player);
-				return ;
+		if (teams != null) {
+			for (Team item : teams) {
+				if (item.name.equals(teamName)) {
+					item.players.add(player);
+					return ;
+				}
 			}
 		}
 	}
 	
 	public void removePlayer(String teamName, Player player) {
-		for (Team item : teams) {
-			if (item.name.equals(teamName)) {
-				item.players.remove(player);
-				return ;
+		if (teams != null) {
+			for (Team item : teams) {
+				if (item.name.equals(teamName)) {
+					item.players.remove(player);
+					return ;
+				}
 			}
 		}
 	}
 	
 	public boolean isInTeam(String player) {
-		for (Team teamItem : teams) {
-			if (teamItem.hasPlayer(player)) {
-				return true;
+		if (teams != null) {
+			for (Team teamItem : teams) {
+				if (teamItem.hasPlayer(player)) {
+					return true;
+				}
 			}
 		}
 		
@@ -87,8 +103,10 @@ public class ManageTeams {
 	public List<String> getTeamColors() {
 		List<String> teamColors = new ArrayList<>();
 		
-		for (Team item : teams)  {
-			teamColors.add(item.color.name());
+		if (teams != null) {
+			for (Team item : teams)  {
+				teamColors.add(item.color.name());
+			}
 		}
 		
 		return teamColors;
@@ -105,10 +123,12 @@ public class ManageTeams {
 	}
 	
 	public String findTeamByPlayer(String player) {
-		for (Team teamItem : teams) {
-			for (Player playerItem : teamItem.players) {
-				if (playerItem.getDisplayName().equals(player)) {
-					return teamItem.name;
+		if (teams != null) {
+			for (Team teamItem : teams) {
+				for (Player playerItem : teamItem.players) {
+					if (playerItem.getDisplayName().equals(player)) {
+						return teamItem.name;
+					}
 				}
 			}
 		}
@@ -117,17 +137,22 @@ public class ManageTeams {
 	}
 	
 	public void resetAll() {
-		for (Team item : teams) {
-			item.players.clear();
+		if (teams != null) {
+			for (Team item : teams) {
+				item.players.clear();
+			}
+			
+			teams.clear();
+			teams = null;
 		}
-		
-		teams.clear();
 	}
 	
 	public String printTeam(String teamName) {
-		for (Team item : teams) {
-			if (item.name.equals(teamName)) {
-				return item.toString();
+		if (teams != null) {
+			for (Team item : teams) {
+				if (item.name.equals(teamName)) {
+					return item.toString();
+				}
 			}
 		}
 		
@@ -137,7 +162,7 @@ public class ManageTeams {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		if (teams.size() != 0) {
+		if (teams != null && teams.size() != 0) {
 			for (int cnt = 0; cnt < teams.size(); cnt++) {
 				sb.append(teams.get(cnt).toString());
 				

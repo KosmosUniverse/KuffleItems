@@ -45,10 +45,10 @@ public class KuffleLoad implements CommandExecutor {
 		}
 		
 		if (KuffleMain.gameStarted) {
-			KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "GAME_LAUNCHED"));
 			return true;
 		} else if (KuffleMain.games.size() != 0) {
-			KuffleMain.systemLogs.logMsg(player.getName(), Utils.getLangString(player.getName(), "LIST_NOT_EMPTY") + ".");
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "LIST_NOT_EMPTY") + ".");
 			return true;
 		}
 		
@@ -74,7 +74,7 @@ public class KuffleLoad implements CommandExecutor {
 			}
 		}
 		
-		KuffleMain.playersHeads = Bukkit.createInventory(null, Utils.getNbInventoryRows(KuffleMain.games.size()), "§8Players");
+		KuffleMain.updatePlayersHead();
 		
 		loadRankAndTeams(parser);
 		
@@ -119,18 +119,20 @@ public class KuffleLoad implements CommandExecutor {
 				
 			KuffleMain.games.forEach((playerName, game) -> {
 				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.BLUE + "1" + ChatColor.RESET, game.getPlayer());
-				KuffleMain.games.get(playerName).load();
+				game.load();
 			});
 		}, 100);
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(KuffleMain.current, () -> {
-			KuffleMain.games.forEach((playerName, game) ->
-				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, game.getPlayer())
-			);
+			KuffleMain.games.forEach((playerName, game) -> {
+				ActionBar.sendRawTitle(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "GO!" + ChatColor.RESET, game.getPlayer());
+				KuffleMain.updatePlayersHeadData(playerName, game.getItemDisplay());
+			});
 			
 			KuffleMain.loop.startRunnable();
 			KuffleMain.gameStarted = true;
 			KuffleMain.paused = false;
+			
 		}, 120);
 		
 		return true;
@@ -138,8 +140,6 @@ public class KuffleLoad implements CommandExecutor {
 	
 	private void loadRankAndTeams(JSONParser parser) {
 		KuffleMain.games.forEach((playerName, game) -> {
-			KuffleMain.playersHeads.addItem(Utils.getHead(game.getPlayer()));
-			
 			if (KuffleMain.config.getTeam() && !KuffleMain.playerRank.containsKey(game.getTeamName())) {
 				KuffleMain.playerRank.put(game.getTeamName(), 0);
 			} else if (!KuffleMain.playerRank.containsKey(playerName)) {

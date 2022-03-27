@@ -29,8 +29,8 @@ public class Config {
 	private boolean passive;
 	private int sbttAmount;
 	private int teamSize;
-	private int spreadMin;
-	private int spreadMax;
+	private int spreadDistance;
+	private int spreadRadius;
 	private int itemPerAge;
 	private int skipAge;
 	private int maxAges;
@@ -187,27 +187,7 @@ public class Config {
 		setupOther(configFile);
 		setupEnd(configFile);
 		
-		saturation = configFile.getBoolean("game_settings.saturation");
-		spread = configFile.getBoolean("game_settings.spreadplayers.enable");
-		rewards = configFile.getBoolean("game_settings.rewards");
-		skip = configFile.getBoolean("game_settings.skip.enable");
-		crafts = configFile.getBoolean("game_settings.custom_crafts");
-		team = configFile.getBoolean("game_settings.team.enable");
-		same = configFile.getBoolean("game_settings.same_mode");
-		endOne = configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one");
-		sbttMode = configFile.getBoolean("game_settings.sbtt_mode.enable");
-		passive = configFile.getBoolean("game_settings.passive");
-		
-		spreadMin = configFile.getInt("game_settings.spreadplayers.minimum_distance");
-		spreadMax = configFile.getInt("game_settings.spreadplayers.minimum_radius");
-		itemPerAge = configFile.getInt("game_settings.item_per_age");
-		skipAge = configFile.getInt("game_settings.skip.age");
-		maxAges = configFile.getInt("game_settings.max_age");
-		startTime = configFile.getInt("game_settings.start_time");
-		addedTime = configFile.getInt("game_settings.time_added");
-		level = configFile.getInt("game_settings.level");
-		teamSize = configFile.getInt("game_settings.team.size");
-		sbttAmount = configFile.getInt("game_settings.sbtt_mode.amount");
+		setValues(configFile);
 
 		ret = new ArrayList<>();
 
@@ -339,14 +319,39 @@ public class Config {
 		}
 	}
 
+	private void setValues(FileConfiguration configFile) {
+		saturation = configFile.getBoolean("game_settings.saturation");
+		spread = configFile.getBoolean("game_settings.spreadplayers.enable");
+		rewards = configFile.getBoolean("game_settings.rewards");
+		skip = configFile.getBoolean("game_settings.skip.enable");
+		crafts = configFile.getBoolean("game_settings.custom_crafts");
+		team = configFile.getBoolean("game_settings.team.enable");
+		same = configFile.getBoolean("game_settings.same_mode");
+		endOne = configFile.getBoolean("game_settings.auto_detect_game_end.end_when_one");
+		duoMode = configFile.getBoolean("game_settings.double_mode");
+		sbttMode = configFile.getBoolean("game_settings.sbtt_mode.enable");
+		passive = configFile.getBoolean("game_settings.passive");
+		
+		spreadDistance = configFile.getInt("game_settings.spreadplayers.minimum_distance");
+		spreadRadius = configFile.getInt("game_settings.spreadplayers.minimum_radius");
+		itemPerAge = configFile.getInt("game_settings.item_per_age");
+		skipAge = configFile.getInt("game_settings.skip.age");
+		maxAges = configFile.getInt("game_settings.max_age");
+		startTime = configFile.getInt("game_settings.start_time");
+		addedTime = configFile.getInt("game_settings.time_added");
+		level = configFile.getInt("game_settings.level");
+		teamSize = configFile.getInt("game_settings.team.size");
+		sbttAmount = configFile.getInt("game_settings.sbtt_mode.amount");
+	}
+	
 	public String displayConfig() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Configuration:").append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Saturation: " + ChatColor.GOLD).append(saturation).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Spreadplayers: " + ChatColor.GOLD).append(spread).append("\n");
-		sb.append("  " + ChatColor.BLUE).append("Spreadplayer min distance: " + ChatColor.GOLD).append(spreadMin).append("\n");
-		sb.append("  " + ChatColor.BLUE).append("Spreadplayer min radius: " + ChatColor.GOLD).append(spreadMax).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Spreadplayer min distance: " + ChatColor.GOLD).append(spreadDistance).append("\n");
+		sb.append("  " + ChatColor.BLUE).append("Spreadplayer min radius: " + ChatColor.GOLD).append(spreadRadius).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Rewards: " + ChatColor.GOLD).append(rewards).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Skip: " + ChatColor.GOLD).append(skip).append("\n");
 		sb.append("  " + ChatColor.BLUE).append("Crafts: " + ChatColor.GOLD).append(crafts).append("\n");
@@ -403,8 +408,8 @@ public class Config {
 		configObj.put("endOne", endOne);
 		configObj.put("sbttAmount", sbttAmount);
 		configObj.put("teamSize", teamSize);
-		configObj.put("spreadMin", spreadMin);
-		configObj.put("spreadMax", spreadMax);
+		configObj.put("spreadMin", spreadDistance);
+		configObj.put("spreadMax", spreadRadius);
 		configObj.put("itemPerAge", itemPerAge);
 		configObj.put("skipAge", skipAge);
 		configObj.put("maxAges", maxAges);
@@ -431,8 +436,8 @@ public class Config {
 		
 		sbttAmount = Integer.parseInt(configObj.get("sbttAmount").toString());
 		teamSize = Integer.parseInt(configObj.get("teamSize").toString());
-		spreadMin = Integer.parseInt(configObj.get("spreadMin").toString());
-		spreadMax = Integer.parseInt(configObj.get("spreadMax").toString());
+		spreadDistance = Integer.parseInt(configObj.get("spreadMin").toString());
+		spreadRadius = Integer.parseInt(configObj.get("spreadMax").toString());
 		itemPerAge = Integer.parseInt(configObj.get("itemPerAge").toString());
 		skipAge = Integer.parseInt(configObj.get("skipAge").toString());
 		maxAges = Integer.parseInt(configObj.get("maxAges").toString());
@@ -516,11 +521,11 @@ public class Config {
 	}
 
 	public int getSpreadDistance() {
-		return spreadMin;
+		return spreadDistance;
 	}
 
 	public int getSpreadRadius() {
-		return spreadMax;
+		return spreadRadius;
 	}
 	
 	public int getSBTTAmount() {
@@ -631,17 +636,25 @@ public class Config {
 		return true;
 	}
 
-	public boolean setSpreadDistance(int configSpreadMin) {
-		spreadMin = configSpreadMin;
+	public boolean setSpreadDistance(int configSpreadDistance) {
+		spreadDistance = configSpreadDistance;
 		return true;
 	}
 
-	public boolean setSpreadRadius(int configSpreadMax) {
-		spreadMax = configSpreadMax;
+	public boolean setSpreadRadius(int configSpreadRadius) {
+		if (configSpreadRadius < spreadDistance) {
+			return false;
+		}
+		
+		spreadRadius = configSpreadRadius;
 		return true;
 	}
 
 	public boolean setItemAge(int configItemPerAge) {
+		if (configItemPerAge < 1) {
+			return false;
+		}
+		
 		itemPerAge = configItemPerAge;
 		return true;
 	}
@@ -673,16 +686,28 @@ public class Config {
 	}
 
 	public boolean setStartTime(int configStartTime) {
+		if (configStartTime < 1) {
+			return false;
+		}
+		
 		startTime = configStartTime;
 		return true;
 	}
 
 	public boolean setAddedTime(int configAddedTime) {
+		if (configAddedTime < 1) {
+			return false;
+		}
+		
 		addedTime = configAddedTime;
 		return true;
 	}
 	
 	public boolean setSbttAmount(int configSbttAmount) {
+		if (configSbttAmount < 1 || configSbttAmount > 9) {
+			return false;
+		}
+		
 		sbttAmount = configSbttAmount;
 		
 		return true;

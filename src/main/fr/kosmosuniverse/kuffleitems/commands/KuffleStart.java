@@ -46,15 +46,17 @@ public class KuffleStart implements CommandExecutor {
 			return false;
 		}
 
+		if (KuffleMain.config.getTeam() && !checkTeams()) {
+			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_NOT_IN_TEAM"));
+			return true;
+		} else if (!KuffleMain.config.getTeam()) {
+			KuffleMain.teams.resetAll();
+		}
+		
 		if (KuffleMain.config.getSaturation()) {
 			KuffleMain.games.forEach((playerName, game) ->
 				game.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 999999, 10, false, false, false))
 			);
-		}
-
-		if (KuffleMain.config.getTeam() && !checkTeams()) {
-			KuffleMain.systemLogs.writeMsg(player, Utils.getLangString(player.getName(), "PLAYER_NOT_IN_TEAM"));
-			return true;
 		}
 
 		for (String key : KuffleMain.allItems.keySet()) {
